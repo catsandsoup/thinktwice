@@ -6,9 +6,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Challenge as ChallengeType } from "@/data/challenges";
 
-interface ChallengeProps extends ChallengeType {
+type ChallengeProps = ChallengeType & {
   onComplete: (correct: boolean, xp: number) => void;
-}
+};
 
 export function Challenge(props: ChallengeProps) {
   const [selected, setSelected] = useState<string>("");
