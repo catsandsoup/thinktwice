@@ -34,12 +34,20 @@ export function Challenge({
   const { toast } = useToast();
 
   const handleSubmit = () => {
-    if (!selected) {
+    if (!selected && !isSubmitted) {
       toast({
         title: "Selection Required",
         description: "Please select an answer before submitting.",
         variant: "destructive",
       });
+      return;
+    }
+
+    if (isSubmitted) {
+      // Reset for next question
+      setSelected("");
+      setIsSubmitted(false);
+      onComplete(false, 0); // Signal to move to next question
       return;
     }
 
@@ -50,7 +58,7 @@ export function Challenge({
     onComplete(isCorrect, isCorrect ? xpReward : 0);
 
     toast({
-      title: isCorrect ? "Correct! 🎉" : "Not quite right",
+      title: isCorrect ? "Correct! 🎉" : "Incorrect",
       description: selectedOption?.explanation,
       variant: isCorrect ? "default" : "destructive",
     });
@@ -95,15 +103,19 @@ export function Challenge({
               >
                 {option.text}
               </label>
+              {isSubmitted && option.id === selected && (
+                <p className="text-sm mt-2 text-muted-foreground">
+                  {option.explanation}
+                </p>
+              )}
             </div>
           ))}
         </RadioGroup>
         <Button
           onClick={handleSubmit}
-          disabled={isSubmitted}
           className="w-full"
         >
-          Submit Answer
+          {isSubmitted ? "Next Question" : "Submit Answer"}
         </Button>
       </CardContent>
     </Card>
