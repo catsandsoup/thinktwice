@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Challenge } from "@/components/Challenge";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { shuffleArray } from "@/lib/utils";
 
-const challenges = [
+const allChallenges = [
   {
     title: "Analyzing News Headlines",
     description: "Compare these two headlines about the same climate study. Which one demonstrates more neutral, factual reporting?",
@@ -171,6 +172,72 @@ const challenges = [
     ],
     difficulty: "beginner" as const,
     xpReward: 10
+  },
+  {
+    title: "Understanding Supply Chain Impact",
+    description: "A tech company CEO tweets: \"We're moving all manufacturing back to America - prices of our products won't change and quality will improve!\" Which key economic factor is being ignored in this statement?",
+    type: "media" as const,
+    options: [
+      {
+        id: "1",
+        text: "Labor costs are significantly higher in America than in current manufacturing locations",
+        isCorrect: true,
+        explanation: "The statement overlooks the substantial wage differences between countries and how this would impact production costs, which would likely necessitate either price increases or reduced profit margins."
+      },
+      {
+        id: "2",
+        text: "The company's stock price might change",
+        isCorrect: false,
+        explanation: "While stock prices might be affected, this isn't the key economic factor being ignored in the statement."
+      },
+      {
+        id: "3",
+        text: "Consumer preferences for domestic products",
+        isCorrect: false,
+        explanation: "Consumer preferences, while relevant, aren't the main economic factor being overlooked in this case."
+      },
+      {
+        id: "4",
+        text: "Transportation costs between countries",
+        isCorrect: false,
+        explanation: "While transportation costs are a factor, they're typically less significant than labor cost differences in manufacturing."
+      }
+    ],
+    difficulty: "intermediate" as const,
+    xpReward: 15
+  },
+  {
+    title: "Statistical Context Analysis",
+    description: "Given the headline: \"Housing Market CRASHES: Home Sales Drop 30% From Last Month!\" Which additional piece of information is MOST important for properly understanding this headline?",
+    type: "media" as const,
+    options: [
+      {
+        id: "1",
+        text: "The average sale price of homes",
+        isCorrect: false,
+        explanation: "While price data is useful, it doesn't directly help interpret the sales volume change."
+      },
+      {
+        id: "2",
+        text: "Typical seasonal variations in home sales",
+        isCorrect: true,
+        explanation: "Monthly comparisons without seasonal context can be misleading, especially in real estate where sales volumes naturally fluctuate throughout the year."
+      },
+      {
+        id: "3",
+        text: "The current interest rate",
+        isCorrect: false,
+        explanation: "While interest rates affect the market, they don't directly explain the month-to-month comparison issue."
+      },
+      {
+        id: "4",
+        text: "The number of new home listings",
+        isCorrect: false,
+        explanation: "New listings are important but don't address the potential seasonal nature of the sales drop."
+      }
+    ],
+    difficulty: "intermediate" as const,
+    xpReward: 15
   }
 ];
 
@@ -178,16 +245,18 @@ const BeginnersJourney = () => {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [totalXP, setTotalXP] = useState(0);
   const navigate = useNavigate();
+  
+  // Shuffle challenges on component mount
+  const [shuffledChallenges] = useState(() => shuffleArray([...allChallenges]));
 
   const handleComplete = (correct: boolean, xp: number) => {
     if (correct) {
       setTotalXP(prev => prev + xp);
     }
     
-    if (!correct) return; // Only proceed to next question if they got it right
+    if (!correct) return;
     
-    // Move to next challenge or return home if complete
-    if (currentChallenge === challenges.length - 1) {
+    if (currentChallenge === shuffledChallenges.length - 1) {
       navigate('/');
     } else {
       setCurrentChallenge(prev => prev + 1);
@@ -200,7 +269,7 @@ const BeginnersJourney = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Beginner's Journey</h1>
           <div className="text-lg font-semibold">
-            Challenge {currentChallenge + 1} of {challenges.length}
+            Challenge {currentChallenge + 1} of {shuffledChallenges.length}
           </div>
         </div>
         
@@ -208,7 +277,7 @@ const BeginnersJourney = () => {
           Total XP earned: {totalXP}
         </div>
 
-        <Challenge {...challenges[currentChallenge]} onComplete={handleComplete} />
+        <Challenge {...shuffledChallenges[currentChallenge]} onComplete={handleComplete} />
 
         <Button 
           variant="outline" 
