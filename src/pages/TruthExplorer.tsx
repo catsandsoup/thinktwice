@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { shuffleArray } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { Challenge as ChallengeType } from "@/data/challengeTypes";
 
 const TruthExplorer = () => {
   const navigate = useNavigate();
@@ -17,7 +18,6 @@ const TruthExplorer = () => {
     queryKey: ['truth-explorer-challenges'],
     queryFn: async () => {
       try {
-        // Fetch basic challenge information
         const { data: challengesData, error: challengesError } = await supabase
           .from('challenges')
           .select(`
@@ -41,7 +41,6 @@ const TruthExplorer = () => {
 
         if (challengesError) throw challengesError;
 
-        // Transform the data to match the expected format
         const transformedChallenges = challengesData.map(challenge => {
           const baseChallenge = {
             id: challenge.id,
@@ -54,36 +53,56 @@ const TruthExplorer = () => {
 
           switch (challenge.type) {
             case 'standard':
+            case 'headline':
+            case 'fallacy':
+            case 'media':
+            case 'source':
+            case 'analysis-construction':
+            case 'argument-construction':
               return {
                 ...baseChallenge,
-                options: challenge.standard_challenge_options
-              };
+                type: challenge.type,
+                options: challenge.standard_challenge_options || []
+              } as ChallengeType;
+            
             case 'word-selection':
-              const wordChallenge = challenge.word_selection_challenges[0];
+              const wordChallenge = challenge.word_selection_challenges?.[0];
               return {
                 ...baseChallenge,
-                passage: wordChallenge?.passage,
-                keyWords: wordChallenge?.word_selection_keywords
-              };
+                type: 'word-selection',
+                passage: wordChallenge?.passage || '',
+                keyWords: wordChallenge?.word_selection_keywords || []
+              } as ChallengeType;
+            
             case 'matching':
-              const matchingChallenge = challenge.matching_challenges[0];
+              const matchingChallenge = challenge.matching_challenges?.[0];
               return {
                 ...baseChallenge,
-                pairs: matchingChallenge?.matching_pairs
-              };
+                type: 'matching',
+                pairs: matchingChallenge?.matching_pairs?.map(pair => ({
+                  id: pair.id.toString(),
+                  claim: pair.claim,
+                  evidence: pair.best_evidence
+                })) || []
+              } as ChallengeType;
+            
             case 'highlight':
-              const highlightChallenge = challenge.highlight_challenges[0];
+              const highlightChallenge = challenge.highlight_challenges?.[0];
               return {
                 ...baseChallenge,
-                statement: highlightChallenge?.statement,
-                highlights: highlightChallenge?.highlight_texts
-              };
+                type: 'highlight',
+                statement: highlightChallenge?.statement || '',
+                highlights: highlightChallenge?.highlight_texts?.map(text => ({
+                  text: text.text,
+                  explanation: text.explanation
+                })) || []
+              } as ChallengeType;
+            
             default:
-              return baseChallenge;
+              return baseChallenge as ChallengeType;
           }
         });
 
-        // Randomize the order of challenges
         return shuffleArray(transformedChallenges);
       } catch (error) {
         console.error('Error fetching challenges:', error);
