@@ -4,31 +4,13 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { Challenge as ChallengeType } from "@/data/challenges";
 
-interface ChallengeProps {
-  title: string;
-  description: string;
-  type: "headline" | "fallacy" | "media" | "source";
-  options: {
-    id: string;
-    text: string;
-    isCorrect: boolean;
-    explanation: string;
-  }[];
-  difficulty: "beginner" | "intermediate" | "advanced";
-  xpReward: number;
+interface ChallengeProps extends ChallengeType {
   onComplete: (correct: boolean, xp: number) => void;
 }
 
-export function Challenge({ 
-  title, 
-  description, 
-  type, 
-  options, 
-  difficulty, 
-  xpReward, 
-  onComplete 
-}: ChallengeProps) {
+export function Challenge(props: ChallengeProps) {
   const [selected, setSelected] = useState<string>("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -48,78 +30,82 @@ export function Challenge({
       setSelected("");
       setIsSubmitted(false);
       setIsCorrect(false);
-      onComplete(true, xpReward);
+      props.onComplete(true, props.xpReward);
       return;
     }
 
-    const selectedOption = options.find(opt => opt.id === selected);
-    const correct = selectedOption?.isCorrect || false;
-    
-    if (!correct) {
-      // Reset the submission state to allow retrying
-      setIsSubmitted(false);
-      setSelected("");
-    } else {
-      setIsSubmitted(true);
-      setIsCorrect(true);
-    }
+    if ('options' in props) {
+      const selectedOption = props.options.find(opt => opt.id === selected);
+      const correct = selectedOption?.isCorrect || false;
+      
+      if (!correct) {
+        setIsSubmitted(false);
+        setSelected("");
+      } else {
+        setIsSubmitted(true);
+        setIsCorrect(true);
+      }
 
-    toast({
-      title: correct ? "Correct! 🎉" : "Incorrect - Try Again",
-      description: selectedOption?.explanation,
-      variant: correct ? "default" : "destructive",
-    });
+      toast({
+        title: correct ? "Correct! 🎉" : "Incorrect - Try Again",
+        description: selectedOption?.explanation,
+        variant: correct ? "default" : "destructive",
+      });
+    }
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto animate-fade-in" role="region" aria-label={`Question about ${type}`}>
+    <Card className="w-full max-w-2xl mx-auto animate-fade-in" role="region" aria-label={`Question about ${props.type}`}>
       <CardHeader>
         <div className="flex justify-between items-start">
           <div className="space-y-2">
-            <CardTitle className="text-2xl" id={`question-${title.toLowerCase().replace(/\s+/g, '-')}`}>
-              {title}
+            <CardTitle className="text-2xl" id={`question-${props.title.toLowerCase().replace(/\s+/g, '-')}`}>
+              {props.title}
             </CardTitle>
             <CardDescription className="text-base">
-              {description}
+              {props.description}
             </CardDescription>
           </div>
           <Badge variant={
-            difficulty === "beginner" ? "default" :
-            difficulty === "intermediate" ? "secondary" : "outline"
+            props.difficulty === "beginner" ? "default" :
+            props.difficulty === "intermediate" ? "secondary" : "outline"
           }>
-            {difficulty}
+            {props.difficulty}
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <RadioGroup
-          value={selected}
-          onValueChange={setSelected}
-          className="space-y-4"
-          disabled={isSubmitted && isCorrect}
-          aria-labelledby={`question-${title.toLowerCase().replace(/\s+/g, '-')}`}
-        >
-          {options.map((option) => (
-            <div
-              key={option.id}
-              className={`flex items-center space-y-2 p-4 rounded-lg border ${
-                isSubmitted && option.isCorrect ? "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800" :
-                isSubmitted && selected === option.id && !option.isCorrect ? "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800" :
-                ""
-              }`}
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value={option.id} id={option.id} aria-label={option.text} />
-                <label
-                  htmlFor={option.id}
-                  className="flex-grow cursor-pointer text-sm font-medium"
-                >
-                  {option.text}
-                </label>
+        {'options' in props && (
+          <RadioGroup
+            value={selected}
+            onValueChange={setSelected}
+            className="space-y-4"
+            disabled={isSubmitted && isCorrect}
+            aria-labelledby={`question-${props.title.toLowerCase().replace(/\s+/g, '-')}`}
+          >
+            {props.options.map((option) => (
+              <div
+                key={option.id}
+                className={`flex items-center space-y-2 p-4 rounded-lg border ${
+                  isSubmitted && option.isCorrect ? "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800" :
+                  isSubmitted && selected === option.id && !option.isCorrect ? "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800" :
+                  ""
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value={option.id} id={option.id} aria-label={option.text} />
+                  <label
+                    htmlFor={option.id}
+                    className="flex-grow cursor-pointer text-sm font-medium"
+                  >
+                    {option.text}
+                  </label>
+                </div>
               </div>
-            </div>
-          ))}
-        </RadioGroup>
+            ))}
+          </RadioGroup>
+        )}
+
         <Button
           onClick={handleSubmit}
           className="w-full"
