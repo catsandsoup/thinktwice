@@ -31,6 +31,7 @@ export function Challenge({
 }: ChallengeProps) {
   const [selected, setSelected] = useState<string>("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = () => {
@@ -43,25 +44,29 @@ export function Challenge({
       return;
     }
 
-    if (isSubmitted) {
-      // Reset for next question
+    // If already submitted and correct, move to next question
+    if (isSubmitted && isCorrect) {
       setSelected("");
       setIsSubmitted(false);
-      onComplete(false, 0); // Signal to move to next question
+      setIsCorrect(false);
+      onComplete(true, xpReward);
       return;
     }
 
-    const selectedOption = options.find(opt => opt.id === selected);
-    const isCorrect = selectedOption?.isCorrect || false;
+    // If not yet submitted, check the answer
+    if (!isSubmitted) {
+      const selectedOption = options.find(opt => opt.id === selected);
+      const correct = selectedOption?.isCorrect || false;
+      
+      setIsSubmitted(true);
+      setIsCorrect(correct);
 
-    setIsSubmitted(true);
-    onComplete(isCorrect, isCorrect ? xpReward : 0);
-
-    toast({
-      title: isCorrect ? "Correct! 🎉" : "Incorrect",
-      description: selectedOption?.explanation,
-      variant: isCorrect ? "default" : "destructive",
-    });
+      toast({
+        title: correct ? "Correct! 🎉" : "Incorrect",
+        description: selectedOption?.explanation,
+        variant: correct ? "default" : "destructive",
+      });
+    }
   };
 
   return (
@@ -85,7 +90,7 @@ export function Challenge({
           value={selected}
           onValueChange={setSelected}
           className="space-y-4"
-          disabled={isSubmitted}
+          disabled={isSubmitted && isCorrect}
         >
           {options.map((option) => (
             <div
@@ -103,7 +108,7 @@ export function Challenge({
               >
                 {option.text}
               </label>
-              {isSubmitted && option.id === selected && (
+              {isSubmitted && (selected === option.id || option.isCorrect) && (
                 <p className="text-sm mt-2 text-muted-foreground">
                   {option.explanation}
                 </p>
@@ -115,7 +120,7 @@ export function Challenge({
           onClick={handleSubmit}
           className="w-full"
         >
-          {isSubmitted ? "Next Question" : "Submit Answer"}
+          {isSubmitted && isCorrect ? "Next Question" : "Submit Answer"}
         </Button>
       </CardContent>
     </Card>
