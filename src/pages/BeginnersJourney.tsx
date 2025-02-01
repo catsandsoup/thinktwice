@@ -61,8 +61,13 @@ const BeginnersJourney = () => {
             case 'argument-construction':
               return {
                 ...baseChallenge,
-                type: challenge.type,
-                options: challenge.standard_challenge_options || []
+                type: challenge.type as ChallengeType["type"],
+                options: challenge.standard_challenge_options?.map(opt => ({
+                  id: opt.id,
+                  text: opt.text,
+                  isCorrect: opt.is_correct,
+                  explanation: opt.explanation
+                })) || []
               } as ChallengeType;
             
             case 'word-selection':
@@ -71,7 +76,10 @@ const BeginnersJourney = () => {
                 ...baseChallenge,
                 type: 'word-selection',
                 passage: wordChallenge?.passage || '',
-                keyWords: wordChallenge?.word_selection_keywords || []
+                keyWords: wordChallenge?.word_selection_keywords?.map(kw => ({
+                  word: kw.word,
+                  explanation: kw.explanation
+                })) || []
               } as ChallengeType;
             
             case 'matching':
