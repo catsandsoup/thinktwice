@@ -26,8 +26,8 @@ const BeginnersJourney = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen bg-background p-4 sm:p-8">
+      <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
         <ChallengeProgress
           currentChallenge={currentChallenge}
           totalChallenges={shuffledChallenges.length}
@@ -41,7 +41,7 @@ const BeginnersJourney = () => {
         <Button 
           variant="outline" 
           onClick={() => navigate('/')}
-          className="mt-4"
+          className="w-full sm:w-auto mt-4"
         >
           Exit Journey
         </Button>

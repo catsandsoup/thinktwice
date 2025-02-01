@@ -17,9 +17,9 @@ export function ChallengeProgress({
 }: ChallengeProgressProps) {
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Beginner's Journey</h1>
-        <div className="text-lg font-semibold">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold">Beginner's Journey</h1>
+        <div className="text-base sm:text-lg font-semibold">
           Challenge {currentChallenge + 1} of {totalChallenges}
         </div>
       </div>

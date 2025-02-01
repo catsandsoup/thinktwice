@@ -23,17 +23,17 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container py-8 space-y-8 animate-fade-in">
-        <div className="space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight">Welcome to Think Twice</h1>
-          <p className="text-xl text-muted-foreground">
+      <main className="container px-4 sm:px-6 py-4 sm:py-8 space-y-6 sm:space-y-8">
+        <div className="space-y-3 sm:space-y-4">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">Welcome to Think Twice</h1>
+          <p className="text-lg sm:text-xl text-muted-foreground">
             Master critical thinking through interactive challenges
           </p>
         </div>
 
         <ProgressBar xp={xp} maxXp={maxXp} streak={streak} />
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <LearningPath
             title="Beginner's Journey"
             description="Learn the basics of fact-checking and logical reasoning"
