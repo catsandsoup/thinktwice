@@ -12,6 +12,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
   const [selected, setSelected] = useState<string>("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = () => {
@@ -50,8 +51,10 @@ export function StandardChallenge(props: StandardChallengeProps) {
     });
   };
 
+  const correctAnswer = props.options.find(opt => opt.isCorrect);
+
   return (
-    <>
+    <div className="space-y-4">
       <RadioGroup
         value={selected}
         onValueChange={setSelected}
@@ -81,13 +84,31 @@ export function StandardChallenge(props: StandardChallengeProps) {
         ))}
       </RadioGroup>
 
-      <Button
-        onClick={handleSubmit}
-        className="w-full"
-        aria-label={isSubmitted && isCorrect ? "Proceed to next question" : "Submit your answer"}
-      >
-        {isSubmitted && isCorrect ? "Next Question" : "Submit Answer"}
-      </Button>
-    </>
+      <div className="flex gap-2">
+        <Button
+          onClick={handleSubmit}
+          className="flex-1"
+          aria-label={isSubmitted && isCorrect ? "Proceed to next question" : "Submit your answer"}
+        >
+          {isSubmitted && isCorrect ? "Next Question" : "Submit Answer"}
+        </Button>
+        
+        <Button
+          variant="outline"
+          onClick={() => setShowAnswer(true)}
+          className="whitespace-nowrap"
+        >
+          Display Answer
+        </Button>
+      </div>
+
+      {showAnswer && correctAnswer && (
+        <div className="p-4 bg-muted rounded-lg">
+          <p className="font-medium">Correct Answer:</p>
+          <p>{correctAnswer.text}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{correctAnswer.explanation}</p>
+        </div>
+      )}
+    </div>
   );
 }

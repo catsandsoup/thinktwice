@@ -10,6 +10,7 @@ interface MatchingChallengeProps extends MatchingChallengeType {
 export function MatchingChallenge({ pairs, xpReward, onComplete }: MatchingChallengeProps) {
   const [selectedPair, setSelectedPair] = useState<{ claim?: string; evidence?: string }>({});
   const [matchedPairs, setMatchedPairs] = useState<Set<string>>(new Set());
+  const [showAnswer, setShowAnswer] = useState(false);
   const { toast } = useToast();
 
   const handleSelect = (text: string, type: "claim" | "evidence") => {
@@ -50,49 +51,73 @@ export function MatchingChallenge({ pairs, xpReward, onComplete }: MatchingChall
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4">
-      <div className="space-y-2">
-        <h3 className="font-semibold mb-2">Claims</h3>
-        {pairs.map(pair => (
-          <div
-            key={pair.id + "-claim"}
-            className={`p-2 rounded cursor-pointer transition-colors ${
-              matchedPairs.has(pair.claim)
-                ? "bg-green-100 dark:bg-green-900"
-                : selectedPair.claim === pair.claim
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted hover:bg-accent hover:text-accent-foreground"
-            }`}
-            onClick={() => !matchedPairs.has(pair.claim) && handleSelect(pair.claim, "claim")}
-          >
-            {pair.claim}
-          </div>
-        ))}
-      </div>
-      
-      <div className="space-y-2">
-        <h3 className="font-semibold mb-2">Evidence</h3>
-        {pairs.map(pair => (
-          <div
-            key={pair.id + "-evidence"}
-            className={`p-2 rounded cursor-pointer transition-colors ${
-              matchedPairs.has(pair.claim)
-                ? "bg-green-100 dark:bg-green-900"
-                : selectedPair.evidence === pair.evidence
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted hover:bg-accent hover:text-accent-foreground"
-            }`}
-            onClick={() => !matchedPairs.has(pair.claim) && handleSelect(pair.evidence, "evidence")}
-          >
-            {pair.evidence}
-          </div>
-        ))}
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <h3 className="font-semibold mb-2">Claims</h3>
+          {pairs.map(pair => (
+            <div
+              key={pair.id + "-claim"}
+              className={`p-2 rounded cursor-pointer transition-colors ${
+                matchedPairs.has(pair.claim)
+                  ? "bg-green-100 dark:bg-green-900"
+                  : selectedPair.claim === pair.claim
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted hover:bg-accent hover:text-accent-foreground"
+              }`}
+              onClick={() => !matchedPairs.has(pair.claim) && handleSelect(pair.claim, "claim")}
+            >
+              {pair.claim}
+            </div>
+          ))}
+        </div>
+        
+        <div className="space-y-2">
+          <h3 className="font-semibold mb-2">Evidence</h3>
+          {pairs.map(pair => (
+            <div
+              key={pair.id + "-evidence"}
+              className={`p-2 rounded cursor-pointer transition-colors ${
+                matchedPairs.has(pair.claim)
+                  ? "bg-green-100 dark:bg-green-900"
+                  : selectedPair.evidence === pair.evidence
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted hover:bg-accent hover:text-accent-foreground"
+              }`}
+              onClick={() => !matchedPairs.has(pair.claim) && handleSelect(pair.evidence, "evidence")}
+            >
+              {pair.evidence}
+            </div>
+          ))}
+        </div>
       </div>
 
-      {(selectedPair.claim && selectedPair.evidence) && (
-        <Button onClick={checkPair} className="col-span-2 mt-4">
-          Check Match
+      <div className="flex gap-2">
+        {(selectedPair.claim && selectedPair.evidence) && (
+          <Button onClick={checkPair} className="flex-1">
+            Check Match
+          </Button>
+        )}
+        
+        <Button
+          variant="outline"
+          onClick={() => setShowAnswer(true)}
+          className="whitespace-nowrap"
+        >
+          Display Answer
         </Button>
+      </div>
+
+      {showAnswer && (
+        <div className="p-4 bg-muted rounded-lg space-y-4">
+          <p className="font-medium">Correct Pairs:</p>
+          {pairs.map((pair, index) => (
+            <div key={index} className="grid grid-cols-2 gap-4 p-2 border-b last:border-0">
+              <p>{pair.claim}</p>
+              <p>{pair.evidence}</p>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

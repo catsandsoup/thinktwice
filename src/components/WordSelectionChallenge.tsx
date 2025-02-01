@@ -9,6 +9,7 @@ interface WordSelectionChallengeProps extends WordSelectionChallengeType {
 
 export function WordSelectionChallenge({ passage, keyWords, xpReward, onComplete }: WordSelectionChallengeProps) {
   const [selectedWords, setSelectedWords] = useState<Set<string>>(new Set());
+  const [showAnswer, setShowAnswer] = useState(false);
   const { toast } = useToast();
 
   const handleWordClick = (word: string) => {
@@ -62,9 +63,32 @@ export function WordSelectionChallenge({ passage, keyWords, xpReward, onComplete
           </span>
         ))}
       </div>
-      <Button onClick={handleSubmit} className="w-full">
-        Submit Selection
-      </Button>
+      
+      <div className="flex gap-2">
+        <Button onClick={handleSubmit} className="flex-1">
+          Submit Selection
+        </Button>
+        
+        <Button
+          variant="outline"
+          onClick={() => setShowAnswer(true)}
+          className="whitespace-nowrap"
+        >
+          Display Answer
+        </Button>
+      </div>
+
+      {showAnswer && (
+        <div className="p-4 bg-muted rounded-lg space-y-2">
+          <p className="font-medium">Key Words:</p>
+          {keyWords.map((kw, index) => (
+            <div key={index} className="space-y-1">
+              <p className="font-medium text-primary">{kw.word}</p>
+              <p className="text-sm text-muted-foreground">{kw.explanation}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

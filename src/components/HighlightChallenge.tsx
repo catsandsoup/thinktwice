@@ -9,6 +9,7 @@ interface HighlightChallengeProps extends HighlightChallengeType {
 
 export function HighlightChallenge({ statement, highlights, xpReward, onComplete }: HighlightChallengeProps) {
   const [selectedText, setSelectedText] = useState<Set<string>>(new Set());
+  const [showAnswer, setShowAnswer] = useState(false);
   const { toast } = useToast();
 
   const handleTextSelect = () => {
@@ -82,9 +83,31 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
         ))}
       </div>
 
-      <Button onClick={handleSubmit} className="w-full">
-        Submit Highlights
-      </Button>
+      <div className="flex gap-2">
+        <Button onClick={handleSubmit} className="flex-1">
+          Submit Highlights
+        </Button>
+        
+        <Button
+          variant="outline"
+          onClick={() => setShowAnswer(true)}
+          className="whitespace-nowrap"
+        >
+          Display Answer
+        </Button>
+      </div>
+
+      {showAnswer && (
+        <div className="p-4 bg-muted rounded-lg space-y-4">
+          <p className="font-medium">Correct Highlights:</p>
+          {highlights.map((highlight, index) => (
+            <div key={index} className="space-y-1">
+              <p className="font-medium text-primary">{highlight.text}</p>
+              <p className="text-sm text-muted-foreground">{highlight.explanation}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
