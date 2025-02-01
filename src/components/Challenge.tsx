@@ -52,19 +52,23 @@ export function Challenge({
       return;
     }
 
-    if (!isSubmitted) {
-      const selectedOption = options.find(opt => opt.id === selected);
-      const correct = selectedOption?.isCorrect || false;
-      
+    const selectedOption = options.find(opt => opt.id === selected);
+    const correct = selectedOption?.isCorrect || false;
+    
+    if (!correct) {
+      // Reset the submission state to allow retrying
+      setIsSubmitted(false);
+      setSelected("");
+    } else {
       setIsSubmitted(true);
-      setIsCorrect(correct);
-
-      toast({
-        title: correct ? "Correct! 🎉" : "Incorrect",
-        description: selectedOption?.explanation,
-        variant: correct ? "default" : "destructive",
-      });
+      setIsCorrect(true);
     }
+
+    toast({
+      title: correct ? "Correct! 🎉" : "Incorrect - Try Again",
+      description: selectedOption?.explanation,
+      variant: correct ? "default" : "destructive",
+    });
   };
 
   return (
