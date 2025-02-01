@@ -16,15 +16,15 @@ export function ChallengeProgress({
   streak 
 }: ChallengeProgressProps) {
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold">Beginner's Journey</h1>
-        <div className="text-base sm:text-lg font-semibold">
+    <div className="space-y-3">
+      <div className="text-center space-y-2">
+        <div className="text-base text-muted-foreground font-medium">
           Challenge {currentChallenge + 1} of {totalChallenges}
         </div>
+        <h1 className="text-2xl sm:text-3xl font-bold">Beginner's Journey</h1>
       </div>
       
-      <div className="text-sm text-muted-foreground">
+      <div className="text-sm text-muted-foreground text-center">
         Total XP earned: {xp}
       </div>
 
