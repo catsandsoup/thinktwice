@@ -29,16 +29,32 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
     selection.removeAllRanges();
   };
 
+  const isTextCloseEnough = (selected: string, correct: string) => {
+    // Get the position of both texts in the statement
+    const selectedPos = statement.indexOf(selected);
+    const correctPos = statement.indexOf(correct);
+    
+    // Allow for a margin of error (e.g., one word before or after)
+    const margin = 20; // characters
+    return Math.abs(selectedPos - correctPos) <= margin;
+  };
+
   const handleSubmit = () => {
     const correctHighlights = new Set(highlights.map(h => h.text));
-    const isCorrect = 
-      selectedText.size === correctHighlights.size && 
-      Array.from(selectedText).every(text => correctHighlights.has(text));
+    
+    // Check if each selected text matches or is close to a correct highlight
+    const isCorrect = Array.from(selectedText).some(selected => 
+      Array.from(correctHighlights).some(correct => 
+        selected.includes(correct) || 
+        correct.includes(selected) ||
+        isTextCloseEnough(selected, correct)
+      )
+    );
 
     if (isCorrect) {
       toast({
         title: "Correct! 🎉",
-        description: "You've identified all the key statements correctly!",
+        description: "You've identified the key statements correctly!",
       });
       onComplete(true, xpReward);
     } else {
