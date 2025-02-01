@@ -44,7 +44,6 @@ export function Challenge({
       return;
     }
 
-    // If already submitted and correct, move to next question
     if (isSubmitted && isCorrect) {
       setSelected("");
       setIsSubmitted(false);
@@ -53,7 +52,6 @@ export function Challenge({
       return;
     }
 
-    // If not yet submitted, check the answer
     if (!isSubmitted) {
       const selectedOption = options.find(opt => opt.id === selected);
       const correct = selectedOption?.isCorrect || false;
@@ -100,7 +98,7 @@ export function Challenge({
           {options.map((option) => (
             <div
               key={option.id}
-              className={`flex flex-col space-y-2 p-4 rounded-lg border ${
+              className={`flex items-center space-y-2 p-4 rounded-lg border ${
                 isSubmitted && option.isCorrect ? "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800" :
                 isSubmitted && selected === option.id && !option.isCorrect ? "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800" :
                 "hover:bg-accent"
@@ -115,11 +113,6 @@ export function Challenge({
                   {option.text}
                 </label>
               </div>
-              {isSubmitted && (selected === option.id || option.isCorrect) && (
-                <p className="text-sm text-muted-foreground pl-6">
-                  {option.explanation}
-                </p>
-              )}
             </div>
           ))}
         </RadioGroup>
