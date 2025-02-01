@@ -2,6 +2,7 @@ import { HighlightChallenge } from "./challengeTypes";
 
 export const highlightChallenges: HighlightChallenge[] = [
   {
+    id: "highlight-1",
     title: "Identifying Assumption Chains",
     description: "Highlight three assumptions in this logical chain that need verification.",
     type: "highlight",
@@ -22,6 +23,5 @@ export const highlightChallenges: HighlightChallenge[] = [
     ],
     difficulty: "intermediate",
     xpReward: 15
-  },
-  // Add more highlight challenges as needed
+  }
 ];

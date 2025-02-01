@@ -2,6 +2,7 @@ import { StandardChallenge } from "./challengeTypes";
 
 export const standardChallenges: StandardChallenge[] = [
   {
+    id: "headline-1",
     title: "Analyzing News Headlines",
     description: "Compare these two headlines about the same climate study. Which one demonstrates more neutral, factual reporting?",
     type: "headline",
@@ -23,6 +24,7 @@ export const standardChallenges: StandardChallenge[] = [
     xpReward: 10
   },
   {
+    id: "fallacy-1",
     title: "Logical Fallacy Detection",
     description: "Which of these responses contains a straw man fallacy?",
     type: "fallacy",
@@ -44,6 +46,7 @@ export const standardChallenges: StandardChallenge[] = [
     xpReward: 10
   },
   {
+    id: "media-1",
     title: "Media Bias Detection",
     description: "Which statement shows the most obvious bias in its language?",
     type: "media",
@@ -65,6 +68,7 @@ export const standardChallenges: StandardChallenge[] = [
     xpReward: 10
   },
   {
+    id: "source-1",
     title: "Source Credibility Analysis",
     description: "Which source would be most reliable for current medical research findings?",
     type: "source",
@@ -86,6 +90,7 @@ export const standardChallenges: StandardChallenge[] = [
     xpReward: 10
   },
   {
+    id: "fallacy-2",
     title: "Identifying Ad Hominem Fallacies",
     description: "Which response demonstrates an ad hominem fallacy?",
     type: "fallacy",
@@ -107,6 +112,7 @@ export const standardChallenges: StandardChallenge[] = [
     xpReward: 10
   },
   {
+    id: "media-2",
     title: "Statistical Manipulation",
     description: "Which presentation of statistics appears to be misleading?",
     type: "media",
@@ -128,6 +134,7 @@ export const standardChallenges: StandardChallenge[] = [
     xpReward: 10
   },
   {
+    id: "fallacy-3",
     title: "Correlation vs. Causation",
     description: "Which statement incorrectly implies causation?",
     type: "fallacy",
@@ -149,6 +156,7 @@ export const standardChallenges: StandardChallenge[] = [
     xpReward: 10
   },
   {
+    id: "source-2",
     title: "Evaluating Expert Opinions",
     description: "Which expert opinion should carry more weight in a discussion about climate change?",
     type: "source",
@@ -170,6 +178,7 @@ export const standardChallenges: StandardChallenge[] = [
     xpReward: 10
   },
   {
+    id: "media-3",
     title: "Understanding Supply Chain Impact",
     description: "A tech company CEO tweets: \"We're moving all manufacturing back to America - prices of our products won't change and quality will improve!\" Which key economic factor is being ignored in this statement?",
     type: "media",
@@ -203,6 +212,7 @@ export const standardChallenges: StandardChallenge[] = [
     xpReward: 15
   },
   {
+    id: "media-4",
     title: "Statistical Context Analysis",
     description: "Given the headline: \"Housing Market CRASHES: Home Sales Drop 30% From Last Month!\" Which additional piece of information is MOST important for properly understanding this headline?",
     type: "media",

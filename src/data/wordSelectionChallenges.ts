@@ -2,6 +2,7 @@ import { WordSelectionChallenge } from "./challengeTypes";
 
 export const wordSelectionChallenges: WordSelectionChallenge[] = [
   {
+    id: "word-selection-1",
     title: "Identifying Loaded Language",
     description: "Click on words that reveal potential bias or manipulation in this medical news excerpt.",
     type: "word-selection",
