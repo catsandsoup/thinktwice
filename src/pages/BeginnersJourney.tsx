@@ -1,107 +1,105 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Challenge } from "@/components/Challenge";
 import { ChallengeProgress } from "@/components/ChallengeProgress";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { shuffleArray } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
 const BeginnersJourney = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [challenges, setChallenges] = useState<any[]>([]);
   const [currentChallenge, setCurrentChallenge] = useState(0);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchBeginnerChallenges();
-  }, []);
-
-  const fetchBeginnerChallenges = async () => {
-    try {
-      // Fetch basic challenge information
-      const { data: challengesData, error: challengesError } = await supabase
-        .from('challenges')
-        .select(`
-          *,
-          standard_challenge_options(*),
-          word_selection_challenges(
+  const { data: challenges, isLoading } = useQuery({
+    queryKey: ['beginner-challenges'],
+    queryFn: async () => {
+      try {
+        // Fetch basic challenge information
+        const { data: challengesData, error: challengesError } = await supabase
+          .from('challenges')
+          .select(`
             *,
-            word_selection_keywords(*)
-          ),
-          matching_challenges(
-            *,
-            matching_pairs(*)
-          ),
-          highlight_challenges(
-            *,
-            highlight_texts(*)
-          )
-        `)
-        .eq('difficulty', 'beginner')
-        .order('created_at', { ascending: true });
+            standard_challenge_options(*),
+            word_selection_challenges(
+              *,
+              word_selection_keywords(*)
+            ),
+            matching_challenges(
+              *,
+              matching_pairs(*)
+            ),
+            highlight_challenges(
+              *,
+              highlight_texts(*)
+            )
+          `)
+          .eq('difficulty', 'beginner')
+          .order('created_at', { ascending: true });
 
-      if (challengesError) throw challengesError;
+        if (challengesError) throw challengesError;
 
-      // Transform the data to match the expected format
-      const transformedChallenges = challengesData.map(challenge => {
-        const baseChallenge = {
-          id: challenge.id,
-          title: challenge.title,
-          description: challenge.description,
-          type: challenge.type,
-          difficulty: challenge.difficulty,
-          xpReward: challenge.xp_reward
-        };
+        // Transform the data to match the expected format
+        const transformedChallenges = challengesData.map(challenge => {
+          const baseChallenge = {
+            id: challenge.id,
+            title: challenge.title,
+            description: challenge.description,
+            type: challenge.type,
+            difficulty: challenge.difficulty,
+            xpReward: challenge.xp_reward
+          };
 
-        switch (challenge.type) {
-          case 'standard':
-            return {
-              ...baseChallenge,
-              options: challenge.standard_challenge_options
-            };
-          case 'word-selection':
-            const wordChallenge = challenge.word_selection_challenges[0];
-            return {
-              ...baseChallenge,
-              passage: wordChallenge?.passage,
-              keyWords: wordChallenge?.word_selection_keywords
-            };
-          case 'matching':
-            const matchingChallenge = challenge.matching_challenges[0];
-            return {
-              ...baseChallenge,
-              pairs: matchingChallenge?.matching_pairs
-            };
-          case 'highlight':
-            const highlightChallenge = challenge.highlight_challenges[0];
-            return {
-              ...baseChallenge,
-              statement: highlightChallenge?.statement,
-              highlights: highlightChallenge?.highlight_texts
-            };
-          default:
-            return baseChallenge;
-        }
-      });
+          switch (challenge.type) {
+            case 'standard':
+              return {
+                ...baseChallenge,
+                options: challenge.standard_challenge_options
+              };
+            case 'word-selection':
+              const wordChallenge = challenge.word_selection_challenges[0];
+              return {
+                ...baseChallenge,
+                passage: wordChallenge?.passage,
+                keyWords: wordChallenge?.word_selection_keywords
+              };
+            case 'matching':
+              const matchingChallenge = challenge.matching_challenges[0];
+              return {
+                ...baseChallenge,
+                pairs: matchingChallenge?.matching_pairs
+              };
+            case 'highlight':
+              const highlightChallenge = challenge.highlight_challenges[0];
+              return {
+                ...baseChallenge,
+                statement: highlightChallenge?.statement,
+                highlights: highlightChallenge?.highlight_texts
+              };
+            default:
+              return baseChallenge;
+          }
+        });
 
-      console.log('Transformed challenges:', transformedChallenges);
-      setChallenges(transformedChallenges);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching challenges:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load challenges. Please try again.",
-        variant: "destructive",
-      });
-      setLoading(false);
+        // Randomize the order of challenges
+        return shuffleArray(transformedChallenges);
+      } catch (error) {
+        console.error('Error fetching challenges:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load challenges. Please try again.",
+          variant: "destructive",
+        });
+        return [];
+      }
     }
-  };
+  });
 
   const handleComplete = (correct: boolean) => {
     if (correct) {
-      if (currentChallenge === challenges.length - 1) {
+      if (currentChallenge === (challenges?.length || 0) - 1) {
         toast({
           title: "Journey Complete! 🎉",
           description: "You've completed all beginner challenges!",
@@ -117,7 +115,7 @@ const BeginnersJourney = () => {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -128,7 +126,7 @@ const BeginnersJourney = () => {
     );
   }
 
-  if (!loading && challenges.length === 0) {
+  if (!challenges || challenges.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8 space-y-4">
