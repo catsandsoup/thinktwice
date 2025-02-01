@@ -11,12 +11,9 @@ const BeginnersJourney = () => {
   
   const shuffledChallenges = useMemo(() => shuffleArray([...challenges]), []);
   const [currentChallenge, setCurrentChallenge] = useState(0);
-  const [totalXP, setTotalXP] = useState(0);
 
-  const handleComplete = (correct: boolean, xp: number) => {
+  const handleComplete = (correct: boolean) => {
     if (correct) {
-      setTotalXP(prev => prev + xp);
-      
       if (currentChallenge === shuffledChallenges.length - 1) {
         navigate('/');
       } else {
@@ -31,9 +28,6 @@ const BeginnersJourney = () => {
         <ChallengeProgress
           currentChallenge={currentChallenge}
           totalChallenges={shuffledChallenges.length}
-          xp={totalXP}
-          maxXp={100}
-          streak={1}
         />
 
         <Challenge {...shuffledChallenges[currentChallenge]} onComplete={handleComplete} />
