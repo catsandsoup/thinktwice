@@ -71,10 +71,10 @@ export function WordSelectionChallenge({ passage, keyWords, xpReward, onComplete
         
         <Button
           variant="outline"
-          onClick={() => setShowAnswer(true)}
+          onClick={() => setShowAnswer(!showAnswer)}
           className="whitespace-nowrap"
         >
-          Display Answer
+          {showAnswer ? "Hide Answer" : "Display Answer"}
         </Button>
       </div>
 

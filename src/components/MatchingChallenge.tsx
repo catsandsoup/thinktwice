@@ -101,10 +101,10 @@ export function MatchingChallenge({ pairs, xpReward, onComplete }: MatchingChall
         
         <Button
           variant="outline"
-          onClick={() => setShowAnswer(true)}
+          onClick={() => setShowAnswer(!showAnswer)}
           className="whitespace-nowrap"
         >
-          Display Answer
+          {showAnswer ? "Hide Answer" : "Display Answer"}
         </Button>
       </div>
 

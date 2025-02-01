@@ -95,10 +95,10 @@ export function StandardChallenge(props: StandardChallengeProps) {
         
         <Button
           variant="outline"
-          onClick={() => setShowAnswer(true)}
+          onClick={() => setShowAnswer(!showAnswer)}
           className="whitespace-nowrap"
         >
-          Display Answer
+          {showAnswer ? "Hide Answer" : "Display Answer"}
         </Button>
       </div>
 
