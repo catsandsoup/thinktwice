@@ -70,12 +70,16 @@ export function Challenge({
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto animate-fade-in">
+    <Card className="w-full max-w-2xl mx-auto animate-fade-in" role="region" aria-label={`Question about ${type}`}>
       <CardHeader>
         <div className="flex justify-between items-start">
-          <div>
-            <CardTitle className="text-2xl">{title}</CardTitle>
-            <CardDescription className="mt-2">{description}</CardDescription>
+          <div className="space-y-2">
+            <CardTitle className="text-2xl" id={`question-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+              {title}
+            </CardTitle>
+            <CardDescription className="text-base">
+              {description}
+            </CardDescription>
           </div>
           <Badge variant={
             difficulty === "beginner" ? "default" :
@@ -91,25 +95,28 @@ export function Challenge({
           onValueChange={setSelected}
           className="space-y-4"
           disabled={isSubmitted && isCorrect}
+          aria-labelledby={`question-${title.toLowerCase().replace(/\s+/g, '-')}`}
         >
           {options.map((option) => (
             <div
               key={option.id}
-              className={`flex items-center space-x-2 p-4 rounded-lg border ${
-                isSubmitted && option.isCorrect ? "bg-green-50 border-green-200" :
-                isSubmitted && selected === option.id && !option.isCorrect ? "bg-red-50 border-red-200" :
+              className={`flex flex-col space-y-2 p-4 rounded-lg border ${
+                isSubmitted && option.isCorrect ? "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800" :
+                isSubmitted && selected === option.id && !option.isCorrect ? "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800" :
                 "hover:bg-accent"
               }`}
             >
-              <RadioGroupItem value={option.id} id={option.id} />
-              <label
-                htmlFor={option.id}
-                className="flex-grow cursor-pointer text-sm"
-              >
-                {option.text}
-              </label>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value={option.id} id={option.id} aria-label={option.text} />
+                <label
+                  htmlFor={option.id}
+                  className="flex-grow cursor-pointer text-sm font-medium"
+                >
+                  {option.text}
+                </label>
+              </div>
               {isSubmitted && (selected === option.id || option.isCorrect) && (
-                <p className="text-sm mt-2 text-muted-foreground">
+                <p className="text-sm text-muted-foreground pl-6">
                   {option.explanation}
                 </p>
               )}
@@ -119,6 +126,7 @@ export function Challenge({
         <Button
           onClick={handleSubmit}
           className="w-full"
+          aria-label={isSubmitted && isCorrect ? "Proceed to next question" : "Submit your answer"}
         >
           {isSubmitted && isCorrect ? "Next Question" : "Submit Answer"}
         </Button>
