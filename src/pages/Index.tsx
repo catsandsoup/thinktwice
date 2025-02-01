@@ -55,33 +55,21 @@ const Index = () => {
             description="Learn the basics of fact-checking and logical reasoning"
             level="beginner"
             onClick={() => handlePathClick("Beginner")}
-            metadata={{
-              duration: "2-3 hours",
-              learners: "1.2k",
-              progress: 60
-            }}
+            progress={60}
           />
           <LearningPath
             title="Logic Master"
             description="Tackle complex logical fallacies and media analysis"
             level="intermediate"
             onClick={() => handlePathClick("Intermediate")}
-            metadata={{
-              duration: "4-5 hours",
-              learners: "856",
-              progress: 0
-            }}
+            progress={0}
           />
           <LearningPath
             title="Expert Analyzer"
             description="Master advanced critical thinking and research methods"
             level="advanced"
             onClick={() => handlePathClick("Advanced")}
-            metadata={{
-              duration: "6-8 hours",
-              learners: "432",
-              progress: 0
-            }}
+            progress={0}
           />
         </div>
       </main>

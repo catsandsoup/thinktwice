@@ -8,56 +8,51 @@ interface LearningPathProps {
   description: string;
   level: "beginner" | "intermediate" | "advanced";
   onClick: () => void;
-  metadata: {
-    duration: string;
-    learners: string;
-    progress: number;
-  };
+  progress?: number;
 }
 
-const levelIcons = {
-  beginner: Brain,
-  intermediate: Trophy,
-  advanced: GraduationCap,
-};
+export function LearningPath({ 
+  title, 
+  description, 
+  level,
+  onClick,
+  progress = 0
+}: LearningPathProps) {
+  const Icon = {
+    beginner: Brain,
+    intermediate: Trophy,
+    advanced: GraduationCap,
+  }[level];
 
-const levelStyles = {
-  beginner: "bg-primary hover:bg-primary/90",
-  intermediate: "bg-secondary hover:bg-secondary/90",
-  advanced: "bg-accent hover:bg-accent/90",
-};
+  const bgColor = {
+    beginner: "from-blue-500 to-blue-700",
+    intermediate: "from-purple-500 to-purple-700",
+    advanced: "from-orange-500 to-orange-700",
+  }[level];
 
-export function LearningPath({ title, description, level, onClick, metadata }: LearningPathProps) {
-  const Icon = levelIcons[level];
-  
   return (
-    <Card 
-      className={cn(
-        "relative overflow-hidden p-6 cursor-pointer transition-all duration-300 transform hover:scale-[1.02]",
-        levelStyles[level],
-        "text-white"
-      )}
+    <Card
       onClick={onClick}
+      className={cn(
+        "relative overflow-hidden bg-gradient-to-br cursor-pointer transition-transform hover:scale-[1.02]",
+        bgColor
+      )}
     >
-      <div className="flex flex-col gap-6">
-        <div className="flex items-start justify-between">
+      <div className="p-6 text-white space-y-4">
+        <div className="space-y-4">
           <div className="flex items-start gap-4">
-            <Icon className="w-8 h-8 flex-shrink-0" />
-            <div className="space-y-2">
-              <h3 className="text-2xl font-bold tracking-tight">{title}</h3>
-              <p className="text-lg opacity-90">{description}</p>
+            <Icon className="w-8 h-8 shrink-0" />
+            <div className="space-y-1">
+              <h3 className="text-xl font-bold line-clamp-1">{title}</h3>
+              <p className="text-lg opacity-90 line-clamp-2">{description}</p>
             </div>
           </div>
         </div>
 
         <div className="flex justify-end">
-          {metadata.progress > 0 ? (
+          {progress > 0 && (
             <Badge variant="outline" className="bg-white/20 text-white">
-              {metadata.progress}% complete
-            </Badge>
-          ) : (
-            <Badge variant="outline" className="bg-white/20 text-white">
-              {level}
+              {progress}% complete
             </Badge>
           )}
         </div>
