@@ -8,7 +8,6 @@ import NotFound from "./pages/NotFound";
 import BeginnersJourney from "./pages/BeginnersJourney";
 import TruthExplorer from "./pages/TruthExplorer";
 import { Toaster } from "@/components/ui/sonner";
-import { Sonner } from "sonner";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +16,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Sonner />
         <BrowserRouter>
           <Routes>
             <Route
