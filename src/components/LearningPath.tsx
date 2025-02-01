@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Brain, Trophy, GraduationCap, Clock, Users } from "lucide-react";
+import { Brain, Trophy, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
@@ -48,17 +48,9 @@ export function LearningPath({ title, description, level, onClick, metadata }: L
               <p className="text-lg opacity-90">{description}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Clock className="w-5 h-5" />
-            <span>{metadata.duration}</span>
-          </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Users className="w-5 h-5" />
-            <span>{metadata.learners} active learners</span>
-          </div>
+        <div className="flex justify-end">
           {metadata.progress > 0 ? (
             <Badge variant="outline" className="bg-white/20 text-white">
               {metadata.progress}% complete
