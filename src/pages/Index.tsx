@@ -55,7 +55,7 @@ const Index = () => {
             actionText="Begin Quest"
           />
           <LearningPath
-            title="Fact Finder"
+            title="IN DEVELOPMENT: Fact Finder"
             description="Learn to check if something is really true"
             level="advanced"
             onClick={() => handlePathClick("Advanced")}
@@ -64,7 +64,7 @@ const Index = () => {
             actionText="Begin Quest"
           />
           <LearningPath
-            title="Digital Guardian"
+            title="IN DEVELOPMENT: Digital Guardian"
             description="Protect yourself from misleading information"
             level="advanced"
             onClick={() => handlePathClick("Advanced")}
