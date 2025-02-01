@@ -51,14 +51,14 @@ const TruthExplorer = () => {
             xpReward: challenge.xp_reward
           };
 
-          switch (challenge.type) {
-            case 'standard':
-            case 'headline':
-            case 'fallacy':
-            case 'media':
-            case 'source':
-            case 'analysis-construction':
-            case 'argument-construction':
+          switch (challenge.type as ChallengeType["type"]) {
+            case "standard":
+            case "headline":
+            case "fallacy":
+            case "media":
+            case "source":
+            case "analysis-construction":
+            case "argument-construction":
               return {
                 ...baseChallenge,
                 type: challenge.type as ChallengeType["type"],
@@ -70,11 +70,11 @@ const TruthExplorer = () => {
                 })) || []
               } as ChallengeType;
             
-            case 'word-selection':
+            case "word-selection":
               const wordChallenge = challenge.word_selection_challenges?.[0];
               return {
                 ...baseChallenge,
-                type: 'word-selection',
+                type: "word-selection" as const,
                 passage: wordChallenge?.passage || '',
                 keyWords: wordChallenge?.word_selection_keywords?.map(kw => ({
                   word: kw.word,
@@ -82,11 +82,11 @@ const TruthExplorer = () => {
                 })) || []
               } as ChallengeType;
             
-            case 'matching':
+            case "matching":
               const matchingChallenge = challenge.matching_challenges?.[0];
               return {
                 ...baseChallenge,
-                type: 'matching',
+                type: "matching" as const,
                 pairs: matchingChallenge?.matching_pairs?.map(pair => ({
                   id: pair.id.toString(),
                   claim: pair.claim,
@@ -94,11 +94,11 @@ const TruthExplorer = () => {
                 })) || []
               } as ChallengeType;
             
-            case 'highlight':
+            case "highlight":
               const highlightChallenge = challenge.highlight_challenges?.[0];
               return {
                 ...baseChallenge,
-                type: 'highlight',
+                type: "highlight" as const,
                 statement: highlightChallenge?.statement || '',
                 highlights: highlightChallenge?.highlight_texts?.map(text => ({
                   text: text.text,
