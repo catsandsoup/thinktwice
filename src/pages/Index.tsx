@@ -10,13 +10,18 @@ const Index = () => {
   const navigate = useNavigate();
 
   const handlePathClick = (path: string) => {
-    if (path === "Beginner") {
-      navigate('/beginners-journey');
-    } else {
-      toast({
-        title: "Coming Soon!",
-        description: `The ${path} path will be available in the next update.`,
-      });
+    switch(path) {
+      case "Beginner":
+        navigate('/beginners-journey');
+        break;
+      case "Intermediate":
+        navigate('/truth-explorer');
+        break;
+      default:
+        toast({
+          title: "Coming Soon!",
+          description: `The ${path} path will be available in the next update.`,
+        });
     }
   };
 

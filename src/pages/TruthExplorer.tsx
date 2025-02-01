@@ -6,18 +6,18 @@ import { ChallengeProgress } from "@/components/ChallengeProgress";
 import { challenges } from "@/data/challenges";
 import { shuffleArray } from "@/lib/utils";
 
-const BeginnersJourney = () => {
+const TruthExplorer = () => {
   const navigate = useNavigate();
   
-  const beginnerChallenges = useMemo(() => 
-    shuffleArray(challenges.filter(c => c.difficulty === "beginner")), 
+  const intermediateChallenges = useMemo(() => 
+    shuffleArray(challenges.filter(c => c.difficulty === "intermediate")), 
   []);
   
   const [currentChallenge, setCurrentChallenge] = useState(0);
 
   const handleComplete = (correct: boolean) => {
     if (correct) {
-      if (currentChallenge === beginnerChallenges.length - 1) {
+      if (currentChallenge === intermediateChallenges.length - 1) {
         navigate('/');
       } else {
         setCurrentChallenge(prev => prev + 1);
@@ -30,10 +30,10 @@ const BeginnersJourney = () => {
       <div className="container px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
         <ChallengeProgress
           currentChallenge={currentChallenge}
-          totalChallenges={beginnerChallenges.length}
+          totalChallenges={intermediateChallenges.length}
         />
 
-        <Challenge {...beginnerChallenges[currentChallenge]} onComplete={handleComplete} />
+        <Challenge {...intermediateChallenges[currentChallenge]} onComplete={handleComplete} />
 
         <Button 
           variant="outline" 
@@ -47,4 +47,4 @@ const BeginnersJourney = () => {
   );
 };
 
-export default BeginnersJourney;
+export default TruthExplorer;
