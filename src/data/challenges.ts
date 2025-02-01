@@ -281,5 +281,73 @@ export const challenges: Challenge[] = [
     ],
     difficulty: "intermediate",
     xpReward: 15
+  },
+  {
+    title: "Identifying Loaded Language",
+    description: "Click on words that reveal potential bias or manipulation in this medical news excerpt.",
+    type: "word-selection",
+    passage: "The experimental treatment could be a game-changer in medical science, experts believe. Dr. Smith admitted that while 60% of patients showed improvement, more research is needed.",
+    keyWords: [
+      {
+        word: "game-changer",
+        explanation: "Hype/sensationalistic language that overstates impact"
+      },
+      {
+        word: "admitted",
+        explanation: "Suggests reluctance or guilt, showing bias"
+      },
+      {
+        word: "experts",
+        explanation: "Vague appeal to authority without specifics"
+      }
+    ],
+    difficulty: "intermediate",
+    xpReward: 15
+  },
+  {
+    title: "Connecting Claims and Evidence",
+    description: "Match each scientific claim with the most appropriate type of evidence that would best support it.",
+    type: "matching",
+    pairs: [
+      {
+        id: "1",
+        claim: "Electric cars reduce carbon emissions",
+        evidence: "Lifecycle emissions analysis comparing multiple vehicle types"
+      },
+      {
+        id: "2",
+        claim: "This diet works better than others",
+        evidence: "Randomized controlled trials with diverse participant groups"
+      },
+      {
+        id: "3",
+        claim: "Violent video games increase aggressive behavior",
+        evidence: "Longitudinal behavioral studies with control groups"
+      }
+    ],
+    difficulty: "intermediate",
+    xpReward: 15
+  },
+  {
+    title: "Identifying Assumption Chains",
+    description: "Highlight three assumptions in this logical chain that need verification.",
+    type: "highlight",
+    statement: "Since more people are working from home, downtown office buildings are emptying out. This means city centers will become crime-ridden ghost towns, leading to an inevitable collapse of urban property values.",
+    highlights: [
+      {
+        text: "office buildings are emptying out",
+        explanation: "Is this temporary or permanent?"
+      },
+      {
+        text: "will become crime-ridden ghost towns",
+        explanation: "Assumes no alternative uses for spaces"
+      },
+      {
+        text: "inevitable collapse of urban property values",
+        explanation: "Ignores potential adaptations and other factors affecting property values"
+      }
+    ],
+    difficulty: "intermediate",
+    xpReward: 15
   }
 ];
