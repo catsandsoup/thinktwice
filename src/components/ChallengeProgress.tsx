@@ -1,4 +1,5 @@
 import { ProgressBar } from "./ProgressBar";
+import { Star } from "lucide-react";
 
 interface ChallengeProgressProps {
   currentChallenge: number;
@@ -16,18 +17,20 @@ export function ChallengeProgress({
   streak 
 }: ChallengeProgressProps) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="text-center space-y-2">
-        <div className="text-base text-muted-foreground font-medium">
-          Challenge {currentChallenge + 1} of {totalChallenges}
+        <div className="flex items-center justify-between">
+          <span className="text-purple-600 font-medium">
+            Detective Challenge {currentChallenge + 1}/{totalChallenges}
+          </span>
+          <div className="flex items-center gap-1">
+            <Star className="w-4 h-4 text-yellow-500" />
+            <span className="text-gray-600">{xp} stars earned</span>
+          </div>
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold">Beginner's Journey</h1>
       </div>
       
-      <div className="text-sm text-muted-foreground text-center">
-        Total XP earned: {xp}
-      </div>
-
       <ProgressBar xp={xp} maxXp={maxXp} streak={streak} />
     </div>
   );
