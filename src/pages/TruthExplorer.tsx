@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Challenge } from "@/components/Challenge";
@@ -6,91 +6,111 @@ import { ChallengeProgress } from "@/components/ChallengeProgress";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { shuffleArray } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 const TruthExplorer = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [currentChallenge, setCurrentChallenge] = useState(0);
 
   const { data: challenges, isLoading } = useQuery({
     queryKey: ['truth-explorer-challenges'],
     queryFn: async () => {
-      // Fetch basic challenge information
-      const { data: challengesData, error: challengesError } = await supabase
-        .from('challenges')
-        .select(`
-          *,
-          standard_challenge_options(*),
-          word_selection_challenges(
+      try {
+        // Fetch basic challenge information
+        const { data: challengesData, error: challengesError } = await supabase
+          .from('challenges')
+          .select(`
             *,
-            word_selection_keywords(*)
-          ),
-          matching_challenges(
-            *,
-            matching_pairs(*)
-          ),
-          highlight_challenges(
-            *,
-            highlight_texts(*)
-          )
-        `)
-        .eq('difficulty', 'intermediate')
-        .order('created_at', { ascending: true });
+            standard_challenge_options(*),
+            word_selection_challenges(
+              *,
+              word_selection_keywords(*)
+            ),
+            matching_challenges(
+              *,
+              matching_pairs(*)
+            ),
+            highlight_challenges(
+              *,
+              highlight_texts(*)
+            )
+          `)
+          .eq('difficulty', 'intermediate')
+          .order('created_at', { ascending: true });
 
-      if (challengesError) throw challengesError;
+        if (challengesError) throw challengesError;
 
-      // Transform the data to match the expected format
-      const transformedChallenges = challengesData.map(challenge => {
-        const baseChallenge = {
-          id: challenge.id,
-          title: challenge.title,
-          description: challenge.description,
-          type: challenge.type,
-          difficulty: challenge.difficulty,
-          xpReward: challenge.xp_reward
-        };
+        // Transform the data to match the expected format
+        const transformedChallenges = challengesData.map(challenge => {
+          const baseChallenge = {
+            id: challenge.id,
+            title: challenge.title,
+            description: challenge.description,
+            type: challenge.type,
+            difficulty: challenge.difficulty,
+            xpReward: challenge.xp_reward
+          };
 
-        switch (challenge.type) {
-          case 'standard':
-            return {
-              ...baseChallenge,
-              options: challenge.standard_challenge_options
-            };
-          case 'word-selection':
-            const wordChallenge = challenge.word_selection_challenges[0];
-            return {
-              ...baseChallenge,
-              passage: wordChallenge?.passage,
-              keyWords: wordChallenge?.word_selection_keywords
-            };
-          case 'matching':
-            const matchingChallenge = challenge.matching_challenges[0];
-            return {
-              ...baseChallenge,
-              pairs: matchingChallenge?.matching_pairs
-            };
-          case 'highlight':
-            const highlightChallenge = challenge.highlight_challenges[0];
-            return {
-              ...baseChallenge,
-              statement: highlightChallenge?.statement,
-              highlights: highlightChallenge?.highlight_texts
-            };
-          default:
-            return baseChallenge;
-        }
-      });
+          switch (challenge.type) {
+            case 'standard':
+              return {
+                ...baseChallenge,
+                options: challenge.standard_challenge_options
+              };
+            case 'word-selection':
+              const wordChallenge = challenge.word_selection_challenges[0];
+              return {
+                ...baseChallenge,
+                passage: wordChallenge?.passage,
+                keyWords: wordChallenge?.word_selection_keywords
+              };
+            case 'matching':
+              const matchingChallenge = challenge.matching_challenges[0];
+              return {
+                ...baseChallenge,
+                pairs: matchingChallenge?.matching_pairs
+              };
+            case 'highlight':
+              const highlightChallenge = challenge.highlight_challenges[0];
+              return {
+                ...baseChallenge,
+                statement: highlightChallenge?.statement,
+                highlights: highlightChallenge?.highlight_texts
+              };
+            default:
+              return baseChallenge;
+          }
+        });
 
-      // Randomize the order of challenges
-      return shuffleArray(transformedChallenges);
+        // Randomize the order of challenges
+        return shuffleArray(transformedChallenges);
+      } catch (error) {
+        console.error('Error fetching challenges:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load challenges. Please try again.",
+          variant: "destructive",
+        });
+        return [];
+      }
     }
   });
 
-  const handleComplete = (correct: boolean) => {
+  const handleComplete = (correct: boolean, xp: number) => {
     if (correct) {
       if (currentChallenge === (challenges?.length || 0) - 1) {
+        toast({
+          title: "Journey Complete! 🎉",
+          description: "You've completed all intermediate challenges!",
+        });
         navigate('/');
       } else {
         setCurrentChallenge(prev => prev + 1);
+        toast({
+          title: "Great job! 🌟",
+          description: "Moving to the next challenge...",
+        });
       }
     }
   };

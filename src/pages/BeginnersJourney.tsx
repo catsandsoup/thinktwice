@@ -97,7 +97,7 @@ const BeginnersJourney = () => {
     }
   });
 
-  const handleComplete = (correct: boolean) => {
+  const handleComplete = (correct: boolean, xp: number) => {
     if (correct) {
       if (currentChallenge === (challenges?.length || 0) - 1) {
         toast({

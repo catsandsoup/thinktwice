@@ -1,4 +1,4 @@
-export type ChallengeType = "headline" | "fallacy" | "media" | "source" | "word-selection" | "matching" | "highlight";
+export type ChallengeType = "headline" | "fallacy" | "media" | "source" | "word-selection" | "matching" | "highlight" | "standard" | "analysis-construction" | "argument-construction";
 
 export type BaseChallenge = {
   id: string; // Adding id to base challenge type
