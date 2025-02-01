@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Challenge } from "@/components/Challenge";
@@ -7,23 +7,21 @@ import { challenges } from "@/data/challenges";
 import { shuffleArray } from "@/lib/utils";
 
 const BeginnersJourney = () => {
-  const [currentChallenge, setCurrentChallenge] = useState(0);
-  const [totalXP, setTotalXP] = useState(0);
   const navigate = useNavigate();
   
-  const [shuffledChallenges] = useState(() => shuffleArray([...challenges]));
+  const shuffledChallenges = useMemo(() => shuffleArray([...challenges]), []);
+  const [currentChallenge, setCurrentChallenge] = useState(0);
+  const [totalXP, setTotalXP] = useState(0);
 
   const handleComplete = (correct: boolean, xp: number) => {
     if (correct) {
       setTotalXP(prev => prev + xp);
-    }
-    
-    if (!correct) return;
-    
-    if (currentChallenge === shuffledChallenges.length - 1) {
-      navigate('/');
-    } else {
-      setCurrentChallenge(prev => prev + 1);
+      
+      if (currentChallenge === shuffledChallenges.length - 1) {
+        navigate('/');
+      } else {
+        setCurrentChallenge(prev => prev + 1);
+      }
     }
   };
 
