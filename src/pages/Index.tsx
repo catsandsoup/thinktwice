@@ -3,13 +3,11 @@ import { LearningPath } from "@/components/LearningPath";
 import { ProgressBar } from "@/components/ProgressBar";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
 
 const Index = () => {
-  const [xp] = useState(150);
-  const [maxXp] = useState(300);
-  const [streak] = useState(3);
+  const [stars] = useState(150);
+  const [maxStars] = useState(300);
+  const [level] = useState(3);
   const navigate = useNavigate();
 
   const handlePathClick = (path: string) => {
@@ -24,52 +22,62 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container px-4 py-6 space-y-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="text-4xl font-bold tracking-tight">Think Twice</h1>
-          <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input 
-              placeholder="Search lessons..." 
-              className="pl-9 bg-background border-muted"
-            />
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      <main className="container p-6 max-w-6xl mx-auto space-y-8">
+        <div className="text-center space-y-4">
+          <h1 className="text-4xl font-bold tracking-tight">Your Thinking Journey</h1>
+          <p className="text-xl text-gray-600">
+            Learn to make better decisions in your daily life
+          </p>
         </div>
 
         <div className="space-y-3">
-          <h2 className="text-lg text-muted-foreground">XP Progress</h2>
           <div className="flex justify-between items-baseline">
-            <span className="text-3xl font-bold">{xp}/{maxXp} XP</span>
-            <div className="flex items-center gap-2 text-orange-500">
-              <span className="text-lg">🔥</span>
-              <span>{streak} day streak</span>
+            <span className="text-lg text-gray-600">Your progress: {stars} stars</span>
+            <div className="flex items-center gap-2 text-gray-600">
+              <span className="text-lg">⭐</span>
+              <span>Level {level}</span>
             </div>
           </div>
-          <ProgressBar xp={xp} maxXp={maxXp} streak={streak} />
+          <ProgressBar xp={stars} maxXp={maxStars} streak={level} />
         </div>
 
-        <div className="grid gap-4 sm:gap-6">
+        <div className="grid md:grid-cols-2 gap-8">
           <LearningPath
-            title="Beginner's Journey"
-            description="Learn the basics of fact-checking and logical reasoning"
+            title="Everyday Detective"
+            description="Spot clues that help you make better choices"
             level="beginner"
             onClick={() => handlePathClick("Beginner")}
             progress={60}
+            mission="Learn to spot the difference between facts and opinions in social media posts"
+            actionText="Start Your Investigation"
           />
           <LearningPath
-            title="Logic Master"
-            description="Tackle complex logical fallacies and media analysis"
+            title="Truth Explorer"
+            description="Find out what makes a good explanation"
             level="intermediate"
             onClick={() => handlePathClick("Intermediate")}
             progress={0}
+            mission="Discover reliable ways to check information you see online"
+            actionText="Begin Quest"
           />
           <LearningPath
-            title="Expert Analyzer"
-            description="Master advanced critical thinking and research methods"
+            title="Fact Finder"
+            description="Learn to check if something is really true"
             level="advanced"
             onClick={() => handlePathClick("Advanced")}
             progress={0}
+            mission="Discover reliable ways to check information you see online"
+            actionText="Begin Quest"
+          />
+          <LearningPath
+            title="Digital Guardian"
+            description="Protect yourself from misleading information"
+            level="advanced"
+            onClick={() => handlePathClick("Advanced")}
+            progress={0}
+            mission="Learn to recognize and avoid misleading online content"
+            actionText="Accept Challenge"
           />
         </div>
       </main>

@@ -12,7 +12,8 @@ export function ProgressBar({ xp, maxXp }: ProgressBarProps) {
   return (
     <Progress 
       value={progress} 
-      className="h-3 bg-gray-100" 
+      className="h-3 bg-purple-100" 
+      indicatorClassName="bg-gradient-to-r from-purple-500 to-purple-600 transition-all duration-300"
     />
   );
 }
