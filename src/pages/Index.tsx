@@ -2,6 +2,7 @@ import { useState } from "react";
 import { LearningPath } from "@/components/LearningPath";
 import { ProgressBar } from "@/components/ProgressBar";
 import { useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [xp] = useState(150);
