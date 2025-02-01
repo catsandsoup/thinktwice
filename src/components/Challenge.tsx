@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { Challenge as ChallengeType } from "@/data/challenges";
 import { WordSelectionChallenge } from "./WordSelectionChallenge";
 import { MatchingChallenge } from "./MatchingChallenge";
