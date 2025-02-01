@@ -84,10 +84,14 @@ const TruthExplorer = () => {
             
             case "matching":
               const matchingChallenge = challenge.matching_challenges?.[0];
+              if (!matchingChallenge) {
+                console.error('Matching challenge data is missing:', challenge);
+                return null;
+              }
               return {
                 ...baseChallenge,
                 type: "matching" as const,
-                pairs: matchingChallenge?.matching_pairs?.map(pair => ({
+                pairs: matchingChallenge.matching_pairs?.map(pair => ({
                   id: pair.id.toString(),
                   claim: pair.claim,
                   evidence: pair.best_evidence
@@ -107,9 +111,10 @@ const TruthExplorer = () => {
               } as ChallengeType;
             
             default:
-              return baseChallenge as ChallengeType;
+              console.error('Unknown challenge type:', challenge.type);
+              return null;
           }
-        });
+        }).filter(Boolean) as ChallengeType[];
 
         return shuffleArray(transformedChallenges);
       } catch (error) {
