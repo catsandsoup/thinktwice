@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { LearningPath } from "@/components/LearningPath";
-import { ProgressBar } from "@/components/ProgressBar";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
@@ -29,17 +28,6 @@ const Index = () => {
           <p className="text-xl text-gray-600">
             Learn to make better decisions in your daily life
           </p>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex justify-between items-baseline">
-            <span className="text-lg text-gray-600">Your progress: {stars} stars</span>
-            <div className="flex items-center gap-2 text-gray-600">
-              <span className="text-lg">⭐</span>
-              <span>Level {level}</span>
-            </div>
-          </div>
-          <ProgressBar xp={stars} maxXp={maxStars} streak={level} />
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
