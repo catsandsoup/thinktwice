@@ -105,7 +105,7 @@ export function Challenge({
               className={`flex items-center space-y-2 p-4 rounded-lg border ${
                 isSubmitted && option.isCorrect ? "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800" :
                 isSubmitted && selected === option.id && !option.isCorrect ? "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800" :
-                "hover:bg-accent"
+                ""
               }`}
             >
               <div className="flex items-center space-x-2">
