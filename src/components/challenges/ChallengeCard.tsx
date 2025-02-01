@@ -23,6 +23,66 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
     }
   };
 
+  const getHints = () => {
+    const hints = [];
+    
+    switch (challenge.type) {
+      case "word-selection":
+        hints.push(
+          "Look for emotionally charged words",
+          "Identify words that make claims stronger or weaker",
+          "Find words that might influence your opinion"
+        );
+        break;
+      
+      case "matching":
+        hints.push(
+          "Compare the evidence with each claim carefully",
+          "Look for direct connections between statements",
+          "Consider how well the evidence supports each claim"
+        );
+        break;
+      
+      case "highlight":
+        hints.push(
+          "Focus on key statements that make important claims",
+          "Look for phrases that contain main arguments",
+          "Identify parts that could be supported by evidence"
+        );
+        break;
+      
+      default:
+        // For standard challenges (headline, fallacy, media, source)
+        if (challenge.title.toLowerCase().includes("fallacy")) {
+          hints.push(
+            "Look for common reasoning mistakes",
+            "Check if conclusions follow logically",
+            "Consider if there are hidden assumptions"
+          );
+        } else if (challenge.title.toLowerCase().includes("source")) {
+          hints.push(
+            "Consider the source's expertise",
+            "Look for potential biases",
+            "Check for credibility indicators"
+          );
+        } else if (challenge.title.toLowerCase().includes("media")) {
+          hints.push(
+            "Analyze how information is presented",
+            "Look for emotional appeals",
+            "Consider different perspectives"
+          );
+        } else {
+          hints.push(
+            "Check for accuracy in the statements",
+            "Look for supporting evidence",
+            "Consider alternative explanations"
+          );
+        }
+    }
+
+    return hints;
+  };
+
   return (
     <Card className="w-full max-w-2xl mx-auto animate-fade-in" role="region" aria-label={`Question about ${challenge.type}`}>
       <CardHeader className="space-y-4">
@@ -49,9 +109,9 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
           <div className="space-y-2 text-sm text-gray-600">
             <p>What to Look For:</p>
             <ul className="list-disc list-inside space-y-1">
-              <li>Words that make things sound more dramatic</li>
-              <li>Phrases that suggest certainty about uncertain things</li>
-              <li>Language that might make you feel a particular way</li>
+              {getHints().map((hint, index) => (
+                <li key={index}>{hint}</li>
+              ))}
             </ul>
           </div>
         </div>
