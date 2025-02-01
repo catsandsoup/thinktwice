@@ -23,7 +23,7 @@ const challenges = [
       }
     ],
     difficulty: "beginner" as const,
-    xpReward: 50
+    xpReward: 10
   },
   {
     title: "Logical Fallacy Detection",
@@ -44,7 +44,7 @@ const challenges = [
       }
     ],
     difficulty: "beginner" as const,
-    xpReward: 50
+    xpReward: 10
   },
   {
     title: "Media Bias Detection",
@@ -65,7 +65,7 @@ const challenges = [
       }
     ],
     difficulty: "beginner" as const,
-    xpReward: 50
+    xpReward: 10
   },
   {
     title: "Source Credibility Analysis",
@@ -86,7 +86,7 @@ const challenges = [
       }
     ],
     difficulty: "beginner" as const,
-    xpReward: 50
+    xpReward: 10
   },
   {
     title: "Identifying Ad Hominem Fallacies",
@@ -107,7 +107,7 @@ const challenges = [
       }
     ],
     difficulty: "beginner" as const,
-    xpReward: 50
+    xpReward: 10
   },
   {
     title: "Statistical Manipulation",
@@ -128,7 +128,7 @@ const challenges = [
       }
     ],
     difficulty: "beginner" as const,
-    xpReward: 50
+    xpReward: 10
   },
   {
     title: "Correlation vs. Causation",
@@ -149,7 +149,7 @@ const challenges = [
       }
     ],
     difficulty: "beginner" as const,
-    xpReward: 50
+    xpReward: 10
   },
   {
     title: "Evaluating Expert Opinions",
@@ -170,7 +170,7 @@ const challenges = [
       }
     ],
     difficulty: "beginner" as const,
-    xpReward: 50
+    xpReward: 10
   }
 ];
 
