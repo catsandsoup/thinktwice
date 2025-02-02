@@ -12,12 +12,14 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
-interface UserBadge {
+interface UserBadgeData {
   id: string;
-  name: string;
-  description: string;
-  icon_name: string;
   earned_at: string;
+  badges: {
+    name: string;
+    description: string;
+    icon_name: string;
+  };
 }
 
 interface Achievement {
@@ -72,7 +74,7 @@ export function UserAchievements() {
         .eq('user_id', user.id);
       
       if (error) throw error;
-      return data as UserBadge[];
+      return data as UserBadgeData[];
     },
   });
 

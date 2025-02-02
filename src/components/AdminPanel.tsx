@@ -8,18 +8,23 @@ export function AdminPanel() {
   const { data: users } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: userRoles, error: rolesError } = await supabase
         .from('user_roles')
-        .select(`
-          user_id,
-          role,
-          user_progress (
-            level,
-            stars
-          )
-        `);
-      if (error) throw error;
-      return data;
+        .select('user_id, role');
+      
+      if (rolesError) throw rolesError;
+
+      const { data: userProgress, error: progressError } = await supabase
+        .from('user_progress')
+        .select('user_id, level, stars');
+      
+      if (progressError) throw progressError;
+
+      // Combine the data
+      return userRoles.map(user => ({
+        ...user,
+        user_progress: userProgress.find(p => p.user_id === user.user_id)
+      }));
     },
   });
 

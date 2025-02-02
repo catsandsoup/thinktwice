@@ -17,11 +17,15 @@ export const Challenge = memo(function Challenge(props: ChallengeProps) {
   const handleComplete = async (correct: boolean, xp: number) => {
     if (correct) {
       try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('User not authenticated');
+
         // Record the completed challenge
         const { error: completionError } = await supabase
           .from('completed_challenges')
           .insert({
             challenge_id: props.id,
+            user_id: user.id,
             xp_earned: xp
           });
 
