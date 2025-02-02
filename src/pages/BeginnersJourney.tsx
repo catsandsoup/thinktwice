@@ -71,24 +71,22 @@ const BeginnersJourney = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container px-4 space-y-4">
-        <div className="flex items-center justify-between gap-4 pt-2 sm:pt-4">
-          <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/')}
-              className="h-8 px-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4 mr-1" />
-              Exit
-            </Button>
-            <h1 className="text-xl sm:text-2xl font-display font-medium text-purple-900">
-              Beginner's Journey
-            </h1>
-          </div>
-          <span className="flex-shrink-0 text-sm font-medium text-purple-700 bg-purple-50/80 px-3 py-1 rounded-full">
+        <header className="flex items-center justify-between h-12 pt-2">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/')}
+            className="h-8 px-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            Exit
+          </Button>
+          <h1 className="text-lg font-display font-medium text-purple-900">
+            Beginner's Journey
+          </h1>
+          <span className="h-8 flex items-center text-sm font-medium text-purple-700 bg-purple-50/80 px-3 rounded-full">
             {currentChallenge + 1} of {availableChallenges.length}
           </span>
-        </div>
+        </header>
 
         <Challenge {...availableChallenges[currentChallenge]} onComplete={handleComplete} />
       </div>
