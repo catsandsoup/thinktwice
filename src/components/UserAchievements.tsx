@@ -38,9 +38,13 @@ export function UserAchievements() {
   const { data: achievements } = useQuery({
     queryKey: ['achievements'],
     queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
       const { data, error } = await supabase
         .from('user_achievements')
         .select('*')
+        .eq('user_id', user.id)
         .single();
       
       if (error) throw error;
@@ -51,6 +55,9 @@ export function UserAchievements() {
   const { data: badges } = useQuery({
     queryKey: ['badges'],
     queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
       const { data, error } = await supabase
         .from('user_badges')
         .select(`
@@ -61,7 +68,8 @@ export function UserAchievements() {
             description,
             icon_name
           )
-        `);
+        `)
+        .eq('user_id', user.id);
       
       if (error) throw error;
       return data as UserBadge[];
@@ -98,16 +106,16 @@ export function UserAchievements() {
         <h2 className="text-xl font-bold mb-4">Your Badges</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {badges?.map((badge) => {
-            const Icon = iconMap[badge.icon_name] || Award;
+            const Icon = iconMap[badge.badges.icon_name] || Award;
             return (
               <div
                 key={badge.id}
                 className="flex flex-col items-center text-center p-4 rounded-lg bg-muted/50"
               >
                 <Icon className="w-8 h-8 mb-2 text-primary" />
-                <h3 className="font-semibold">{badge.name}</h3>
+                <h3 className="font-semibold">{badge.badges.name}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {badge.description}
+                  {badge.badges.description}
                 </p>
                 <Badge variant="secondary" className="mt-2">
                   {new Date(badge.earned_at).toLocaleDateString()}

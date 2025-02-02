@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      badges: {
+        Row: {
+          created_at: string | null
+          description: string
+          icon_name: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          icon_name?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          icon_name?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       challenges: {
         Row: {
           created_at: string | null
@@ -38,6 +62,38 @@ export type Database = {
           xp_reward?: number
         }
         Relationships: []
+      }
+      completed_challenges: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          id: string
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          id?: string
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          id?: string
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "completed_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       highlight_challenges: {
         Row: {
@@ -174,6 +230,59 @@ export type Database = {
             columns: ["challenge_id"]
             isOneToOne: false
             referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_achievements: {
+        Row: {
+          id: string
+          last_activity_date: string | null
+          streak_count: number
+          total_challenges_completed: number
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          last_activity_date?: string | null
+          streak_count?: number
+          total_challenges_completed?: number
+          user_id: string
+        }
+        Update: {
+          id?: string
+          last_activity_date?: string | null
+          streak_count?: number
+          total_challenges_completed?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
             referencedColumns: ["id"]
           },
         ]
