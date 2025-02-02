@@ -38,8 +38,8 @@ const ArgumentAnalysis = () => {
         </div>
 
         <ChallengeProgress
-          total={argumentAnalysisChallenges.length}
-          completed={completedChallenges.length}
+          currentChallenge={completedChallenges.length + 1}
+          totalChallenges={argumentAnalysisChallenges.length}
         />
 
         <AnimatePresence mode="wait">
