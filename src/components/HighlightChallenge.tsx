@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { HighlightChallenge as HighlightChallengeType } from "@/data/challengeTypes";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface HighlightChallengeProps extends HighlightChallengeType {
   onComplete: (correct: boolean, xp: number) => void;
@@ -11,15 +12,76 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
   const [selectedText, setSelectedText] = useState<Set<string>>(new Set());
   const [showAnswer, setShowAnswer] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [touchStart, setTouchStart] = useState<number>(0);
+  const [touchEnd, setTouchEnd] = useState<number>(0);
+  const isMobile = useIsMobile();
   const { toast } = useToast();
 
+  useEffect(() => {
+    // Disable default text selection on mobile
+    const textContainer = document.querySelector('.highlight-text-container');
+    if (textContainer && isMobile) {
+      textContainer.addEventListener('selectstart', (e) => e.preventDefault());
+    }
+  }, [isMobile]);
+
   const handleTextSelect = () => {
+    if (isMobile) return; // Skip for mobile devices
+    
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed) return;
 
     const text = selection.toString().trim();
     if (!text) return;
 
+    addSelectedText(text);
+    selection.removeAllRanges();
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.touches[0].clientX);
+    setTouchEnd(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (Math.abs(touchStart - touchEnd) < 50) return; // Ignore small movements
+
+    const textContainer = document.querySelector('.highlight-text-container');
+    if (!textContainer) return;
+
+    const range = document.createRange();
+    const selection = window.getSelection();
+    
+    // Calculate the selection based on touch positions
+    const startOffset = Math.min(
+      Math.floor((Math.min(touchStart, touchEnd) / textContainer.clientWidth) * statement.length),
+      statement.length
+    );
+    const endOffset = Math.min(
+      Math.floor((Math.max(touchStart, touchEnd) / textContainer.clientWidth) * statement.length),
+      statement.length
+    );
+
+    try {
+      if (textContainer.firstChild) {
+        range.setStart(textContainer.firstChild, startOffset);
+        range.setEnd(textContainer.firstChild, endOffset);
+        
+        const text = range.toString().trim();
+        if (text) {
+          addSelectedText(text);
+        }
+      }
+    } catch (error) {
+      console.error('Error setting range:', error);
+    }
+  };
+
+  const addSelectedText = (text: string) => {
     const newSelected = new Set(selectedText);
     if (selectedText.has(text)) {
       newSelected.delete(text);
@@ -27,16 +89,12 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
       newSelected.add(text);
     }
     setSelectedText(newSelected);
-    selection.removeAllRanges();
   };
 
   const isTextCloseEnough = (selected: string, correct: string) => {
-    // Get the position of both texts in the statement
     const selectedPos = statement.indexOf(selected);
     const correctPos = statement.indexOf(correct);
-    
-    // Allow for a margin of error (e.g., one word before or after)
-    const margin = 20; // characters
+    const margin = 20;
     return Math.abs(selectedPos - correctPos) <= margin;
   };
 
@@ -72,8 +130,11 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
   return (
     <div className="space-y-4">
       <div 
-        className="p-4 bg-muted rounded-lg whitespace-pre-wrap"
+        className="highlight-text-container p-4 bg-muted rounded-lg whitespace-pre-wrap select-none"
         onMouseUp={handleTextSelect}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {statement}
       </div>
