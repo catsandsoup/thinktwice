@@ -27,9 +27,9 @@ export const Challenge = memo(function Challenge(props: ChallengeProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
+      initial={{ opacity: 0, x: 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -50 }}
       transition={{ duration: 0.3 }}
     >
       <ChallengeCard challenge={props}>

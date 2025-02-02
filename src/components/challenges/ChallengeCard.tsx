@@ -15,15 +15,15 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
       transition={{ duration: 0.2 }}
     >
       <Card className="w-full max-w-4xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-xl md:text-2xl font-semibold break-words animate-fade-in">
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-xl md:text-2xl font-semibold break-words animate-slide-in">
             {challenge.title}
           </CardTitle>
-          <p className="text-sm md:text-base text-muted-foreground whitespace-pre-wrap break-words animate-fade-in">
+          <p className="text-sm md:text-base text-muted-foreground whitespace-pre-wrap break-words mt-2 animate-slide-in">
             {challenge.description}
           </p>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-4 sm:p-6 space-y-4">
           {children}
         </CardContent>
       </Card>

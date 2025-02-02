@@ -94,15 +94,17 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
   return (
     <div className="space-y-4">
       <div className="p-4 bg-muted rounded-lg">
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-2">
           {segments.map((segment, index) => (
             <button
               key={index}
               onClick={() => toggleSegment(index)}
               className={cn(
-                "px-1 py-0.5 rounded transition-colors text-left",
+                "px-2 py-1.5 rounded transition-colors text-left min-h-[2.5rem]",
                 "hover:bg-primary/10",
                 "focus:outline-none focus:ring-2 focus:ring-primary/20",
+                "text-base sm:text-lg leading-normal",
+                "touch-manipulation",
                 selectedSegments.has(index) && "bg-primary/20",
                 showAnswer && isSegmentCorrect(segment, index) && "bg-green-200 dark:bg-green-800"
               )}
@@ -116,15 +118,15 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
       {showAnswer && (
         <div className="space-y-2">
           {highlights.map((highlight, index) => (
-            <div key={index} className="p-2 bg-muted rounded">
+            <div key={index} className="p-3 bg-muted rounded">
               <p className="font-medium text-primary">{highlight.text}</p>
-              <p className="text-sm text-muted-foreground">{highlight.explanation}</p>
+              <p className="text-sm text-muted-foreground mt-1">{highlight.explanation}</p>
             </div>
           ))}
         </div>
       )}
 
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <Button 
           onClick={handleSubmit} 
           className="flex-1 h-12 text-base"
@@ -136,7 +138,7 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
           <Button
             variant="outline"
             onClick={() => setShowAnswer(!showAnswer)}
-            className="whitespace-nowrap h-12"
+            className="h-12 text-base"
           >
             {showAnswer ? "Hide Answer" : "Display Answer"}
           </Button>
