@@ -42,7 +42,7 @@ export function MainNav() {
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>Navigation</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/")}>
+          <DropdownMenuItem onClick={() => navigate("/admin")}>
             <User className="w-4 h-4 mr-2" />
             Dashboard
           </DropdownMenuItem>
