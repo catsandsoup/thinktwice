@@ -43,39 +43,21 @@ const Index = () => {
             <div className="grid md:grid-cols-2 gap-8">
               <LearningPath
                 title="Everyday Detective"
-                description="Spot clues that help you make better choices"
+                description="Master the basics of critical thinking"
                 level="beginner"
                 onClick={() => handlePathClick("Beginner")}
                 progress={60}
-                mission="Learn to spot the difference between facts and opinions in social media posts"
-                actionText="Start Your Investigation"
+                mission="Learn to identify facts vs opinions, spot logical fallacies, and analyze headlines critically through interactive challenges"
+                actionText="Start Level 1"
               />
               <LearningPath
                 title="Truth Explorer"
-                description="Find out what makes a good explanation"
+                description="Advanced critical analysis techniques"
                 level="intermediate"
                 onClick={() => handlePathClick("Intermediate")}
                 progress={0}
-                mission="Discover reliable ways to check information you see online"
-                actionText="Begin Quest"
-              />
-              <LearningPath
-                title="Fact Finder"
-                description="Learn to check if something is really true"
-                level="advanced"
-                onClick={() => handlePathClick("Advanced")}
-                progress={0}
-                mission="Discover reliable ways to check information you see online"
-                actionText="Begin Quest"
-              />
-              <LearningPath
-                title="Digital Guardian"
-                description="Protect yourself from misleading information"
-                level="advanced"
-                onClick={() => handlePathClick("Advanced")}
-                progress={0}
-                mission="Learn to recognize and avoid misleading online content"
-                actionText="Accept Challenge"
+                mission="Master complex reasoning, evaluate evidence quality, and identify hidden assumptions in arguments"
+                actionText="Start Level 2"
               />
             </div>
           </div>

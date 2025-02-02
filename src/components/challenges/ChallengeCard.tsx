@@ -52,7 +52,6 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
         break;
       
       default:
-        // For standard challenges (headline, fallacy, media, source)
         if (challenge.title.toLowerCase().includes("fallacy")) {
           hints.push(
             "Look for common reasoning mistakes",
@@ -87,15 +86,16 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
     <Card className="w-full max-w-2xl mx-auto animate-fade-in" role="region" aria-label={`Question about ${challenge.type}`}>
       <CardHeader className="space-y-4">
         <div className={cn("p-4 rounded-lg", getBgColor())}>
-          <Badge 
-            variant={
-              challenge.difficulty === "beginner" ? "default" :
-              challenge.difficulty === "intermediate" ? "secondary" : "outline"
-            }
-            className="mb-2"
-          >
-            {challenge.difficulty}
-          </Badge>
+          <div className="flex justify-center mb-2">
+            <Badge 
+              variant={
+                challenge.difficulty === "beginner" ? "default" :
+                challenge.difficulty === "intermediate" ? "secondary" : "outline"
+              }
+            >
+              {challenge.difficulty}
+            </Badge>
+          </div>
           <CardTitle className="text-xl sm:text-2xl mb-2" id={`question-${challenge.title.toLowerCase().replace(/\s+/g, '-')}`}>
             {challenge.title}
           </CardTitle>
@@ -104,9 +104,9 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
           </CardDescription>
         </div>
         
-        <div className="flex items-start space-x-3 bg-yellow-50 p-4 rounded-lg">
+        <div className="flex items-start space-x-3 bg-yellow-50 p-4 rounded-lg w-full">
           <LightbulbIcon className="w-5 h-5 text-yellow-600 flex-shrink-0" />
-          <div className="space-y-2 text-sm text-gray-600">
+          <div className="space-y-2 text-sm text-gray-600 w-full">
             <p>What to Look For:</p>
             <ul className="list-disc list-inside space-y-1">
               {getHints().map((hint, index) => (

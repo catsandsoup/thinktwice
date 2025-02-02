@@ -5,6 +5,7 @@ import { Challenge } from "@/components/Challenge";
 import { ChallengeProgress } from "@/components/ChallengeProgress";
 import { challenges } from "@/data/challenges";
 import { shuffleArray } from "@/lib/utils";
+import { ChevronLeft } from "lucide-react";
 
 const BeginnersJourney = () => {
   const navigate = useNavigate();
@@ -28,20 +29,21 @@ const BeginnersJourney = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/')}
+          className="mb-4"
+        >
+          <ChevronLeft className="h-4 w-4 mr-2" />
+          Back to Journey
+        </Button>
+
         <ChallengeProgress
           currentChallenge={currentChallenge}
           totalChallenges={beginnerChallenges.length}
         />
 
         <Challenge {...beginnerChallenges[currentChallenge]} onComplete={handleComplete} />
-
-        <Button 
-          variant="outline" 
-          onClick={() => navigate('/')}
-          className="w-full sm:w-auto"
-        >
-          Exit Journey
-        </Button>
       </div>
     </div>
   );

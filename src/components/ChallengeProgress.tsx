@@ -15,7 +15,6 @@ export function ChallengeProgress({
             Detective Challenge {currentChallenge + 1}/{totalChallenges}
           </span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold">Beginner's Journey</h1>
       </div>
     </div>
   );
