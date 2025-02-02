@@ -27,6 +27,8 @@ export async function fetchAllChallenges(): Promise<Challenge[]> {
     throw challengesError;
   }
 
+  if (!challenges) return [];
+
   return challenges.map(challenge => {
     const baseChallenge = {
       id: challenge.id,
@@ -44,49 +46,53 @@ export async function fetchAllChallenges(): Promise<Challenge[]> {
       case 'source':
         return {
           ...baseChallenge,
-          options: challenge.standard_challenge_options.map(opt => ({
+          type: challenge.type,
+          options: challenge.standard_challenge_options?.map(opt => ({
             id: opt.id,
             text: opt.text,
             isCorrect: opt.is_correct,
             explanation: opt.explanation
-          }))
+          })) || []
         };
 
       case 'word-selection':
-        const wordSelection = challenge.word_selection_challenges[0];
+        const wordSelection = challenge.word_selection_challenges?.[0];
         return {
           ...baseChallenge,
-          passage: wordSelection.passage,
-          keyWords: wordSelection.word_selection_keywords.map(kw => ({
+          type: 'word-selection' as const,
+          passage: wordSelection?.passage || '',
+          keyWords: wordSelection?.word_selection_keywords?.map(kw => ({
             word: kw.word,
             explanation: kw.explanation
-          }))
+          })) || []
         };
 
       case 'highlight':
-        const highlightChallenge = challenge.highlight_challenges[0];
+        const highlightChallenge = challenge.highlight_challenges?.[0];
         return {
           ...baseChallenge,
-          statement: highlightChallenge.statement,
-          highlights: highlightChallenge.highlight_texts.map(ht => ({
+          type: 'highlight' as const,
+          statement: highlightChallenge?.statement || '',
+          highlights: highlightChallenge?.highlight_texts?.map(ht => ({
             text: ht.text,
             explanation: ht.explanation
-          }))
+          })) || []
         };
 
       case 'matching':
-        const matchingChallenge = challenge.matching_challenges[0];
+        const matchingChallenge = challenge.matching_challenges?.[0];
         return {
           ...baseChallenge,
-          pairs: matchingChallenge.matching_pairs.map(pair => ({
+          type: 'matching' as const,
+          pairs: matchingChallenge?.matching_pairs?.map(pair => ({
             id: pair.id,
             claim: pair.claim,
             evidence: pair.evidence
-          }))
+          })) || []
         };
 
       default:
-        return baseChallenge;
+        return baseChallenge as Challenge;
     }
-  });
+  }) as Challenge[];
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { MatchingChallenge as MatchingChallengeType } from "@/data/challenges";
+import { MatchingChallenge as MatchingChallengeType } from "@/data/challengeTypes";
 import { useToast } from "@/hooks/use-toast";
 
 interface MatchingChallengeProps extends MatchingChallengeType {

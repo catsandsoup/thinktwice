@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { WordSelectionChallenge as WordSelectionChallengeType } from "@/data/challenges";
+import { WordSelectionChallenge as WordSelectionChallengeType } from "@/data/challengeTypes";
 import { useToast } from "@/hooks/use-toast";
 
 interface WordSelectionChallengeProps extends WordSelectionChallengeType {

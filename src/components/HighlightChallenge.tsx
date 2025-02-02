@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { HighlightChallenge as HighlightChallengeType } from "@/data/challenges";
+import { HighlightChallenge as HighlightChallengeType } from "@/data/challengeTypes";
 import { useToast } from "@/hooks/use-toast";
 
 interface HighlightChallengeProps extends HighlightChallengeType {
