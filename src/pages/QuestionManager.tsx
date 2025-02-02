@@ -32,14 +32,27 @@ export default function QuestionManager() {
         challenges (
           title
         ),
-        profiles:user_id (
+        user_id,
+        profiles!challenge_feedback_user_id_fkey (
           display_name
         )
       `);
 
     if (error) throw error;
     
-    return data as FeedbackWithDetails[];
+    // Transform the data to match FeedbackWithDetails type
+    const transformedData: FeedbackWithDetails[] = data.map(item => ({
+      id: item.id,
+      rating: item.rating,
+      feedback_text: item.feedback_text,
+      created_at: item.created_at,
+      challenges: item.challenges,
+      profiles: {
+        display_name: item.profiles?.display_name || 'Anonymous'
+      }
+    }));
+    
+    return transformedData;
   }, []);
 
   const { data: feedback, error, isLoading } = useQuery({
