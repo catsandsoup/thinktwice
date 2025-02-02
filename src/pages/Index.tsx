@@ -26,9 +26,9 @@ const Index = () => {
     <div className="min-h-screen bg-gray-50">
       <main className="container p-6 max-w-6xl mx-auto space-y-8">
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight">Critical Thinking Journey</h1>
+          <h1 className="text-4xl font-bold tracking-tight">Your Thinking Journey</h1>
           <p className="text-xl text-gray-600">
-            Master the art of clear, logical thinking
+            Learn to make better decisions in your daily life
           </p>
         </div>
 
@@ -36,41 +36,61 @@ const Index = () => {
 
         <div className="grid md:grid-cols-2 gap-8">
           <LearningPath
-            title="Argument Analysis"
-            description="Master the art of evaluating claims and spotting logical fallacies"
+            title="Everyday Detective"
+            description="Spot clues that help you make better choices"
             level="beginner"
             onClick={() => handlePathClick("Beginner")}
-            mission="Learn to analyze arguments and identify reliable information from questionable claims"
-            actionText="Continue Learning"
-            labels={["Logical Fallacies", "Claim Analysis", "Evidence Evaluation"]}
+            mission="Learn to analyze social media posts and identify reliable information from questionable claims"
+            actionText="Start Your Investigation"
           />
           <LearningPath
-            title="Data Detective"
-            description="Learn to spot misleading statistics and interpret data correctly"
+            title="Argument Analysis"
+            description="Master the art of evaluating and constructing sound arguments"
             level="intermediate"
             onClick={() => handlePathClick("Argument")}
-            mission="Master the art of analyzing data and identifying statistical manipulation"
-            actionText="Unlock Module"
-            labels={["Statistical Analysis", "Data Visualization", "Correlation vs Causation"]}
+            mission="Learn to identify logical fallacies and strengthen your reasoning skills"
+            actionText="Begin Analysis"
           />
-          <LearningPath
-            title="Thinking Tools"
-            description="Master different analytical methods including 5 Whys and Socratic questioning"
-            level="advanced"
-            onClick={() => handlePathClick("Tools")}
-            mission="Learn and practice systematic approaches to problem-solving"
-            actionText="Start Practice"
-            labels={["5 Whys", "Lateral Thinking", "Systematic Approach"]}
-          />
-          <LearningPath
-            title="Emotion vs Logic"
-            description="Learn to separate emotional reactions from logical arguments"
-            level="emotion"
-            onClick={() => handlePathClick("Emotion")}
-            mission="Develop skills to evaluate arguments objectively and manage emotional bias"
-            actionText="Explore Challenges"
-            labels={["Emotional Intelligence", "Bias Recognition", "Objective Analysis"]}
-          />
+          <div className="opacity-50 pointer-events-none">
+            <LearningPath
+              title="Financial Literacy"
+              description="Think critically about financial decisions and claims"
+              level="advanced"
+              onClick={() => handlePathClick("Finance")}
+              mission="Develop skills to evaluate investment claims and make informed financial decisions"
+              actionText="Start Learning"
+            />
+          </div>
+          <div className="opacity-50 pointer-events-none">
+            <LearningPath
+              title="Scientific Method"
+              description="Apply scientific thinking to everyday claims"
+              level="advanced"
+              onClick={() => handlePathClick("Science")}
+              mission="Learn to evaluate scientific claims and understand research methodology"
+              actionText="Explore Science"
+            />
+          </div>
+          <div className="opacity-50 pointer-events-none">
+            <LearningPath
+              title="Research Skills"
+              description="Find and evaluate reliable information effectively"
+              level="intermediate"
+              onClick={() => handlePathClick("Research")}
+              mission="Master the art of finding and evaluating credible sources"
+              actionText="Begin Research"
+            />
+          </div>
+          <div className="opacity-50 pointer-events-none">
+            <LearningPath
+              title="Media Literacy"
+              description="Navigate and analyze modern media landscape"
+              level="intermediate"
+              onClick={() => handlePathClick("Media")}
+              mission="Develop critical skills for evaluating news and social media content"
+              actionText="Start Journey"
+            />
+          </div>
         </div>
       </main>
     </div>

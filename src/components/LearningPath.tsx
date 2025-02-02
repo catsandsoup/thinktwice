@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Brain, BarChart3, Activity, MessageCircle } from "lucide-react";
+import { Brain, Compass, Eye, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LearningPathProps {
@@ -9,7 +9,6 @@ interface LearningPathProps {
   onClick: () => void;
   mission: string;
   actionText: string;
-  labels?: string[];
 }
 
 export function LearningPath({ 
@@ -18,14 +17,12 @@ export function LearningPath({
   level,
   onClick,
   mission,
-  actionText,
-  labels = []
+  actionText
 }: LearningPathProps) {
   const Icon = {
     beginner: Brain,
-    intermediate: BarChart3,
-    advanced: Activity,
-    emotion: MessageCircle
+    intermediate: Compass,
+    advanced: Eye,
   }[level];
 
   const colors = {
@@ -34,29 +31,19 @@ export function LearningPath({
       icon: "bg-purple-600 text-white",
       button: "bg-purple-600 hover:bg-purple-700",
       mission: "bg-purple-50",
-      label: "text-purple-600 bg-purple-50",
     },
     intermediate: {
-      bg: "bg-blue-100",
-      icon: "bg-blue-600 text-white",
-      button: "bg-blue-600 hover:bg-blue-700",
-      mission: "bg-blue-50",
-      label: "text-blue-600 bg-blue-50",
+      bg: "bg-teal-100",
+      icon: "bg-teal-600 text-white",
+      button: "bg-teal-600 hover:bg-teal-700",
+      mission: "bg-teal-50",
     },
     advanced: {
-      bg: "bg-green-100",
-      icon: "bg-green-600 text-white",
-      button: "bg-green-600 hover:bg-green-700",
-      mission: "bg-green-50",
-      label: "text-green-600 bg-green-50",
-    },
-    emotion: {
       bg: "bg-orange-100",
       icon: "bg-orange-600 text-white",
       button: "bg-orange-600 hover:bg-orange-700",
       mission: "bg-orange-50",
-      label: "text-orange-600 bg-orange-50",
-    }
+    },
   }[level];
 
   return (
@@ -77,22 +64,6 @@ export function LearningPath({
             <p className="text-gray-600 line-clamp-2">{description}</p>
           </div>
         </div>
-
-        {labels.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {labels.map((label, index) => (
-              <span
-                key={index}
-                className={cn(
-                  "px-3 py-1 rounded-full text-sm font-medium",
-                  colors.label
-                )}
-              >
-                {label}
-              </span>
-            ))}
-          </div>
-        )}
 
         <div className={cn("p-4 rounded-lg space-y-2", colors.mission)}>
           <h4 className="font-semibold">Your Mission:</h4>
