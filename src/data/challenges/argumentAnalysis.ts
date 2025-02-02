@@ -77,24 +77,24 @@ export const argumentAnalysisChallenges: Challenge[] = [
   },
   {
     id: "arg3",
-    title: "Constructing Counter-Arguments",
-    description: "Complete this framework for addressing a weak argument:\n\"When someone says [their opinion is the only logical conclusion], but only considers [evidence that supports their view], you can strengthen the discussion by [acknowledging their points while introducing overlooked factors].\"",
+    title: "News Article Analysis",
+    description: "Read this news article excerpt about a local policy change and identify the sentences that contain unsupported claims or logical flaws:",
     type: "word-selection",
     difficulty: "advanced",
     xpReward: 20,
-    passage: "When someone says their opinion is the only logical conclusion, but only considers evidence that supports their view, you can strengthen the discussion by acknowledging their points while introducing overlooked factors.",
+    passage: "The city council's decision to increase parking fees has been met with widespread criticism. Every business owner in the downtown area agrees that this will destroy local commerce. Studies show that higher parking fees always lead to decreased foot traffic. The mayor, who previously worked for a parking management company, clearly has ulterior motives. Similar policies in other cities have had mixed results, with some reporting increased use of public transport while others saw declining retail sales. The additional revenue will be used to improve public transportation, though no specific plans have been announced yet.",
     keyWords: [
       {
-        word: "their opinion is the only logical conclusion",
-        explanation: "Recognizing when someone presents their view as the only possible answer"
+        word: "Every business owner in the downtown area agrees that this will destroy local commerce",
+        explanation: "Hasty generalization and hyperbole - unlikely that literally every business owner agrees, and 'destroy' is an extreme claim without evidence"
       },
       {
-        word: "evidence that supports their view",
-        explanation: "Identifying selective evidence use"
+        word: "Studies show that higher parking fees always lead to decreased foot traffic",
+        explanation: "Absolute claim ('always') without specific evidence or acknowledgment of varying circumstances"
       },
       {
-        word: "acknowledging their points while introducing overlooked factors",
-        explanation: "Adding to discussions constructively rather than just opposing"
+        word: "The mayor, who previously worked for a parking management company, clearly has ulterior motives",
+        explanation: "Ad hominem attack - dismissing the policy based on personal history rather than its merits"
       }
     ]
   },
