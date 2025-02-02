@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 interface LearningPathProps {
   title: string;
   description: string;
-  level: "beginner" | "intermediate" | "advanced" | "emotion";
+  level: "beginner" | "intermediate" | "advanced";
   onClick: () => void;
   mission: string;
   actionText: string;
