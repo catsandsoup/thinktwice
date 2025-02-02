@@ -94,6 +94,20 @@ export const Challenge = memo(function Challenge(props: ChallengeProps) {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error('User not authenticated');
 
+        // First check if challenge is already completed
+        const { data: existingCompletion } = await supabase
+          .from('completed_challenges')
+          .select('id')
+          .eq('challenge_id', props.id)
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        // If already completed, just call onComplete without inserting
+        if (existingCompletion) {
+          props.onComplete(correct, xp);
+          return;
+        }
+
         // Record the completed challenge
         const { error: completionError } = await supabase
           .from('completed_challenges')
