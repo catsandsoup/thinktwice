@@ -69,40 +69,7 @@ const Index = () => {
   };
 
   const handlePathClick = async (path: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast.error('Please sign in to access learning paths');
-      return;
-    }
-
-    // Check for first path completion
-    const { data: badges } = await supabase
-      .from('user_badges')
-      .select('badges(name)')
-      .eq('user_id', user.id);
-
-    if (!badges || badges.length === 0) {
-      // Award Path Pioneer badge for first path attempt
-      const { data: pathPioneerBadge } = await supabase
-        .from('badges')
-        .select('id')
-        .eq('name', 'Path Pioneer')
-        .single();
-
-      if (pathPioneerBadge) {
-        await supabase
-          .from('user_badges')
-          .insert({
-            user_id: user.id,
-            badge_id: pathPioneerBadge.id
-          });
-
-        toast.success('New Achievement Unlocked: Path Pioneer! 🎉', {
-          duration: 4000
-        });
-      }
-    }
-
+    // Temporarily removed auth check to allow direct access to paths
     switch (path) {
       case "Beginner":
         navigate('/beginners-journey');
