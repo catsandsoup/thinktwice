@@ -61,7 +61,7 @@ const BeginnersJourney = () => {
             case "argument-construction":
               return {
                 ...baseChallenge,
-                type: "standard" as const,
+                type: challenge.type,
                 options: challenge.standard_challenge_options?.map(opt => ({
                   id: opt.id,
                   text: opt.text,
@@ -178,10 +178,10 @@ const BeginnersJourney = () => {
       <div className="container px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
         <ChallengeProgress
           currentChallenge={currentChallenge}
-          totalChallenges={challenges.length}
+          totalChallenges={challenges?.length || 0}
         />
 
-        {challenges[currentChallenge] && (
+        {challenges?.[currentChallenge] && (
           <Challenge {...challenges[currentChallenge]} onComplete={handleComplete} />
         )}
 

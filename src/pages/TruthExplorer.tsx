@@ -61,7 +61,7 @@ const TruthExplorer = () => {
             case "argument-construction":
               return {
                 ...baseChallenge,
-                type: "standard" as const,
+                type: challenge.type,
                 options: challenge.standard_challenge_options?.map(opt => ({
                   id: opt.id,
                   text: opt.text,
