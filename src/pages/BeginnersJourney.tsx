@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Challenge } from "@/components/Challenge";
 import { ChallengeProgress } from "@/components/ChallengeProgress";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllChallenges } from "@/lib/queries";
-import { shuffleArray } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
+import { Challenge as ChallengeType } from "@/data/challengeTypes";
 
 const STARS_PER_LEVEL = 25;
 
@@ -15,15 +15,40 @@ const BeginnersJourney = () => {
   const navigate = useNavigate();
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [userProgress, setUserProgress] = useState({ level: 1, stars: 0 });
+  const [seenChallenges, setSeenChallenges] = useState<Set<string>>(new Set());
 
   const { data: challenges, isLoading, error } = useQuery({
     queryKey: ['challenges'],
     queryFn: fetchAllChallenges,
     select: (data) => {
+      // Filter beginner challenges
       const beginnerChallenges = data.filter(challenge => challenge.difficulty === 'beginner');
-      return shuffleArray([...beginnerChallenges]);
+      
+      // Create a map to detect and remove duplicates based on content similarity
+      const uniqueChallenges = new Map<string, ChallengeType>();
+      
+      beginnerChallenges.forEach(challenge => {
+        // Create a unique key based on normalized content
+        const contentKey = `${challenge.title.toLowerCase().trim()}-${challenge.description.toLowerCase().trim()}`;
+        
+        // Only keep the first instance of each challenge
+        if (!uniqueChallenges.has(contentKey)) {
+          uniqueChallenges.set(contentKey, challenge);
+        }
+      });
+      
+      // Convert back to array and shuffle
+      return Array.from(uniqueChallenges.values())
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 5); // Limit to 5 unique challenges per session
     }
   });
+
+  // Memoize the filtered challenges to prevent unnecessary re-renders
+  const availableChallenges = useMemo(() => {
+    if (!challenges) return [];
+    return challenges.filter(challenge => !seenChallenges.has(challenge.id));
+  }, [challenges, seenChallenges]);
 
   useEffect(() => {
     const fetchUserProgress = async () => {
@@ -62,9 +87,14 @@ const BeginnersJourney = () => {
         if (!updateError) {
           setUserProgress({ stars: newStars, level: newLevel });
         }
+
+        // Mark current challenge as seen
+        if (challenges && challenges[currentChallenge]) {
+          setSeenChallenges(prev => new Set([...prev, challenges[currentChallenge].id]));
+        }
       }
       
-      if (challenges && currentChallenge === challenges.length - 1) {
+      if (!availableChallenges.length || currentChallenge === availableChallenges.length - 1) {
         navigate('/');
       } else {
         setCurrentChallenge(prev => prev + 1);
@@ -102,12 +132,12 @@ const BeginnersJourney = () => {
     );
   }
 
-  if (!challenges || challenges.length === 0) {
+  if (!availableChallenges || availableChallenges.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
           <div className="text-muted-foreground">
-            No challenges available at the moment.
+            You've completed all available challenges for now. Great job!
           </div>
           <Button 
             variant="outline" 
@@ -129,13 +159,13 @@ const BeginnersJourney = () => {
       <div className="container px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
         <ChallengeProgress
           currentChallenge={currentChallenge}
-          totalChallenges={challenges.length}
+          totalChallenges={availableChallenges.length}
           xp={currentLevelStars}
           maxXp={maxXp}
           streak={userProgress.level}
         />
 
-        <Challenge {...challenges[currentChallenge]} onComplete={handleComplete} />
+        <Challenge {...availableChallenges[currentChallenge]} onComplete={handleComplete} />
 
         <Button 
           variant="outline" 
