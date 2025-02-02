@@ -9,6 +9,175 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      challenges: {
+        Row: {
+          created_at: string | null
+          description: string
+          difficulty: Database["public"]["Enums"]["difficulty_level"]
+          id: string
+          title: string
+          type: Database["public"]["Enums"]["challenge_type"]
+          xp_reward: number
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          difficulty: Database["public"]["Enums"]["difficulty_level"]
+          id?: string
+          title: string
+          type: Database["public"]["Enums"]["challenge_type"]
+          xp_reward?: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          difficulty?: Database["public"]["Enums"]["difficulty_level"]
+          id?: string
+          title?: string
+          type?: Database["public"]["Enums"]["challenge_type"]
+          xp_reward?: number
+        }
+        Relationships: []
+      }
+      highlight_challenges: {
+        Row: {
+          challenge_id: string | null
+          id: string
+          statement: string
+        }
+        Insert: {
+          challenge_id?: string | null
+          id?: string
+          statement: string
+        }
+        Update: {
+          challenge_id?: string | null
+          id?: string
+          statement?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "highlight_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      highlight_texts: {
+        Row: {
+          explanation: string
+          highlight_id: string | null
+          id: string
+          text: string
+        }
+        Insert: {
+          explanation: string
+          highlight_id?: string | null
+          id?: string
+          text: string
+        }
+        Update: {
+          explanation?: string
+          highlight_id?: string | null
+          id?: string
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "highlight_texts_highlight_id_fkey"
+            columns: ["highlight_id"]
+            isOneToOne: false
+            referencedRelation: "highlight_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      matching_challenges: {
+        Row: {
+          challenge_id: string | null
+          id: string
+        }
+        Insert: {
+          challenge_id?: string | null
+          id?: string
+        }
+        Update: {
+          challenge_id?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matching_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      matching_pairs: {
+        Row: {
+          claim: string
+          evidence: string
+          id: string
+          matching_id: string | null
+        }
+        Insert: {
+          claim: string
+          evidence: string
+          id?: string
+          matching_id?: string | null
+        }
+        Update: {
+          claim?: string
+          evidence?: string
+          id?: string
+          matching_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matching_pairs_matching_id_fkey"
+            columns: ["matching_id"]
+            isOneToOne: false
+            referencedRelation: "matching_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      standard_challenge_options: {
+        Row: {
+          challenge_id: string | null
+          explanation: string
+          id: string
+          is_correct: boolean
+          text: string
+        }
+        Insert: {
+          challenge_id?: string | null
+          explanation: string
+          id?: string
+          is_correct?: boolean
+          text: string
+        }
+        Update: {
+          challenge_id?: string | null
+          explanation?: string
+          id?: string
+          is_correct?: boolean
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "standard_challenge_options_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -30,6 +199,61 @@ export type Database = {
         }
         Relationships: []
       }
+      word_selection_challenges: {
+        Row: {
+          challenge_id: string | null
+          id: string
+          passage: string
+        }
+        Insert: {
+          challenge_id?: string | null
+          id?: string
+          passage: string
+        }
+        Update: {
+          challenge_id?: string | null
+          id?: string
+          passage?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "word_selection_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      word_selection_keywords: {
+        Row: {
+          explanation: string
+          id: string
+          word: string
+          word_selection_id: string | null
+        }
+        Insert: {
+          explanation: string
+          id?: string
+          word: string
+          word_selection_id?: string | null
+        }
+        Update: {
+          explanation?: string
+          id?: string
+          word?: string
+          word_selection_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "word_selection_keywords_word_selection_id_fkey"
+            columns: ["word_selection_id"]
+            isOneToOne: false
+            referencedRelation: "word_selection_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -46,12 +270,13 @@ export type Database = {
       app_role: "admin" | "user" | "tester"
       challenge_pathway: "truth_explorer" | "fact_finder" | "digital_guardian"
       challenge_type:
-        | "standard"
+        | "headline"
+        | "fallacy"
+        | "media"
+        | "source"
         | "word-selection"
         | "matching"
         | "highlight"
-        | "analysis-construction"
-        | "argument-construction"
       difficulty_level: "beginner" | "intermediate" | "advanced"
     }
     CompositeTypes: {
