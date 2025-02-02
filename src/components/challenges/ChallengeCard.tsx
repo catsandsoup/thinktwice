@@ -1,6 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { LightbulbIcon } from "lucide-react";
 import { Challenge } from "@/data/challengeTypes";
 import { cn } from "@/lib/utils";
 
@@ -42,18 +41,6 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
           <CardDescription className="text-sm sm:text-base">
             {challenge.description}
           </CardDescription>
-        </div>
-        
-        <div className="flex items-start space-x-3 bg-yellow-50 p-4 rounded-lg">
-          <LightbulbIcon className="w-5 h-5 text-yellow-600 flex-shrink-0" />
-          <div className="space-y-2 text-sm text-gray-600">
-            <p>What to Look For:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Words that make things sound more dramatic</li>
-              <li>Phrases that suggest certainty about uncertain things</li>
-              <li>Language that might make you feel a particular way</li>
-            </ul>
-          </div>
         </div>
       </CardHeader>
       
