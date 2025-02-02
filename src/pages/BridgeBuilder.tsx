@@ -5,10 +5,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Challenge as ChallengeType } from "@/data/challengeTypes";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function BridgeBuilder() {
   const [currentChallengeIndex, setCurrentChallengeIndex] = useState(0);
   const [completedChallenges, setCompletedChallenges] = useState<Set<string>>(new Set());
+  const navigate = useNavigate();
 
   const { data: allChallenges = [], isLoading } = useQuery({
     queryKey: ['bridge-builder-challenges'],
@@ -125,11 +128,19 @@ export default function BridgeBuilder() {
           return newCompleted;
         });
 
-        if (currentChallengeIndex < allChallenges.length - 1) {
-          toast.success("Great job! Moving to the next challenge.");
-          setCurrentChallengeIndex(prev => prev + 1);
+        // Check if this was the last challenge
+        if (currentChallengeIndex === allChallenges.length - 1) {
+          toast.success("Congratulations! You've completed all challenges! 🎉");
+          // Add a slight delay before navigating to allow the toast to be seen
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
         } else {
-          toast.success("Congratulations! You've completed all challenges!");
+          toast.success("Great job! Moving to the next challenge.");
+          // Add a slight delay to allow the animation to complete
+          setTimeout(() => {
+            setCurrentChallengeIndex(prev => prev + 1);
+          }, 500);
         }
       } catch (error) {
         console.error('Error updating progress:', error);
@@ -177,18 +188,28 @@ export default function BridgeBuilder() {
           <span>Challenge {currentChallengeIndex + 1} of {allChallenges.length}</span>
           <div className="flex-1 h-2 bg-gray-200 rounded-full">
             <div 
-              className="h-full bg-primary rounded-full transition-all"
+              className="h-full bg-primary rounded-full transition-all duration-300"
               style={{ width: `${(completedChallenges.size / allChallenges.length) * 100}%` }}
             />
           </div>
         </div>
       </div>
 
-      <Challenge
-        key={currentChallenge.id}
-        {...currentChallenge}
-        onComplete={handleChallengeComplete}
-      />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentChallenge.id}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Challenge
+            key={currentChallenge.id}
+            {...currentChallenge}
+            onComplete={handleChallengeComplete}
+          />
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
