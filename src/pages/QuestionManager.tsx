@@ -32,7 +32,7 @@ export default function QuestionManager() {
         challenges (
           title
         ),
-        profiles (
+        profiles:user_id (
           display_name
         )
       `);
