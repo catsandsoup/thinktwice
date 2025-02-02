@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -13,24 +13,60 @@ export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
 
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate("/");
+      }
+    };
+    
+    checkUser();
+
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        navigate("/");
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
+        const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: window.location.origin,
+          },
         });
-        if (error) throw error;
-        toast.success("Check your email for the confirmation link!");
+
+        if (signUpError) throw signUpError;
+        
+        toast.success("Check your email for the confirmation link!", {
+          duration: 5000,
+        });
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (error) throw error;
+
+        if (signInError) throw signInError;
+        
+        toast.success("Successfully signed in!", {
+          duration: 3000,
+        });
+        
         navigate("/");
       }
     } catch (error: any) {
@@ -41,7 +77,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>{isSignUp ? "Create an account" : "Sign in"}</CardTitle>
@@ -64,6 +100,7 @@ export default function Auth() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="Enter your email"
+                className="w-full"
               />
             </div>
             <div className="space-y-2">
@@ -77,6 +114,8 @@ export default function Auth() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="Enter your password"
+                className="w-full"
+                minLength={6}
               />
             </div>
           </CardContent>
