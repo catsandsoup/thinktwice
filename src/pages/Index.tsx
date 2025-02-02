@@ -117,9 +117,8 @@ const Index = () => {
         await awardPathBadge(path);
         break;
       default:
-        toast({
-          title: "Coming Soon!",
-          description: `The ${path} path will be available in the next update.`,
+        toast(`The ${path} path will be available in the next update.`, {
+          description: "Coming Soon!"
         });
     }
   };
