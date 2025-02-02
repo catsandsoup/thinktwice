@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Challenge } from "@/components/Challenge";
+import { QuizHeader } from "@/components/QuizHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { allChallenges } from "@/data/challenges";
-import { ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BeginnersJourney = () => {
@@ -52,11 +52,6 @@ const BeginnersJourney = () => {
     }
   };
 
-  const handleExit = () => {
-    setIsExiting(true);
-    setTimeout(() => navigate('/'), 300);
-  };
-
   if (!availableChallenges || availableChallenges.length === 0) {
     return (
       <motion.div 
@@ -91,22 +86,11 @@ const BeginnersJourney = () => {
       className={`min-h-screen bg-background ${isExiting ? 'animate-fade-out' : ''}`}
     >
       <div className="container px-4 space-y-4">
-        <header className="flex items-center justify-between h-12 pt-2">
-          <Button 
-            variant="ghost" 
-            onClick={handleExit}
-            className="h-8 px-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 mr-1" />
-            Exit
-          </Button>
-          <h1 className="text-lg font-display font-medium text-purple-900">
-            Beginner's Journey
-          </h1>
-          <span className="h-8 flex items-center text-sm font-medium text-purple-700 bg-purple-50/80 px-3 rounded-full">
-            {currentChallenge + 1} of {availableChallenges.length}
-          </span>
-        </header>
+        <QuizHeader
+          title="Beginner's Journey"
+          currentQuestion={currentChallenge + 1}
+          totalQuestions={availableChallenges.length}
+        />
 
         <AnimatePresence mode="wait">
           <motion.div
