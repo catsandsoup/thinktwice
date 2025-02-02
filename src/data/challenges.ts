@@ -151,22 +151,22 @@ export const advancedChallenges: Challenge[] = [
     id: "6",
     title: "Metacognition in Problem-Solving",
     type: "word-selection",
-    description: "Analyze your own thinking process when approaching complex problems",
+    description: "Select the phrases that demonstrate key metacognitive strategies - moments where the author shows awareness and reflection about their own thinking process.",
     difficulty: "intermediate",
     xpReward: 15,
     passage: "When faced with the challenge of reducing plastic waste in our community, my first instinct was to immediately propose a strict ban. However, after stepping back and examining my thought process, I realized I needed to consider multiple stakeholder perspectives, research existing solutions, and understand the economic impacts. This reflection led me to develop a more nuanced, phased approach that considered both environmental and economic factors.",
     keyWords: [
       {
         word: "first instinct",
-        explanation: "Recognizing our initial reactions helps us understand potential biases and emotional responses"
+        explanation: "This shows awareness of initial reactions, demonstrating the author's ability to recognize their immediate thought patterns"
       },
       {
-        word: "stepping back",
-        explanation: "Taking time to pause and reflect is a key metacognitive strategy that improves decision-making"
+        word: "stepping back and examining my thought process",
+        explanation: "This phrase explicitly shows metacognition - the author is consciously analyzing how they're thinking about the problem"
       },
       {
-        word: "multiple stakeholder perspectives",
-        explanation: "Acknowledging different viewpoints demonstrates intellectual humility and systems thinking"
+        word: "realized I needed to consider",
+        explanation: "This indicates a moment of insight where the author recognizes gaps in their initial thinking approach"
       }
     ]
   },
