@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Apple, ArrowRight, Google, Mail, Shield } from "lucide-react";
+import { Apple, ArrowRight, Mail, Shield, Globe } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -143,7 +143,7 @@ export default function AuthPage() {
               Email
             </TabsTrigger>
             <TabsTrigger value="google" className="flex items-center gap-2">
-              <Google className="h-4 w-4" />
+              <Globe className="h-4 w-4" />
               Google
             </TabsTrigger>
             <TabsTrigger value="apple" className="flex items-center gap-2">
@@ -229,7 +229,7 @@ export default function AuthPage() {
                 onClick={() => handleSocialSignIn("google")}
                 disabled={isLoading}
               >
-                <Google className="mr-2 h-4 w-4" />
+                <Globe className="mr-2 h-4 w-4" />
                 Continue with Google
               </Button>
             </CardContent>
