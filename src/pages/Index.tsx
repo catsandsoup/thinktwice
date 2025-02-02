@@ -1,21 +1,120 @@
 import { LearningPath } from "@/components/LearningPath";
 import { UserAchievements } from "@/components/UserAchievements";
 import { useNavigate } from "react-router-dom";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const navigate = useNavigate();
 
-  const handlePathClick = (path: string) => {
+  const awardPathBadge = async (pathName: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      let badgeName = '';
+      switch (pathName) {
+        case "Beginner":
+          badgeName = 'Detective Master';
+          break;
+        case "Argument":
+          badgeName = 'Critical Thinker';
+          break;
+        case "Tools":
+          badgeName = 'Tool Expert';
+          break;
+        case "Data":
+          badgeName = 'Data Guru';
+          break;
+        case "Emotion":
+          badgeName = 'Emotion Master';
+          break;
+        default:
+          return;
+      }
+
+      // Get badge ID
+      const { data: badge } = await supabase
+        .from('badges')
+        .select('id')
+        .eq('name', badgeName)
+        .single();
+
+      if (!badge) return;
+
+      // Check if user already has the badge
+      const { data: existingBadge } = await supabase
+        .from('user_badges')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('badge_id', badge.id)
+        .single();
+
+      if (!existingBadge) {
+        // Award new badge
+        await supabase
+          .from('user_badges')
+          .insert({
+            user_id: user.id,
+            badge_id: badge.id
+          });
+
+        toast.success(`New Path Achievement Unlocked: ${badgeName}! 🎉`, {
+          duration: 4000
+        });
+      }
+    } catch (error) {
+      console.error('Error awarding path badge:', error);
+    }
+  };
+
+  const handlePathClick = async (path: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error('Please sign in to access learning paths');
+      return;
+    }
+
+    // Check for first path completion
+    const { data: badges } = await supabase
+      .from('user_badges')
+      .select('badges(name)')
+      .eq('user_id', user.id);
+
+    if (!badges || badges.length === 0) {
+      // Award Path Pioneer badge for first path attempt
+      const { data: pathPioneerBadge } = await supabase
+        .from('badges')
+        .select('id')
+        .eq('name', 'Path Pioneer')
+        .single();
+
+      if (pathPioneerBadge) {
+        await supabase
+          .from('user_badges')
+          .insert({
+            user_id: user.id,
+            badge_id: pathPioneerBadge.id
+          });
+
+        toast.success('New Achievement Unlocked: Path Pioneer! 🎉', {
+          duration: 4000
+        });
+      }
+    }
+
     switch (path) {
       case "Beginner":
         navigate('/beginners-journey');
+        await awardPathBadge(path);
         break;
       case "Argument":
         navigate('/argument-analysis');
+        await awardPathBadge(path);
         break;
       case "Tools":
         navigate('/thinking-tools');
+        await awardPathBadge(path);
         break;
       default:
         toast({
