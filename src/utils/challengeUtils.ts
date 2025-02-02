@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { checkAndAwardBadges } from "./achievementUtils";
 
 export const recordChallengeCompletion = async (userId: string, challengeId: string, xpEarned: number) => {
   try {
