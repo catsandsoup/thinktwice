@@ -50,13 +50,20 @@ export default function QuestionManager() {
           challenges:challenge_id (
             title
           ),
-          profiles!challenge_feedback_user_id_fkey (
+          profiles (
             display_name
           )
         `);
 
       if (error) throw error;
-      return data as FeedbackWithDetails[];
+      
+      // Transform the data to ensure it matches our type
+      const transformedData = data?.map(item => ({
+        ...item,
+        profiles: item.profiles ? { display_name: item.profiles.display_name } : null
+      }));
+
+      return transformedData as FeedbackWithDetails[];
     },
   });
 
