@@ -95,6 +95,59 @@ export type Database = {
           },
         ]
       }
+      enterprise_accounts: {
+        Row: {
+          created_at: string
+          domain: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          domain: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          domain?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      enterprise_members: {
+        Row: {
+          created_at: string
+          enterprise_id: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enterprise_id: string
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enterprise_id?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enterprise_members_enterprise_id_fkey"
+            columns: ["enterprise_id"]
+            isOneToOne: false
+            referencedRelation: "enterprise_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       highlight_challenges: {
         Row: {
           challenge_id: string | null
@@ -209,9 +262,11 @@ export type Database = {
           created_at: string
           display_name: string | null
           email_notifications: boolean | null
+          enterprise_id: string | null
           id: string
           push_notifications: boolean | null
           theme: string | null
+          two_factor_enabled: boolean | null
         }
         Insert: {
           avatar_url?: string | null
@@ -219,9 +274,11 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email_notifications?: boolean | null
+          enterprise_id?: string | null
           id: string
           push_notifications?: boolean | null
           theme?: string | null
+          two_factor_enabled?: boolean | null
         }
         Update: {
           avatar_url?: string | null
@@ -229,11 +286,21 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email_notifications?: boolean | null
+          enterprise_id?: string | null
           id?: string
           push_notifications?: boolean | null
           theme?: string | null
+          two_factor_enabled?: boolean | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_enterprise_id_fkey"
+            columns: ["enterprise_id"]
+            isOneToOne: false
+            referencedRelation: "enterprise_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       standard_challenge_options: {
         Row: {

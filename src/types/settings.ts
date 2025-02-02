@@ -6,6 +6,8 @@ export interface Profile {
   email_notifications: boolean;
   push_notifications: boolean;
   theme: 'light' | 'dark' | 'system';
+  enterprise_id: string | null;
+  two_factor_enabled: boolean;
 }
 
 export interface PaymentMethod {
