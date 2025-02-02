@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { 
   Award, 
   Calendar, 
+  ChevronDown,
+  ChevronUp,
   Flame, 
   Star, 
   Zap,
@@ -37,6 +40,8 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 export function UserAchievements() {
+  const [showAllBadges, setShowAllBadges] = useState(false);
+
   const { data: achievements } = useQuery({
     queryKey: ['achievements'],
     queryFn: async () => {
@@ -78,6 +83,8 @@ export function UserAchievements() {
     },
   });
 
+  const displayedBadges = showAllBadges ? badges : badges?.slice(0, 3);
+
   return (
     <div className="space-y-6">
       <Card className="p-6">
@@ -105,9 +112,28 @@ export function UserAchievements() {
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-xl font-bold mb-4">Your Badges</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {badges?.map((badge) => {
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold">Your Badges</h2>
+          {badges && badges.length > 3 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAllBadges(!showAllBadges)}
+            >
+              {showAllBadges ? (
+                <>
+                  Show Less <ChevronUp className="ml-2 h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Show All <ChevronDown className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </Button>
+          )}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {displayedBadges?.map((badge) => {
             const Icon = iconMap[badge.badges.icon_name] || Award;
             return (
               <div

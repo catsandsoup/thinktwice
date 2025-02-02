@@ -1,37 +1,47 @@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const awardBadge = async (userId: string, badgeName: string) => {
+export const checkAndUpdateStreak = async (userId: string) => {
   try {
-    const { data: badge } = await supabase
-      .from('badges')
-      .select('id')
-      .eq('name', badgeName)
-      .single();
-
-    if (!badge) return;
-
-    const { data: existingBadge } = await supabase
-      .from('user_badges')
-      .select('id')
+    const { data: achievement } = await supabase
+      .from('user_achievements')
+      .select('last_login, streak_count')
       .eq('user_id', userId)
-      .eq('badge_id', badge.id)
       .single();
 
-    if (existingBadge) return;
+    if (!achievement) return;
 
-    await supabase
-      .from('user_badges')
-      .insert({
-        user_id: userId,
-        badge_id: badge.id
-      });
+    const lastLogin = new Date(achievement.last_login);
+    const now = new Date();
+    const diffDays = Math.floor((now.getTime() - lastLogin.getTime()) / (1000 * 60 * 60 * 24));
 
-    toast.success(`New Achievement Unlocked: ${badgeName}! 🎉`, {
-      duration: 4000
-    });
+    let newStreak = achievement.streak_count;
+    if (diffDays > 1) {
+      // Reset streak if more than 1 day has passed
+      newStreak = 0;
+    } else if (diffDays === 1) {
+      // Increment streak if exactly 1 day has passed
+      newStreak += 1;
+    }
+
+    const { error } = await supabase
+      .from('user_achievements')
+      .update({
+        streak_count: newStreak,
+        last_login: now.toISOString()
+      })
+      .eq('user_id', userId);
+
+    if (error) throw error;
+
+    // Award streak-based badges
+    if (newStreak === 7) {
+      await awardBadge(userId, 'Week Warrior');
+    } else if (newStreak === 30) {
+      await awardBadge(userId, 'Monthly Master');
+    }
   } catch (error) {
-    console.error('Error awarding badge:', error);
+    console.error('Error updating streak:', error);
   }
 };
 
@@ -52,17 +62,62 @@ export const checkAndAwardBadges = async (userId: string, challengeCount: number
       await awardBadge(userId, 'Perfect Score');
     }
 
-    // Check streak
-    const { data: achievements } = await supabase
-      .from('user_achievements')
-      .select('streak_count')
-      .eq('user_id', userId)
-      .single();
+    // Journey completion badges
+    const { data: completedChallenges } = await supabase
+      .from('completed_challenges')
+      .select('challenge_id')
+      .eq('user_id', userId);
 
-    if (achievements?.streak_count === 7) {
-      await awardBadge(userId, 'Streak Master');
+    if (completedChallenges?.length === 10) {
+      await awardBadge(userId, 'Journey Pioneer');
     }
   } catch (error) {
     console.error('Error checking achievements:', error);
+  }
+};
+
+export const submitFeedback = async (userId: string, challengeId: string, rating: number, feedbackText: string) => {
+  try {
+    const { error } = await supabase
+      .from('challenge_feedback')
+      .insert({
+        user_id: userId,
+        challenge_id: challengeId,
+        rating,
+        feedback_text: feedbackText
+      });
+
+    if (error) throw error;
+    toast.success('Thank you for your feedback!');
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    toast.error('Failed to submit feedback. Please try again.');
+  }
+};
+
+export const awardBadge = async (userId: string, badgeName: string) => {
+  try {
+    const { data: badge } = await supabase
+      .from('badges')
+      .select('id')
+      .eq('name', badgeName)
+      .single();
+
+    if (!badge) return;
+
+    const { error } = await supabase
+      .from('user_badges')
+      .insert({
+        user_id: userId,
+        badge_id: badge.id
+      });
+
+    if (error && error.code !== '23505') { // Ignore unique constraint violations
+      throw error;
+    }
+
+    toast.success(`Achievement Unlocked: ${badgeName}! 🎉`);
+  } catch (error) {
+    console.error('Error awarding badge:', error);
   }
 };

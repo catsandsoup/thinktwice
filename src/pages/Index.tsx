@@ -3,67 +3,19 @@ import { UserAchievements } from "@/components/UserAchievements";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const Index = () => {
   const navigate = useNavigate();
-
-  const awardPathBadge = async (pathName: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      let badgeName = '';
-      switch (pathName) {
-        case "Beginner":
-          badgeName = 'Detective Master';
-          break;
-        case "Argument":
-          badgeName = 'Critical Thinker';
-          break;
-        case "Tools":
-          badgeName = 'Tool Expert';
-          break;
-        case "Bridge":
-          badgeName = 'Bridge Builder';
-          break;
-        default:
-          return;
-      }
-
-      // Get badge ID
-      const { data: badge } = await supabase
-        .from('badges')
-        .select('id')
-        .eq('name', badgeName)
-        .single();
-
-      if (!badge) return;
-
-      // Check if user already has the badge
-      const { data: existingBadge } = await supabase
-        .from('user_badges')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('badge_id', badge.id)
-        .single();
-
-      if (!existingBadge) {
-        // Award new badge
-        await supabase
-          .from('user_badges')
-          .insert({
-            user_id: user.id,
-            badge_id: badge.id
-          });
-
-        toast.success(`New Path Achievement Unlocked: ${badgeName}! 🎉`, {
-          duration: 4000
-        });
-      }
-    } catch (error) {
-      console.error('Error awarding path badge:', error);
-    }
-  };
 
   const handlePathClick = async (path: string) => {
     // Temporarily removed auth check to allow direct access to paths
@@ -93,16 +45,42 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container p-6 max-w-6xl mx-auto space-y-8">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight">Critical Thinking Journey</h1>
+      <header className="container p-6 flex justify-between items-center">
+        <div className="text-center flex-1">
+          <h1 className="text-4xl font-bold tracking-tight">Think Twice</h1>
           <p className="text-xl text-gray-600">
             Master the art of clear, logical thinking
           </p>
         </div>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="md:hidden">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+              <SheetDescription>
+                Navigate through your learning journey
+              </SheetDescription>
+            </SheetHeader>
+            <nav className="mt-4 space-y-2">
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => navigate("/settings")}
+              >
+                Settings
+              </Button>
+              {/* Add more navigation items as needed */}
+            </nav>
+          </SheetContent>
+        </Sheet>
+      </header>
 
+      <main className="container p-6 max-w-6xl mx-auto space-y-8">
         <UserAchievements />
-
         <div className="grid md:grid-cols-2 gap-8">
           <LearningPath
             title="Everyday Detective"
