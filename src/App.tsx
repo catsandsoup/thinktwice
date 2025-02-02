@@ -21,13 +21,17 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setIsAuthenticated(!!session);
     });
+
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
   }, []);
 
   if (isAuthenticated === null) {
-    return null; // or a loading spinner
+    return null;
   }
 
   return isAuthenticated ? <>{children}</> : <Navigate to="/auth" />;

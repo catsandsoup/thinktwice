@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -7,13 +7,23 @@ import { useEffect, useState } from "react";
 
 export function MainNav() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setIsAuthenticated(!!session);
     });
+
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
   }, []);
+
+  // Don't show nav on auth pages
+  if (location.pathname === '/auth' || location.pathname === '/auth/callback') {
+    return null;
+  }
 
   const handleSettingsClick = () => {
     if (isAuthenticated) {
