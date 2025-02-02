@@ -31,6 +31,7 @@ export default function Auth() {
     checkUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event, session);
       if (event === 'SIGNED_IN') {
         navigate("/");
       } else if (event === 'SIGNED_OUT') {
@@ -66,16 +67,22 @@ export default function Auth() {
     if (!validateInput()) return;
     
     setLoading(true);
+    console.log("Attempting authentication...");
 
     try {
       if (isSignUp) {
-        const { error: signUpError } = await supabase.auth.signUp({
+        const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/login`,
+            data: {
+              email_confirm_url: `${window.location.origin}/login`
+            }
           },
         });
+
+        console.log("Sign up response:", { data, error: signUpError });
 
         if (signUpError) throw signUpError;
         
@@ -83,10 +90,12 @@ export default function Auth() {
           duration: 5000,
         });
       } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
+
+        console.log("Sign in response:", { data, error: signInError });
 
         if (signInError) throw signInError;
         
