@@ -1,13 +1,8 @@
-import { useState } from "react";
 import { LearningPath } from "@/components/LearningPath";
-import { ProgressBar } from "@/components/ProgressBar";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
-  const [stars] = useState(150);
-  const [maxStars] = useState(300);
-  const [level] = useState(3);
   const navigate = useNavigate();
 
   const handlePathClick = (path: string) => {
@@ -31,24 +26,12 @@ const Index = () => {
           </p>
         </div>
 
-        <div className="space-y-3">
-          <div className="flex justify-between items-baseline">
-            <span className="text-lg text-gray-600">Your progress: {stars} stars</span>
-            <div className="flex items-center gap-2 text-gray-600">
-              <span className="text-lg">⭐</span>
-              <span>Level {level}</span>
-            </div>
-          </div>
-          <ProgressBar xp={stars} maxXp={maxStars} streak={level} />
-        </div>
-
         <div className="grid md:grid-cols-2 gap-8">
           <LearningPath
             title="Everyday Detective"
             description="Spot clues that help you make better choices"
             level="beginner"
             onClick={() => handlePathClick("Beginner")}
-            progress={60}
             mission="Learn to spot the difference between facts and opinions in social media posts"
             actionText="Start Your Investigation"
           />
@@ -58,7 +41,6 @@ const Index = () => {
               description="Find out what makes a good explanation"
               level="intermediate"
               onClick={() => handlePathClick("Intermediate")}
-              progress={0}
               mission="Discover reliable ways to check information you see online"
               actionText="Begin Quest"
             />
@@ -69,7 +51,6 @@ const Index = () => {
               description="Learn to check if something is really true"
               level="advanced"
               onClick={() => handlePathClick("Advanced")}
-              progress={0}
               mission="Discover reliable ways to check information you see online"
               actionText="Begin Quest"
             />
@@ -80,7 +61,6 @@ const Index = () => {
               description="Protect yourself from misleading information"
               level="advanced"
               onClick={() => handlePathClick("Advanced")}
-              progress={0}
               mission="Learn to recognize and avoid misleading online content"
               actionText="Accept Challenge"
             />

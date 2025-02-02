@@ -1,14 +1,12 @@
 import { Card } from "@/components/ui/card";
 import { Brain, Compass, Eye, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 
 interface LearningPathProps {
   title: string;
   description: string;
   level: "beginner" | "intermediate" | "advanced";
   onClick: () => void;
-  progress?: number;
   mission: string;
   actionText: string;
 }
@@ -18,7 +16,6 @@ export function LearningPath({
   description, 
   level,
   onClick,
-  progress = 0,
   mission,
   actionText
 }: LearningPathProps) {
@@ -81,14 +78,6 @@ export function LearningPath({
         >
           {actionText}
         </button>
-
-        {progress > 0 && (
-          <div className="absolute top-4 right-4">
-            <Badge variant="outline" className="bg-white/80">
-              {progress}% complete
-            </Badge>
-          </div>
-        )}
       </div>
     </Card>
   );
