@@ -1,7 +1,7 @@
-# 🧠 Critical Thinking & Media Literacy AI
+# 🧠 ThinkTwice: Critical Thinking Education Platform
 
 ## 🎯 Overview
-**Critical Thinking & Media Literacy AI** is an AI-powered educational platform designed to help students **analyze information critically, identify misinformation, and improve research skills**. This customizable tool is tailored for **schools and universities**, enabling educators to generate AI-driven challenges, quizzes, and learning exercises that enhance students' ability to think critically.
+**ThinkTwice** is an AI-powered educational platform designed to help students **analyze information critically, identify misinformation, and improve research skills**. This customizable tool is tailored for **schools and universities**, enabling educators to generate AI-driven challenges, quizzes, and learning exercises that enhance students' ability to think critically.
 
 ## 🚀 Features
 ### 🔹 **Customizable Content**
