@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { JourneyType } from "@/data/challengeTypes";
 
 export function JourneySelector({ value, onChange }: { 
   value: string;
@@ -18,7 +19,7 @@ export function JourneySelector({ value, onChange }: {
       const { data, error } = await supabase
         .from('journeys')
         .select('*')
-        .in('type', ['argument', 'beginner'])
+        .in('type', ['argument', 'beginner'] as JourneyType[])
         .order('created_at', { ascending: false });
       
       if (error) {
