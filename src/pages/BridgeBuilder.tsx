@@ -109,8 +109,13 @@ export default function BridgeBuilder() {
   const handleChallengeComplete = async (correct: boolean, xp: number) => {
     if (correct) {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('User not authenticated');
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
+        if (authError || !user) {
+          toast.error("Please sign in to save your progress");
+          navigate('/login');
+          return;
+        }
 
         // Record the completed challenge
         const { error: completionError } = await supabase
@@ -121,7 +126,11 @@ export default function BridgeBuilder() {
             xp_earned: xp
           });
 
-        if (completionError) throw completionError;
+        if (completionError) {
+          console.error('Error updating progress:', completionError);
+          toast.error("Failed to save progress. Please try again.");
+          return;
+        }
 
         // Update completed challenges state
         setCompletedChallenges(prev => {
@@ -145,7 +154,7 @@ export default function BridgeBuilder() {
         }
       } catch (error) {
         console.error('Error updating progress:', error);
-        toast.error("Failed to save progress");
+        toast.error("Failed to save progress. Please try again.");
       }
     }
   };
