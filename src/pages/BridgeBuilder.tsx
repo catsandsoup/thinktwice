@@ -39,7 +39,31 @@ export default function BridgeBuilder() {
         .eq('journey_id', journey.id)
         .order('difficulty');
 
-      return challenges || [];
+      // Map database fields to our frontend types
+      return challenges?.map(challenge => ({
+        id: challenge.id,
+        title: challenge.title,
+        description: challenge.description,
+        type: challenge.type,
+        difficulty: challenge.difficulty,
+        xpReward: challenge.xp_reward, // Map xp_reward to xpReward
+        options: challenge.standard_challenge_options?.map(opt => ({
+          id: opt.id,
+          text: opt.text,
+          isCorrect: opt.is_correct,
+          explanation: opt.explanation
+        })) || [],
+        pairs: challenge.matching_challenges?.[0]?.matching_pairs?.map(pair => ({
+          id: pair.id,
+          claim: pair.claim,
+          evidence: pair.evidence
+        })) || [],
+        statement: challenge.highlight_challenges?.[0]?.statement || '',
+        highlights: challenge.highlight_challenges?.[0]?.highlight_texts?.map(ht => ({
+          text: ht.text,
+          explanation: ht.explanation
+        })) || []
+      })) || [];
     },
   });
 
