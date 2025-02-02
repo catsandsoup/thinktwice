@@ -28,7 +28,7 @@ const BeginnersJourney = () => {
               word_selection_keywords(*)
             ),
             matching_challenges(
-              *,
+              challenge_id,
               matching_pairs(*)
             ),
             highlight_challenges(
@@ -51,7 +51,7 @@ const BeginnersJourney = () => {
             xpReward: challenge.xp_reward
           };
 
-          switch (challenge.type as ChallengeType["type"]) {
+          switch (challenge.type) {
             case "standard":
             case "headline":
             case "fallacy":
@@ -61,7 +61,7 @@ const BeginnersJourney = () => {
             case "argument-construction":
               return {
                 ...baseChallenge,
-                type: challenge.type as ChallengeType["type"],
+                type: "standard" as const,
                 options: challenge.standard_challenge_options?.map(opt => ({
                   id: opt.id,
                   text: opt.text,
@@ -83,15 +83,18 @@ const BeginnersJourney = () => {
               } as ChallengeType;
             
             case "matching":
-              const matchingChallenge = challenge.matching_challenges?.[0];
+              if (!challenge.matching_challenges?.[0]?.matching_pairs?.length) {
+                console.error('Matching challenge data is missing or incomplete:', challenge);
+                return null;
+              }
               return {
                 ...baseChallenge,
                 type: "matching" as const,
-                pairs: matchingChallenge?.matching_pairs?.map(pair => ({
+                pairs: challenge.matching_challenges[0].matching_pairs.map(pair => ({
                   id: pair.id.toString(),
                   claim: pair.claim,
                   evidence: pair.best_evidence
-                })) || []
+                }))
               } as ChallengeType;
             
             case "highlight":
@@ -107,9 +110,10 @@ const BeginnersJourney = () => {
               } as ChallengeType;
             
             default:
-              return baseChallenge as ChallengeType;
+              console.error('Unknown challenge type:', challenge.type);
+              return null;
           }
-        });
+        }).filter(Boolean) as ChallengeType[];
 
         return shuffleArray(transformedChallenges);
       } catch (error) {
