@@ -12,21 +12,25 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
   const [selectedText, setSelectedText] = useState<Set<string>>(new Set());
   const [showAnswer, setShowAnswer] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
-  const [touchStart, setTouchStart] = useState<number>(0);
-  const [touchEnd, setTouchEnd] = useState<number>(0);
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [touchEnd, setTouchEnd] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const isMobile = useIsMobile();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Disable default text selection on mobile
-    const textContainer = document.querySelector('.highlight-text-container');
-    if (textContainer && isMobile) {
-      textContainer.addEventListener('selectstart', (e) => e.preventDefault());
+    // Disable default text selection behavior on mobile
+    if (isMobile) {
+      document.body.style.webkitUserSelect = 'none';
+      document.body.style.userSelect = 'none';
+      return () => {
+        document.body.style.webkitUserSelect = '';
+        document.body.style.userSelect = '';
+      };
     }
   }, [isMobile]);
 
   const handleTextSelect = () => {
-    if (isMobile) return; // Skip for mobile devices
+    if (isMobile) return;
     
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed) return;
@@ -39,42 +43,63 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.touches[0].clientX);
-    setTouchEnd(e.touches[0].clientX);
+    const touch = e.touches[0];
+    setTouchStart({ x: touch.clientX, y: touch.clientY });
+    setTouchEnd({ x: touch.clientX, y: touch.clientY });
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.touches[0].clientX);
+    e.preventDefault(); // Prevent scrolling while selecting
+    const touch = e.touches[0];
+    setTouchEnd({ x: touch.clientX, y: touch.clientY });
   };
 
-  const handleTouchEnd = () => {
-    if (Math.abs(touchStart - touchEnd) < 50) return; // Ignore small movements
-
-    const textContainer = document.querySelector('.highlight-text-container');
-    if (!textContainer) return;
-
-    const range = document.createRange();
-    const selection = window.getSelection();
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
     
-    // Calculate the selection based on touch positions
-    const startOffset = Math.min(
-      Math.floor((Math.min(touchStart, touchEnd) / textContainer.clientWidth) * statement.length),
-      statement.length
+    // Calculate distance moved
+    const deltaX = Math.abs(touchEnd.x - touchStart.x);
+    const deltaY = Math.abs(touchEnd.y - touchStart.y);
+    
+    // If movement was too small or mostly vertical, ignore it
+    if (deltaX < 20 || deltaY > deltaX) return;
+
+    const textContainer = e.currentTarget;
+    const range = document.createRange();
+    const textNode = Array.from(textContainer.childNodes).find(node => 
+      node.nodeType === Node.TEXT_NODE
     );
-    const endOffset = Math.min(
-      Math.floor((Math.max(touchStart, touchEnd) / textContainer.clientWidth) * statement.length),
+
+    if (!textNode) return;
+
+    // Calculate relative positions within the text container
+    const rect = textContainer.getBoundingClientRect();
+    const startX = (touchStart.x - rect.left) / rect.width;
+    const endX = (touchEnd.x - rect.left) / rect.width;
+
+    // Map touch positions to text positions
+    const startOffset = Math.max(0, Math.min(
+      Math.floor(startX * statement.length),
       statement.length
-    );
+    ));
+    const endOffset = Math.max(0, Math.min(
+      Math.floor(endX * statement.length),
+      statement.length
+    ));
 
     try {
-      if (textContainer.firstChild) {
-        range.setStart(textContainer.firstChild, startOffset);
-        range.setEnd(textContainer.firstChild, endOffset);
-        
-        const text = range.toString().trim();
-        if (text) {
-          addSelectedText(text);
-        }
+      // Set the range based on whether the user dragged left or right
+      if (startX <= endX) {
+        range.setStart(textNode, startOffset);
+        range.setEnd(textNode, endOffset);
+      } else {
+        range.setStart(textNode, endOffset);
+        range.setEnd(textNode, startOffset);
+      }
+
+      const selectedText = range.toString().trim();
+      if (selectedText) {
+        addSelectedText(selectedText);
       }
     } catch (error) {
       console.error('Error setting range:', error);
@@ -94,7 +119,7 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
   const isTextCloseEnough = (selected: string, correct: string) => {
     const selectedPos = statement.indexOf(selected);
     const correctPos = statement.indexOf(correct);
-    const margin = 20;
+    const margin = Math.min(selected.length, correct.length) / 2;
     return Math.abs(selectedPos - correctPos) <= margin;
   };
 
@@ -130,7 +155,7 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
   return (
     <div className="space-y-4">
       <div 
-        className="highlight-text-container p-4 bg-muted rounded-lg whitespace-pre-wrap select-none"
+        className="highlight-text-container p-4 bg-muted rounded-lg whitespace-pre-wrap text-base leading-relaxed"
         onMouseUp={handleTextSelect}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -146,7 +171,7 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
             key={index}
             className="p-2 bg-primary/10 rounded flex justify-between items-center"
           >
-            <span>{text}</span>
+            <span className="text-sm flex-1 mr-2">{text}</span>
             <Button
               variant="ghost"
               size="sm"
@@ -155,6 +180,7 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
                 newSelected.delete(text);
                 setSelectedText(newSelected);
               }}
+              className="shrink-0"
             >
               Remove
             </Button>
@@ -163,7 +189,10 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
       </div>
 
       <div className="flex gap-2">
-        <Button onClick={handleSubmit} className="flex-1">
+        <Button 
+          onClick={handleSubmit} 
+          className="flex-1 h-12 text-base"
+        >
           Submit Highlights
         </Button>
         
@@ -171,7 +200,7 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
           <Button
             variant="outline"
             onClick={() => setShowAnswer(!showAnswer)}
-            className="whitespace-nowrap"
+            className="whitespace-nowrap h-12"
           >
             {showAnswer ? "Hide Answer" : "Display Answer"}
           </Button>
