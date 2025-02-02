@@ -10,10 +10,13 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { BookOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function QuestionsNavigation() {
+  const navigate = useNavigate();
   const { data: challenges } = useQuery({
     queryKey: ["challenges"],
     queryFn: async () => {
@@ -35,37 +38,46 @@ export function QuestionsNavigation() {
     return acc;
   }, {} as Record<string, typeof challenges>);
 
+  const difficultyColors = {
+    beginner: "bg-primary/10 border-primary/20",
+    intermediate: "bg-secondary/10 border-secondary/20",
+  };
+
   return (
-    <Sidebar variant="floating">
-      <SidebarContent>
-        {groupedChallenges && Object.entries(groupedChallenges).map(([difficulty, challenges], index) => (
-          <div key={difficulty}>
-            {index > 0 && <Separator className="my-4 bg-white/10" />}
-            <SidebarGroup>
-              <SidebarGroupLabel className="capitalize">
-                {difficulty} Level
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {challenges?.map((challenge) => (
-                    <SidebarMenuItem key={challenge.id}>
-                      <SidebarMenuButton
-                        tooltip={challenge.description}
-                        asChild
-                      >
-                        <a href={`#${challenge.id}`}>
+    <>
+      <SidebarTrigger className="fixed top-8 left-4 z-50" />
+      <Sidebar variant="floating" defaultOpen={false}>
+        <SidebarContent>
+          {groupedChallenges && Object.entries(groupedChallenges).map(([difficulty, challenges], index) => (
+            <div key={difficulty}>
+              {index > 0 && <Separator className="my-4 bg-white/10" />}
+              <SidebarGroup className={`rounded-lg border p-4 ${difficultyColors[difficulty as keyof typeof difficultyColors] || ''}`}>
+                <SidebarGroupLabel className="capitalize">
+                  {difficulty} Level
+                </SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {challenges?.map((challenge) => (
+                      <SidebarMenuItem key={challenge.id}>
+                        <SidebarMenuButton
+                          tooltip={challenge.description}
+                          onClick={() => {
+                            const path = difficulty === 'beginner' ? '/beginners-journey' : '/truth-explorer';
+                            navigate(`${path}#${challenge.id}`);
+                          }}
+                        >
                           <BookOpen className="h-4 w-4" />
                           <span>{challenge.title}</span>
-                        </a>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </div>
-        ))}
-      </SidebarContent>
-    </Sidebar>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </div>
+          ))}
+        </SidebarContent>
+      </Sidebar>
+    </>
   );
 }
