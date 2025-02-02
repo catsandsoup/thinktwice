@@ -48,9 +48,10 @@ const BeginnersJourney = () => {
     fetchUserProgress();
   }, []);
 
-  const availableChallenges = allChallenges.filter(
-    challenge => !seenChallenges.has(challenge.id)
-  );
+  // Filter out seen challenges and shuffle the remaining ones
+  const availableChallenges = allChallenges
+    .filter(challenge => !seenChallenges.has(challenge.id))
+    .sort(() => Math.random() - 0.5); // Shuffle the challenges
 
   const handleComplete = async (correct: boolean, xp: number) => {
     if (correct) {
