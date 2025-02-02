@@ -4,25 +4,13 @@ import { Challenge } from "./challengeTypes";
  * This file contains all critical thinking challenges organized by difficulty level.
  * Challenges are designed to help users develop various analytical and evaluation skills
  * through interactive exercises.
- * 
- * Challenge Types:
- * - fallacy: Identifying logical fallacies and reasoning errors
- * - media: Analyzing media presentation and bias
- * - source: Evaluating source credibility
- * - word-selection: Identifying key elements in text
- * - matching: Connecting related concepts
- * - highlight: Analyzing specific textual elements
  */
 
-/**
- * Fundamental critical thinking exercises suitable for newcomers.
- * These challenges focus on basic concept recognition and simple analysis.
- */
 export const beginnerChallenges: Challenge[] = [
   {
     id: "1",
     title: "Identifying False Dilemmas",
-    description: "Learn to spot false either/or choices in arguments",
+    description: "Learn to spot false either/or choices in arguments. Which of these statements present false dilemmas?",
     type: "fallacy",
     difficulty: "beginner",
     xpReward: 10,
@@ -50,26 +38,26 @@ export const beginnerChallenges: Challenge[] = [
   {
     id: "2",
     title: "Media Bias Analysis",
-    description: "Examine how media presentation affects perception",
+    description: "You're reading a news article. Which of these elements suggest potential media bias?",
     type: "media",
     difficulty: "beginner",
     xpReward: 10,
     options: [
       {
         id: "2a",
-        text: "The headline uses emotionally charged words to describe a neutral event.",
+        text: "The headline reads 'Controversial Policy Sparks Outrage' for a local zoning change that received mixed feedback.",
         isCorrect: true,
-        explanation: "Using emotional language in headlines can influence reader perception before they even read the article."
+        explanation: "Using emotionally charged words like 'outrage' for mixed reactions shows bias and can influence reader perception."
       },
       {
         id: "2b",
-        text: "The article includes quotes from multiple sources.",
+        text: "The article includes quotes from both supporters and critics of the policy.",
         isCorrect: false,
-        explanation: "Including multiple sources is actually a sign of balanced reporting."
+        explanation: "Including multiple perspectives demonstrates balanced reporting rather than bias."
       },
       {
         id: "2c",
-        text: "Important context is buried in the last paragraph.",
+        text: "Key statistics about the policy's economic impact are mentioned only in the final paragraph.",
         isCorrect: true,
         explanation: "Placing crucial context at the end can lead readers to form opinions before getting all the facts."
       }
@@ -78,63 +66,59 @@ export const beginnerChallenges: Challenge[] = [
   {
     id: "3",
     title: "Source Credibility Check",
-    description: "Evaluate the reliability of information sources",
+    description: "You're researching a health topic online. Which of these sources raise red flags about credibility?",
     type: "source",
     difficulty: "beginner",
     xpReward: 10,
     options: [
       {
         id: "3a",
-        text: "The article is published on a personal blog with no citations.",
+        text: "A personal wellness blog making medical claims without citing any scientific studies.",
         isCorrect: true,
-        explanation: "Personal blogs without citations are generally less reliable than peer-reviewed or professionally edited sources."
+        explanation: "Personal blogs without scientific citations are not reliable sources for medical information."
       },
       {
         id: "3b",
-        text: "The study was published in a scientific journal.",
+        text: "A peer-reviewed study published in a medical journal.",
         isCorrect: false,
-        explanation: "Publication in a scientific journal typically indicates higher credibility due to peer review."
+        explanation: "Peer-reviewed medical journals are highly credible sources due to their rigorous review process."
       },
       {
         id: "3c",
-        text: "The website uses a .org domain but is actually a lobbying group.",
+        text: "A health advocacy website with a .org domain that's actually funded by a pharmaceutical company.",
         isCorrect: true,
-        explanation: "Domain extensions alone don't guarantee credibility - it's important to check who's behind the website."
+        explanation: "Domain extensions don't guarantee credibility - it's important to check funding sources and potential conflicts of interest."
       }
     ]
   }
 ];
 
-/**
- * Intermediate and advanced challenges that build upon basic critical thinking skills.
- * These challenges focus on deeper analysis and complex reasoning patterns.
- */
 export const advancedChallenges: Challenge[] = [
   {
     id: "4",
-    title: "Confirmation Bias in Research",
-    description: "Identify how confirmation bias can influence research and decision-making",
+    title: "Spotting Confirmation Bias",
+    description: "In these research scenarios, identify examples of confirmation bias affecting the research process.",
     type: "media",
     difficulty: "intermediate",
     xpReward: 15,
     options: [
       {
         id: "4a",
-        text: "A researcher only interviews people who already agree with their hypothesis about vaccine effectiveness.",
+        text: "A researcher studying vaccine effectiveness only interviews parents who reported positive experiences.",
         isCorrect: true,
-        explanation: "This demonstrates confirmation bias because the researcher is selectively choosing data that supports their existing beliefs while ignoring potential contradicting evidence."
+        explanation: "This shows confirmation bias by selectively choosing data that supports existing beliefs while ignoring potential contradicting evidence."
       },
       {
         id: "4b",
-        text: "A scientist changes their hypothesis after finding contradictory evidence in their experiments.",
+        text: "A scientist revises their hypothesis after experiments show unexpected results.",
         isCorrect: false,
-        explanation: "This actually shows good scientific practice - being willing to update beliefs based on new evidence is the opposite of confirmation bias."
+        explanation: "This shows good scientific practice - being willing to update beliefs based on new evidence counters confirmation bias."
       },
       {
         id: "4c",
-        text: "A climate change researcher focuses only on studies that show temperature increases while dismissing those showing natural variation.",
+        text: "A climate researcher excludes studies showing natural temperature variations from their analysis.",
         isCorrect: true,
-        explanation: "This shows confirmation bias by cherry-picking data that supports a predetermined conclusion rather than considering all available evidence."
+        explanation: "Cherry-picking data that supports a predetermined conclusion while ignoring contradicting evidence demonstrates confirmation bias."
       }
     ]
   },
@@ -239,31 +223,27 @@ export const advancedChallenges: Challenge[] = [
   }
 ];
 
-/**
- * Advanced challenges focused on modern information processing and digital literacy.
- * These challenges address contemporary issues in information consumption and analysis.
- */
 export const generationalChallenges: Challenge[] = [
   {
     id: "9",
-    title: "Deep Reading vs. Skimming",
+    title: "Critical Reading in the Digital Age",
+    description: "Analyze this research summary and identify elements that require deeper investigation:",
     type: "word-selection",
-    description: "Practice identifying key elements that require deeper analysis versus surface-level reading",
     difficulty: "intermediate",
     xpReward: 15,
-    passage: "A new study claims that social media use increases productivity in the workplace. The researchers surveyed 1,000 employees across five tech startups in Silicon Valley. They found that workers who used social media during breaks reported feeling more connected to their colleagues. The study was funded by a major social media platform and focused exclusively on companies with an average employee age under 30. Previous studies in traditional industries have shown different results, with social media use correlating to decreased productivity among diverse age groups.",
+    passage: "A new study claims that social media use increases workplace productivity. The researchers surveyed 1,000 employees across five tech startups in Silicon Valley. They found that workers who used social media during breaks reported feeling more connected to their colleagues. The study was funded by a major social media platform and focused exclusively on companies with an average employee age under 30. Previous studies in traditional industries have shown different results, with social media use correlating to decreased productivity among diverse age groups.",
     keyWords: [
       {
         word: "funded by a major social media platform",
-        explanation: "Potential conflict of interest that requires deeper investigation into possible bias in study design and conclusions"
+        explanation: "This reveals a potential conflict of interest that could influence the study's design and conclusions."
       },
       {
         word: "five tech startups in Silicon Valley",
-        explanation: "Limited sample size and specific industry context that may not generalize to other workplace environments"
+        explanation: "This indicates a limited and specific sample that may not represent broader workplace environments."
       },
       {
         word: "Previous studies in traditional industries",
-        explanation: "Contradicting evidence that suggests the need for more comprehensive analysis of the topic"
+        explanation: "This contradicting evidence suggests the need for a more comprehensive analysis across different contexts."
       }
     ]
   },
