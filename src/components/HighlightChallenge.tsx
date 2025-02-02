@@ -101,11 +101,11 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
               onClick={() => toggleSegment(index)}
               className={cn(
                 "px-2 py-1.5 rounded transition-colors text-left min-h-[2.5rem]",
-                "hover:bg-primary/10",
+                "hover:bg-primary/10 active:bg-primary/5",
                 "focus:outline-none focus:ring-2 focus:ring-primary/20",
                 "text-base sm:text-lg leading-normal",
                 "touch-manipulation",
-                selectedSegments.has(index) && "bg-primary/20",
+                selectedSegments.has(index) ? "bg-primary/20" : "bg-transparent",
                 showAnswer && isSegmentCorrect(segment, index) && "bg-green-200 dark:bg-green-800"
               )}
             >
