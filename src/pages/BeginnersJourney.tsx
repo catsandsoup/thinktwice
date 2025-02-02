@@ -71,20 +71,24 @@ const BeginnersJourney = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container relative px-4 py-4 space-y-4">
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate('/')}
-          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Exit Journey
-        </Button>
+      <div className="container px-4 space-y-2 sm:space-y-4">
+        <div className="flex items-center justify-between pt-2 sm:pt-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/')}
+            className="h-8 px-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            Exit
+          </Button>
+          <span className="text-sm font-medium text-purple-700 bg-purple-50/80 px-3 py-1 rounded-full">
+            {currentChallenge + 1} of {availableChallenges.length}
+          </span>
+        </div>
 
-        <ChallengeProgress
-          currentChallenge={currentChallenge}
-          totalChallenges={availableChallenges.length}
-        />
+        <h1 className="text-2xl sm:text-3xl font-display font-medium text-purple-900">
+          Beginner's Journey
+        </h1>
 
         <Challenge {...availableChallenges[currentChallenge]} onComplete={handleComplete} />
       </div>
