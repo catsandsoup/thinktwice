@@ -9,50 +9,16 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      user_roles: {
-        Row: {
-          created_at: string | null
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          role: Database["public"]["Enums"]["app_role"]
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "user" | "tester"
-      challenge_pathway: "truth_explorer" | "fact_finder" | "digital_guardian"
-      challenge_type:
-        | "standard"
-        | "word-selection"
-        | "matching"
-        | "highlight"
-        | "analysis-construction"
-        | "argument-construction"
-      difficulty_level: "beginner" | "intermediate" | "advanced"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
