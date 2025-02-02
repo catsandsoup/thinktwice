@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button";
 import { StandardChallenge as StandardChallengeType } from "@/data/challengeTypes";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { Star } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 type StandardChallengeProps = StandardChallengeType & {
   onComplete: (correct: boolean, xp: number) => void;
@@ -17,6 +21,9 @@ export function StandardChallenge(props: StandardChallengeProps) {
   const [showNextQuestion, setShowNextQuestion] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [feedbackText, setFeedbackText] = useState("");
 
   const correctOptions = props.options.filter(opt => opt.isCorrect);
   const isMultipleChoice = correctOptions.length > 1;
@@ -38,6 +45,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
 
   const handleSubmit = () => {
     if (selected.length === 0 && !isSubmitted) {
+      toast.error("Please select an answer before submitting");
       return;
     }
 
@@ -64,9 +72,11 @@ export function StandardChallenge(props: StandardChallengeProps) {
     
     if (isAllCorrect) {
       setShowNextQuestion(true);
+      setShowFeedback(true);
       setWrongAttempts(0);
     } else {
       setWrongAttempts(prev => prev + 1);
+      toast.error("That's not quite right. Try again!");
     }
   };
 
@@ -78,8 +88,34 @@ export function StandardChallenge(props: StandardChallengeProps) {
     setShowAnswer(false);
   };
 
+  const handleFeedbackSubmit = async () => {
+    try {
+      const { error } = await supabase
+        .from('challenge_feedback')
+        .insert({
+          challenge_id: props.id,
+          rating,
+          feedback_text: feedbackText
+        });
+
+      if (error) throw error;
+
+      toast.success("Thank you for your feedback!");
+      setShowFeedback(false);
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+      toast.error("Failed to submit feedback. Please try again.");
+    }
+  };
+
   return (
     <div className="space-y-4">
+      {isMultipleChoice && !isSubmitted && (
+        <p className="text-sm text-muted-foreground italic">
+          Select all answers that apply
+        </p>
+      )}
+
       <div className="space-y-4">
         {isMultipleChoice ? (
           props.options.map((option) => (
@@ -197,6 +233,43 @@ export function StandardChallenge(props: StandardChallengeProps) {
               <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">{option.explanation}</p>
             </div>
           ))}
+        </div>
+      )}
+
+      {showFeedback && (
+        <div className="p-4 bg-muted rounded-lg space-y-4">
+          <h3 className="font-medium">How was this challenge?</h3>
+          
+          <div className="flex gap-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                onClick={() => setRating(star)}
+                className={cn(
+                  "p-1 rounded hover:bg-accent",
+                  rating >= star ? "text-yellow-500" : "text-gray-300"
+                )}
+              >
+                <Star className="h-6 w-6" fill={rating >= star ? "currentColor" : "none"} />
+              </button>
+            ))}
+          </div>
+
+          <Textarea
+            placeholder="Share your thoughts about this challenge (optional)"
+            value={feedbackText}
+            onChange={(e) => setFeedbackText(e.target.value)}
+            className="min-h-[100px]"
+          />
+
+          <div className="flex gap-2">
+            <Button onClick={handleFeedbackSubmit} disabled={rating === 0}>
+              Submit Feedback
+            </Button>
+            <Button variant="outline" onClick={() => setShowFeedback(false)}>
+              Skip
+            </Button>
+          </div>
         </div>
       )}
     </div>
