@@ -19,7 +19,7 @@ export function JourneySelector({ value, onChange }: {
       const { data, error } = await supabase
         .from('journeys')
         .select('*')
-        .in('type', ['argument', 'beginner'] as JourneyType[])
+        .in('type', ['argument', 'beginner'])
         .order('created_at', { ascending: false });
       
       if (error) {
