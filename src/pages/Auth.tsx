@@ -61,68 +61,100 @@ export default function AuthPage() {
   });
 
   const handleSignIn = async (values: z.infer<typeof authSchema>) => {
-    setIsLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-    });
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
 
-    if (error) {
+      if (error) {
+        console.error("Sign in error:", error);
+        toast({
+          title: "Error signing in",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "You have been signed in successfully.",
+      });
+      navigate("/");
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: "Error",
-        description: error.message,
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
+    } finally {
       setIsLoading(false);
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "You have been signed in successfully.",
-    });
-    navigate("/");
   };
 
   const handleSignUp = async (values: z.infer<typeof authSchema>) => {
-    setIsLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email: values.email,
-      password: values.password,
-    });
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+      });
 
-    if (error) {
+      if (error) {
+        console.error("Sign up error:", error);
+        toast({
+          title: "Error signing up",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Please check your email to verify your account.",
+      });
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: "Error",
-        description: error.message,
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
+    } finally {
       setIsLoading(false);
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "Please check your email to verify your account.",
-    });
-    setIsLoading(false);
   };
 
   const handleSocialSignIn = async (provider: "google" | "apple") => {
-    setIsLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
 
-    if (error) {
+      if (error) {
+        console.error("Social sign in error:", error);
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: "Error",
-        description: error.message,
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -132,6 +164,7 @@ export default function AuthPage() {
     form.setValue("password", password);
   };
 
+  // ... keep existing code (JSX for the auth form)
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-8">
       <Card className="w-full max-w-md overflow-hidden bg-[#E5DEFF] bg-opacity-50 backdrop-blur-sm">
