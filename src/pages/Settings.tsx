@@ -71,53 +71,57 @@ export default function SettingsPage() {
     },
   });
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        navigate("/auth");
-        return;
+useEffect(() => {
+  const fetchProfile = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+
+    const { data: profileData, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch profile",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (profileData) {
+      const validatedProfile = {
+        ...profileData,
+        theme: validateProfileTheme(profileData.theme)
+      };
+      setProfile(validatedProfile);
+      form.reset({
+        display_name: profileData.display_name,
+        bio: profileData.bio,
+        email_notifications: profileData.email_notifications,
+        push_notifications: profileData.push_notifications,
+      });
+
+      if (profileData.avatar_url) {
+        const { data: { publicUrl } } = supabase
+          .storage
+          .from('avatars')
+          .getPublicUrl(profileData.avatar_url);
+        setAvatarUrl(publicUrl);
       }
+    }
 
-      const { data: profileData, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
+    setIsLoading(false);
+  };
 
-      if (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch profile",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (profileData) {
-        setProfile(profileData);
-        form.reset({
-          display_name: profileData.display_name,
-          bio: profileData.bio,
-          email_notifications: profileData.email_notifications,
-          push_notifications: profileData.push_notifications,
-        });
-
-        if (profileData.avatar_url) {
-          const { data: { publicUrl } } = supabase
-            .storage
-            .from('avatars')
-            .getPublicUrl(profileData.avatar_url);
-          setAvatarUrl(publicUrl);
-        }
-      }
-
-      setIsLoading(false);
-    };
-
-    fetchProfile();
-  }, []);
+  fetchProfile();
+}, []);
 
   const onSubmit = async (values: z.infer<typeof profileFormSchema>) => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -468,3 +472,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+

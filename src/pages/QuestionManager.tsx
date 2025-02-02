@@ -10,6 +10,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+type FeedbackWithDetails = {
+  id: string;
+  rating: number;
+  feedback_text: string | null;
+  created_at: string | null;
+  challenges: {
+    title: string | null;
+  } | null;
+  user: {
+    display_name: string | null;
+  } | null;
+};
+
 export default function QuestionManager() {
   const { data: feedback } = useQuery({
     queryKey: ['feedback'],
@@ -31,17 +44,16 @@ export default function QuestionManager() {
         .from('challenge_feedback')
         .select(`
           *,
-          challenges (
+          challenges:challenge_id (
             title
           ),
-          profiles (
+          user:user_id (
             display_name
           )
-        `)
-        .order('created_at', { ascending: false });
+        `);
 
       if (error) throw error;
-      return data;
+      return data as FeedbackWithDetails[];
     },
   });
 
@@ -66,11 +78,11 @@ export default function QuestionManager() {
             {feedback?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.challenges?.title}</TableCell>
-                <TableCell>{item.profiles?.display_name}</TableCell>
+                <TableCell>{item.user?.display_name}</TableCell>
                 <TableCell>{item.rating} ⭐</TableCell>
                 <TableCell>{item.feedback_text}</TableCell>
                 <TableCell>
-                  {new Date(item.created_at).toLocaleDateString()}
+                  {item.created_at ? new Date(item.created_at).toLocaleDateString() : 'N/A'}
                 </TableCell>
               </TableRow>
             ))}

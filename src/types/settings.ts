@@ -1,3 +1,5 @@
+export type Theme = 'light' | 'dark' | 'system';
+
 export interface Profile {
   id: string;
   display_name: string | null;
@@ -5,7 +7,7 @@ export interface Profile {
   avatar_url: string | null;
   email_notifications: boolean;
   push_notifications: boolean;
-  theme: 'light' | 'dark' | 'system';
+  theme: Theme;
   enterprise_id: string | null;
   two_factor_enabled: boolean;
 }
