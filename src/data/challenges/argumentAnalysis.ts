@@ -74,5 +74,126 @@ export const argumentAnalysisChallenges: Challenge[] = [
         explanation: "The ad falsely equates general antioxidant benefits with their specific product's necessity."
       }
     ]
+  },
+  {
+    id: "arg3",
+    title: "Constructing Counter-Arguments",
+    description: "Complete this framework for addressing a weak argument:\n\"When someone says [their opinion is the only logical conclusion], but only considers [evidence that supports their view], you can strengthen the discussion by [acknowledging their points while introducing overlooked factors].\"",
+    type: "word-selection",
+    difficulty: "advanced",
+    xpReward: 20,
+    passage: "When someone says their opinion is the only logical conclusion, but only considers evidence that supports their view, you can strengthen the discussion by acknowledging their points while introducing overlooked factors.",
+    keyWords: [
+      {
+        word: "their opinion is the only logical conclusion",
+        explanation: "Recognizing when someone presents their view as the only possible answer"
+      },
+      {
+        word: "evidence that supports their view",
+        explanation: "Identifying selective evidence use"
+      },
+      {
+        word: "acknowledging their points while introducing overlooked factors",
+        explanation: "Adding to discussions constructively rather than just opposing"
+      }
+    ]
+  },
+  {
+    id: "arg4",
+    title: "Real-World Fallacy Recognition",
+    description: "Match these common social situations with the logical fallacies they demonstrate.",
+    type: "matching",
+    difficulty: "intermediate",
+    xpReward: 15,
+    pairs: [
+      {
+        id: "pair1",
+        claim: "If you really cared about the environment, you'd never use a car.",
+        evidence: "No True Scotsman: The 'true environmentalist' argument creates an unrealistic purity test"
+      },
+      {
+        id: "pair2",
+        claim: "Everyone's investing in crypto now, so it must be a good idea.",
+        evidence: "Bandwagon Appeal: Relies on popularity rather than merit"
+      },
+      {
+        id: "pair3",
+        claim: "That research can't be trusted because the scientist once worked for a corporation.",
+        evidence: "Ad Hominem: Attacks the researcher's background instead of the research"
+      },
+      {
+        id: "pair4",
+        claim: "Either you support my political candidate or you hate this country.",
+        evidence: "False Dilemma: Presents a false choice between two extremes"
+      }
+    ]
+  },
+  {
+    id: "arg5",
+    title: "Strength of Arguments",
+    description: "In a debate about implementing a four-day work week, which argument is strongest?",
+    type: "fallacy",
+    difficulty: "advanced",
+    xpReward: 20,
+    options: [
+      {
+        id: "arg5a",
+        text: "It's obvious that a four-day work week is better because people hate working five days.",
+        isCorrect: false,
+        explanation: "Relies on emotional appeal and assumption"
+      },
+      {
+        id: "arg5b",
+        text: "Studies in multiple countries show similar or increased productivity with four-day work weeks, plus reduced burnout and lower operating costs.",
+        isCorrect: true,
+        explanation: "Uses specific evidence, multiple factors, and real-world data"
+      },
+      {
+        id: "arg5c",
+        text: "Every progressive company is moving to four-day weeks, so we'll look bad if we don't.",
+        isCorrect: false,
+        explanation: "Appeals to trends rather than merit"
+      },
+      {
+        id: "arg5d",
+        text: "Anyone who wants to work five days clearly doesn't value work-life balance.",
+        isCorrect: false,
+        explanation: "Creates a false character attack"
+      }
+    ]
+  },
+  {
+    id: "arg6",
+    title: "Identifying Hidden Assumptions",
+    description: "\"Since the library's new late fee policy was implemented, book returns have decreased. The policy must be making people keep books longer.\"\n\nWhat's the key hidden assumption in this argument?",
+    type: "fallacy",
+    difficulty: "intermediate",
+    xpReward: 15,
+    options: [
+      {
+        id: "arg6a",
+        text: "Libraries shouldn't charge late fees",
+        isCorrect: false,
+        explanation: "This is a separate debate, not an assumption in the argument"
+      },
+      {
+        id: "arg6b",
+        text: "People don't value library books",
+        isCorrect: false,
+        explanation: "Not assumed in the original argument"
+      },
+      {
+        id: "arg6c",
+        text: "The policy change is the only factor affecting return rates",
+        isCorrect: true,
+        explanation: "The argument assumes no other factors (like seasonal changes, COVID, etc.) could explain the decrease"
+      },
+      {
+        id: "arg6d",
+        text: "Higher fees lead to better compliance",
+        isCorrect: false,
+        explanation: "The argument actually suggests the opposite"
+      }
+    ]
   }
 ];
