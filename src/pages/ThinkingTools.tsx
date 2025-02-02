@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Challenge } from "@/components/Challenge";
+import { QuizHeader } from "@/components/QuizHeader";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllChallenges } from "@/lib/queries";
 import { Challenge as ChallengeType } from "@/data/challengeTypes";
@@ -60,6 +61,12 @@ export default function ThinkingTools() {
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
+      <QuizHeader 
+        title="Thinking Tools Journey"
+        currentQuestion={currentChallengeIndex + 1}
+        totalQuestions={challenges.length}
+      />
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Thinking Tools Journey</h1>
         <p className="text-gray-600">
@@ -86,4 +93,4 @@ export default function ThinkingTools() {
       />
     </div>
   );
-};
+}
