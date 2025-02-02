@@ -302,6 +302,41 @@ export type Database = {
           },
         ]
       }
+      question_feedback: {
+        Row: {
+          challenge_id: string | null
+          created_at: string | null
+          feedback_text: string
+          id: string
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          created_at?: string | null
+          feedback_text: string
+          id?: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          created_at?: string | null
+          feedback_text?: string
+          id?: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_feedback_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       standard_challenge_options: {
         Row: {
           challenge_id: string | null
