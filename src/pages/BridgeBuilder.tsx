@@ -15,7 +15,6 @@ export default function BridgeBuilder() {
   const { data: allChallenges = [], isLoading } = useQuery({
     queryKey: ['bridge-builder-challenges'],
     queryFn: async () => {
-      // First get the Bridge Builder journey ID
       const { data: journey } = await supabase
         .from('journeys')
         .select('id')
@@ -24,7 +23,6 @@ export default function BridgeBuilder() {
 
       if (!journey) throw new Error('Bridge Builder journey not found');
 
-      // Then fetch only challenges for this journey
       const { data: challenges } = await supabase
         .from('challenges')
         .select(`
@@ -48,7 +46,6 @@ export default function BridgeBuilder() {
         .eq('journey_id', journey.id)
         .order('difficulty');
 
-      // Map database fields to our frontend types and ensure type safety
       return challenges?.map(challenge => {
         const baseChallenge = {
           id: challenge.id,
@@ -106,55 +103,26 @@ export default function BridgeBuilder() {
     },
   });
 
-  const handleChallengeComplete = async (correct: boolean, xp: number) => {
+  const handleChallengeComplete = (correct: boolean) => {
     if (correct) {
-      try {
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-        
-        if (authError || !user) {
-          toast.error("Please sign in to save your progress");
-          navigate('/login');
-          return;
-        }
+      // Update completed challenges state
+      setCompletedChallenges(prev => {
+        const newCompleted = new Set(prev);
+        newCompleted.add(allChallenges[currentChallengeIndex].id);
+        return newCompleted;
+      });
 
-        // Record the completed challenge
-        const { error: completionError } = await supabase
-          .from('completed_challenges')
-          .insert({
-            challenge_id: allChallenges[currentChallengeIndex].id,
-            user_id: user.id,
-            xp_earned: xp
-          });
-
-        if (completionError) {
-          console.error('Error updating progress:', completionError);
-          toast.error("Failed to save progress. Please try again.");
-          return;
-        }
-
-        // Update completed challenges state
-        setCompletedChallenges(prev => {
-          const newCompleted = new Set(prev);
-          newCompleted.add(allChallenges[currentChallengeIndex].id);
-          return newCompleted;
-        });
-
-        // Check if this was the last challenge
-        if (currentChallengeIndex === allChallenges.length - 1) {
-          toast.success("Congratulations! You've completed all challenges! 🎉");
-          setTimeout(() => {
-            navigate('/');
-          }, 2000);
-        } else {
-          toast.success("Great job! Moving to the next challenge.");
-          // Ensure state update happens after the animation
-          setTimeout(() => {
-            setCurrentChallengeIndex(currentChallengeIndex + 1);
-          }, 300);
-        }
-      } catch (error) {
-        console.error('Error updating progress:', error);
-        toast.error("Failed to save progress. Please try again.");
+      // Check if this was the last challenge
+      if (currentChallengeIndex === allChallenges.length - 1) {
+        toast.success("Congratulations! You've completed all challenges! 🎉");
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      } else {
+        toast.success("Great job! Moving to the next challenge.");
+        setTimeout(() => {
+          setCurrentChallengeIndex(currentChallengeIndex + 1);
+        }, 300);
       }
     }
   };
