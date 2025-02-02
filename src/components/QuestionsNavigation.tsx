@@ -46,7 +46,7 @@ export function QuestionsNavigation() {
   return (
     <>
       <SidebarTrigger className="fixed top-8 left-4 z-50" />
-      <Sidebar variant="floating" defaultOpen={false}>
+      <Sidebar variant="floating">
         <SidebarContent>
           {groupedChallenges && Object.entries(groupedChallenges).map(([difficulty, challenges], index) => (
             <div key={difficulty}>
