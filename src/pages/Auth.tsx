@@ -43,8 +43,8 @@ const authSchema = z.object({
 });
 
 const testAccounts = [
-  { email: "work@montyg.me", label: "Admin Account" },
-  { email: "houseofmanuela@gmail.com", label: "Test Account" },
+  { email: "work@montyg.me", label: "Admin Account", password: "Alpine123" },
+  { email: "houseofmanuela@gmail.com", label: "Test Account", password: "Alpine123" },
 ];
 
 export default function AuthPage() {
@@ -127,8 +127,9 @@ export default function AuthPage() {
     }
   };
 
-  const setTestAccount = (email: string) => {
+  const setTestAccount = (email: string, password: string) => {
     form.setValue("email", email);
+    form.setValue("password", password);
   };
 
   return (
@@ -147,7 +148,7 @@ export default function AuthPage() {
                 key={account.email}
                 variant="outline"
                 className="w-full text-sm"
-                onClick={() => setTestAccount(account.email)}
+                onClick={() => setTestAccount(account.email, account.password)}
               >
                 {account.label} ({account.email})
               </Button>
