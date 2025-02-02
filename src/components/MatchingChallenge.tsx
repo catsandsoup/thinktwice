@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { MatchingChallenge as MatchingChallengeType } from "@/data/challengeTypes";
 import { useToast } from "@/hooks/use-toast";
@@ -12,6 +12,16 @@ export function MatchingChallenge({ pairs, xpReward, onComplete }: MatchingChall
   const [matchedPairs, setMatchedPairs] = useState<Set<string>>(new Set());
   const [showAnswer, setShowAnswer] = useState(false);
   const { toast } = useToast();
+
+  // Randomize the evidence array while keeping the claims in order
+  const randomizedEvidence = useMemo(() => {
+    const evidenceArray = pairs.map(pair => pair.evidence);
+    for (let i = evidenceArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [evidenceArray[i], evidenceArray[j]] = [evidenceArray[j], evidenceArray[i]];
+    }
+    return evidenceArray;
+  }, [pairs]);
 
   const handleSelect = (text: string, type: "claim" | "evidence") => {
     setSelectedPair(prev => ({ ...prev, [type]: text }));
@@ -74,19 +84,19 @@ export function MatchingChallenge({ pairs, xpReward, onComplete }: MatchingChall
         
         <div className="space-y-2">
           <h3 className="font-semibold mb-2">Evidence</h3>
-          {pairs.map(pair => (
+          {randomizedEvidence.map((evidence, index) => (
             <div
-              key={pair.id + "-evidence"}
+              key={`evidence-${index}`}
               className={`p-2 rounded cursor-pointer transition-colors ${
-                matchedPairs.has(pair.claim)
+                pairs.some(pair => pair.evidence === evidence && matchedPairs.has(pair.claim))
                   ? "bg-green-100 dark:bg-green-900"
-                  : selectedPair.evidence === pair.evidence
+                  : selectedPair.evidence === evidence
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted hover:bg-accent hover:text-accent-foreground"
               }`}
-              onClick={() => !matchedPairs.has(pair.claim) && handleSelect(pair.evidence, "evidence")}
+              onClick={() => !pairs.some(pair => pair.evidence === evidence && matchedPairs.has(pair.claim)) && handleSelect(evidence, "evidence")}
             >
-              {pair.evidence}
+              {evidence}
             </div>
           ))}
         </div>
