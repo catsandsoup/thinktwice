@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Activity, Brain, BarChart3, MessageSquare } from "lucide-react";
+import { Activity, Brain, BarChart3, MessageSquare, Handshake } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
@@ -11,6 +11,8 @@ interface LearningPathProps {
   mission: string;
   actionText: string;
   labels?: string[];
+  customColor?: string;
+  customIcon?: string;
 }
 
 export function LearningPath({ 
@@ -20,9 +22,11 @@ export function LearningPath({
   onClick,
   mission,
   actionText,
-  labels = []
+  labels = [],
+  customColor,
+  customIcon
 }: LearningPathProps) {
-  const Icon = {
+  const Icon = customIcon === "handshake" ? Handshake : {
     beginner: Brain,
     intermediate: BarChart3,
     advanced: MessageSquare,
@@ -54,10 +58,9 @@ export function LearningPath({
 
   return (
     <Card
-      onClick={onClick}
       className={cn(
-        "relative overflow-hidden cursor-pointer transition-all hover:shadow-lg",
-        colors.bg
+        "relative overflow-hidden pointer-events-none",
+        customColor ? `bg-[${customColor}]` : colors.bg
       )}
     >
       <div className="p-6 space-y-6">
@@ -91,8 +94,9 @@ export function LearningPath({
         </div>
 
         <button 
+          onClick={onClick}
           className={cn(
-            "w-full py-3 px-4 rounded-lg text-white font-medium transition-all focus:ring-2 focus:ring-offset-2",
+            "w-full py-3 px-4 rounded-lg text-white font-medium transition-all focus:ring-2 focus:ring-offset-2 pointer-events-auto",
             colors.button
           )}
         >

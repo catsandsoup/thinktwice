@@ -72,7 +72,6 @@ const Index = () => {
               >
                 Settings
               </Button>
-              {/* Add more navigation items as needed */}
             </nav>
           </SheetContent>
         </Sheet>
@@ -107,6 +106,8 @@ const Index = () => {
             mission="Learn to identify emotional triggers and convert them into logical arguments"
             actionText="Start Building Bridges"
             labels={["Emotional Intelligence", "Logical Analysis", "Conflict Resolution"]}
+            customColor="#FFDEE2"
+            customIcon="handshake"
           />
           <LearningPath
             title="Thinking Tools"
