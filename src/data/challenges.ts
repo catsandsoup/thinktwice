@@ -3,85 +3,85 @@ import { Challenge } from "./challengeTypes";
 export const beginnerChallenges: Challenge[] = [
   {
     id: "1",
-    title: "Identifying False Dilemmas",
-    description: "Learn to spot false either/or choices in arguments. Which of these statements present false dilemmas?",
+    title: "Spot the False Choice",
+    description: "In social media debates, false dilemmas often oversimplify complex issues. Can you identify which statements present unrealistic either/or choices?",
     type: "fallacy",
     difficulty: "beginner",
     xpReward: 10,
     options: [
       {
         id: "1a",
-        text: "Either you support unlimited government surveillance, or you're helping terrorists.",
+        text: "A viral TikTok claims: 'Either you support banning all social media for teens, or you don't care about mental health.'",
         isCorrect: true,
-        explanation: "This is a false dilemma because it presents only two extreme options, ignoring many possible middle-ground positions on privacy and security."
+        explanation: "This is a false dilemma because it ignores numerous balanced approaches like education, time limits, and content filtering that could address mental health concerns while allowing social media use."
       },
       {
         id: "1b",
-        text: "The restaurant serves both chicken and beef options.",
+        text: "A streaming service offers both ad-supported and ad-free subscription options.",
         isCorrect: false,
-        explanation: "This is a simple statement of available choices, not a false dilemma."
+        explanation: "This presents genuine, distinct choices without forcing a false dichotomy. Users can choose based on their preferences and budget."
       },
       {
         id: "1c",
-        text: "You're either with us or against us in this debate.",
+        text: "An Instagram influencer posts: 'You either follow the latest fashion trends or you'll never fit in.'",
         isCorrect: true,
-        explanation: "This is a false dilemma because it ignores the possibility of neutral positions or partial agreement."
+        explanation: "This creates a false dilemma by suggesting social acceptance depends entirely on following trends, ignoring personal style, authenticity, and diverse social groups."
       }
     ]
   },
   {
     id: "2",
-    title: "Media Bias Analysis",
-    description: "You're reading a news article. Which of these elements suggest potential media bias?",
+    title: "Decoding Social Media Influence",
+    description: "You're scrolling through your feed and see a trending post about a new health supplement. Which elements suggest potential bias or manipulation?",
     type: "media",
     difficulty: "beginner",
     xpReward: 10,
     options: [
       {
         id: "2a",
-        text: "The headline reads 'Controversial Policy Sparks Outrage' for a local zoning change that received mixed feedback.",
+        text: "The post shows before and after photos with dramatic lighting differences and claims 'EVERYONE is talking about this miracle supplement!'",
         isCorrect: true,
-        explanation: "Using emotionally charged words like 'outrage' for mixed reactions shows bias and can influence reader perception."
+        explanation: "The use of manipulated photos and vague, exaggerated claims ('EVERYONE') are classic signs of marketing manipulation rather than honest product information."
       },
       {
         id: "2b",
-        text: "The article includes quotes from both supporters and critics of the policy.",
+        text: "The post includes a detailed ingredients list, links to peer-reviewed studies, and mentions both benefits and potential side effects.",
         isCorrect: false,
-        explanation: "Including multiple perspectives demonstrates balanced reporting rather than bias."
+        explanation: "This demonstrates transparency and balanced reporting by providing verifiable information and acknowledging limitations."
       },
       {
         id: "2c",
-        text: "Key statistics about the policy's economic impact are mentioned only in the final paragraph.",
+        text: "The influencer mentions their 'honest review' but doesn't disclose they're being paid to promote the product.",
         isCorrect: true,
-        explanation: "Placing crucial context at the end can lead readers to form opinions before getting all the facts."
+        explanation: "Failing to disclose sponsored content is misleading and often illegal. Authentic reviews should clearly state any financial relationships."
       }
     ]
   },
   {
     id: "3",
-    title: "Source Credibility Check",
-    description: "You're researching a health topic online. Which of these sources raise red flags about credibility?",
+    title: "Evaluating Health Information Online",
+    description: "You're researching workout supplements on social media. Which sources raise red flags about credibility?",
     type: "source",
     difficulty: "beginner",
     xpReward: 10,
     options: [
       {
         id: "3a",
-        text: "A personal wellness blog making medical claims without citing any scientific studies.",
+        text: "A fitness influencer claims their supplement 'burns fat while you sleep' and has 'zero side effects' but doesn't link to any research.",
         isCorrect: true,
-        explanation: "Personal blogs without scientific citations are not reliable sources for medical information."
+        explanation: "Claims that sound too good to be true usually are. Scientific claims require evidence, and 'zero side effects' is a red flag for any supplement."
       },
       {
         id: "3b",
-        text: "A peer-reviewed study published in a medical journal.",
+        text: "A sports nutrition researcher's blog post discusses supplement effectiveness with links to published studies and explains limitations.",
         isCorrect: false,
-        explanation: "Peer-reviewed medical journals are highly credible sources due to their rigorous review process."
+        explanation: "This source demonstrates credibility by providing evidence, acknowledging limitations, and maintaining professional expertise."
       },
       {
         id: "3c",
-        text: "A health advocacy website with a .org domain that's actually funded by a pharmaceutical company.",
+        text: "A supplement company's website uses scientific terms and has a .org domain, but investigation shows it's owned by the product manufacturer.",
         isCorrect: true,
-        explanation: "Domain extensions don't guarantee credibility - it's important to check funding sources and potential conflicts of interest."
+        explanation: "This is misleading marketing. The .org domain and scientific language create a false impression of independence when it's actually promotional content."
       }
     ]
   }
@@ -220,131 +220,52 @@ export const advancedChallenges: Challenge[] = [
 export const generationalChallenges: Challenge[] = [
   {
     id: "9",
-    title: "Critical Reading in the Digital Age",
-    description: "Analyze this research summary and identify elements that require deeper investigation:",
+    title: "Analyzing Viral Content",
+    description: "A trending video about AI technology is going viral. Identify elements that need deeper investigation:",
     type: "word-selection",
     difficulty: "intermediate",
     xpReward: 15,
-    passage: "A new study claims that social media use increases workplace productivity. The researchers surveyed 1,000 employees across five tech startups in Silicon Valley. They found that workers who used social media during breaks reported feeling more connected to their colleagues. The study was funded by a major social media platform and focused exclusively on companies with an average employee age under 30. Previous studies in traditional industries have shown different results, with social media use correlating to decreased productivity among diverse age groups.",
+    passage: "A viral TikTok claims a new AI app can predict your future career success with 99% accuracy. The creator, who has 2M followers, demonstrates the app using cherry-picked examples of successful predictions. The app is free to download but requires access to your social media accounts and personal data. Comments are filled with users sharing their positive experiences, though most accounts were created recently. The creator mentions that major tech companies are interested in the technology but can't name them due to 'confidentiality agreements.'",
     keyWords: [
       {
-        word: "funded by a major social media platform",
-        explanation: "This reveals a potential conflict of interest that could influence the study's design and conclusions."
+        word: "99% accuracy",
+        explanation: "This is an extraordinary claim that requires extraordinary evidence. Such precise accuracy claims for complex predictions are often red flags."
       },
       {
-        word: "five tech startups in Silicon Valley",
-        explanation: "This indicates a limited and specific sample that may not represent broader workplace environments."
+        word: "cherry-picked examples",
+        explanation: "Selective examples can create a misleading impression of success by hiding failures or less impressive results."
       },
       {
-        word: "Previous studies in traditional industries",
-        explanation: "This contradicting evidence suggests the need for a more comprehensive analysis across different contexts."
+        word: "requires access to your social media accounts",
+        explanation: "Data collection requirements raise privacy concerns and could indicate potential misuse of personal information."
       }
     ]
   },
   {
     id: "10",
-    title: "Beyond Headlines and Viral Content",
+    title: "Beyond Clickbait Headlines",
     type: "matching",
-    description: "Connect viral headlines with their more nuanced underlying stories",
+    description: "Match these viral headlines with their more accurate underlying stories. Learn to spot how headlines can mislead:",
     difficulty: "advanced",
     xpReward: 20,
     pairs: [
       {
         id: "10a",
-        claim: "BREAKING: New Diet Pill Melts Fat Overnight!",
-        evidence: "Small-scale preliminary study shows modest weight loss effects over 6 months with specific dietary restrictions and exercise requirements"
+        claim: "SHOCKING: This Student's Phone App Made Them a Millionaire Overnight! 🤑",
+        evidence: "College student's app gained popularity over six months, eventually receiving venture capital funding after extensive development and marketing"
       },
       {
         id: "10b",
-        claim: "Tech CEO: 'AI Will Replace All Jobs by 2025!'",
-        evidence: "Industry expert discusses potential automation of certain tasks while emphasizing the creation of new roles and the increasing importance of human skills"
+        claim: "Scientists Say Your Favorite Social Media App Is Rewiring Your Brain! 🧠",
+        evidence: "Research suggests extended social media use may affect attention patterns and dopamine responses, but more long-term studies are needed"
       },
       {
         id: "10c",
-        claim: "Scientists Find Miracle Cure in Common Household Item!",
-        evidence: "Laboratory study identifies potentially beneficial compound requiring years of clinical trials before possible medical applications"
+        claim: "This Simple Hack Will Get You Verified on Instagram in 24 Hours! ✓",
+        evidence: "Official verification process requires meeting platform guidelines and can take weeks, with no guaranteed approval"
       }
     ]
-  },
-  {
-    id: "11",
-    title: "Algorithm Awareness",
-    type: "highlight",
-    description: "Understand how content recommendation systems shape information exposure",
-    difficulty: "advanced",
-    xpReward: 20,
-    statement: "My social media feed keeps showing articles about how vitamins cure everything. I've noticed more health influencers appearing in my recommendations since I watched one video about nutrition. Now my friends are sharing similar content, so it must be becoming more popular and credible. The algorithms know what's trending and important, right?",
-    highlights: [
-      {
-        text: "keeps showing articles",
-        explanation: "Content reinforcement through algorithmic recommendations can create a false sense of consensus or prominence"
-      },
-      {
-        text: "since I watched one video",
-        explanation: "Demonstration of how recommendation systems can amplify initial interests into echo chambers"
-      },
-      {
-        text: "my friends are sharing similar content",
-        explanation: "Social proof bias combined with algorithmic filtering can create an illusion of widespread agreement"
-      }
-    ]
-  },
-  {
-    id: "12",
-    title: "Attention Span and Complex Analysis",
-    type: "media",
-    description: "Evaluate how different content formats affect understanding of complex topics",
-    difficulty: "intermediate",
-    xpReward: 15,
-    options: [
-      {
-        id: "12a",
-        text: "A 30-second video claims to explain quantum physics with fun animations and oversimplified analogies.",
-        isCorrect: true,
-        explanation: "Complex topics often require longer-form content and deeper engagement to understand nuances and avoid misconceptions."
-      },
-      {
-        id: "12b",
-        text: "A long-form article breaks down a scientific concept with detailed explanations and relevant examples.",
-        isCorrect: false,
-        explanation: "This format allows for proper depth and nuance in explaining complex topics, even though it requires more attention and effort."
-      },
-      {
-        id: "12c",
-        text: "A series of memes summarizes a political debate using witty one-liners and popular references.",
-        isCorrect: true,
-        explanation: "While engaging, this format often oversimplifies complex issues and may promote shallow understanding of important topics."
-      }
-    ]
-  },
-  {
-    id: "13",
-    title: "Information Overwhelm and Decision Making",
-    type: "source",
-    description: "Learn to manage and evaluate information when faced with overwhelming options",
-    difficulty: "advanced",
-    xpReward: 20,
-    options: [
-      {
-        id: "13a",
-        text: "Making a healthcare decision by following the most-liked comments on a medical support group.",
-        isCorrect: true,
-        explanation: "Social validation shouldn't replace careful evaluation of credible medical sources and professional advice."
-      },
-      {
-        id: "13b",
-        text: "Researching a topic using academic databases and fact-checking websites, taking notes to compare findings.",
-        isCorrect: false,
-        explanation: "This methodical approach helps manage information overload while maintaining quality of research."
-      },
-      {
-        id: "13c",
-        text: "Choosing a political stance based on which influencers have the most engaging content about the issue.",
-        isCorrect: true,
-        explanation: "Entertainment value and social media engagement metrics aren't reliable indicators of argument quality or factual accuracy."
-      }
-    ]
-  },
+  }
 ];
 
 export const modernChallenges: Challenge[] = [
