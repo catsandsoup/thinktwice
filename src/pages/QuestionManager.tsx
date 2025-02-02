@@ -50,7 +50,7 @@ export default function QuestionManager() {
           challenges:challenge_id (
             title
           ),
-          user:profiles!challenge_feedback_user_id_fkey (
+          user:profiles (
             display_name
           )
         `);
