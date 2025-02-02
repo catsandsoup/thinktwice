@@ -9,9 +9,6 @@ export default function QuestionManager() {
     <div className="container py-8 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Question Manager</h1>
-        <p className="text-sm text-muted-foreground">
-          Manage questions for argument analysis and beginner journeys
-        </p>
       </div>
 
       <div className="max-w-xl">

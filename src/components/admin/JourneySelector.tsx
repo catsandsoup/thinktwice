@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { JourneyType } from "@/data/challengeTypes";
 
 export function JourneySelector({ value, onChange }: { 
   value: string;
@@ -18,33 +17,25 @@ export function JourneySelector({ value, onChange }: {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('journeys')
-        .select('*')
-        .in('type', ['argument', 'beginner'])
-        .order('created_at', { ascending: false });
+        .select('*');
       
-      if (error) {
-        console.error('Error fetching journeys:', error);
-        throw error;
-      }
+      if (error) throw error;
       return data;
     }
   });
 
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium">Select Journey</label>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger>
-          <SelectValue placeholder="Select journey" />
-        </SelectTrigger>
-        <SelectContent>
-          {journeys?.map((journey) => (
-            <SelectItem key={journey.id} value={journey.id}>
-              {journey.title} ({journey.type})
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger>
+        <SelectValue placeholder="Select journey" />
+      </SelectTrigger>
+      <SelectContent>
+        {journeys?.map((journey) => (
+          <SelectItem key={journey.id} value={journey.id}>
+            {journey.title}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

@@ -1,7 +1,5 @@
 export type ChallengeType = "headline" | "fallacy" | "media" | "source" | "word-selection" | "matching" | "highlight";
 
-export type JourneyType = "finance" | "science" | "critical_thinking" | "argument" | "beginner";
-
 export type BaseChallenge = {
   id: string;
   title: string;

@@ -622,12 +622,7 @@ export type Database = {
         | "matching"
         | "highlight"
       difficulty_level: "beginner" | "intermediate" | "advanced"
-      journey_type:
-        | "finance"
-        | "science"
-        | "critical_thinking"
-        | "argument"
-        | "beginner"
+      journey_type: "finance" | "science" | "critical_thinking"
     }
     CompositeTypes: {
       [_ in never]: never
