@@ -83,7 +83,7 @@ const BeginnersJourney = () => {
         }
       }
       
-      if (!availableChallenges.length || currentChallenge === availableChallenges.length - 1) {
+      if (currentChallenge === availableChallenges.length - 1) {
         navigate('/');
       } else {
         setCurrentChallenge(prev => prev + 1);
