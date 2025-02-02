@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Challenge } from "@/components/Challenge";
 import { supabase } from "@/integrations/supabase/client";
-import { allChallenges } from "@/data/challenges";
+import { beginnerChallenges } from "@/data/challenges";
 import { ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -26,7 +26,7 @@ const BeginnersJourney = () => {
     loadSeenChallenges();
   }, []);
 
-  const availableChallenges = allChallenges
+  const availableChallenges = beginnerChallenges
     .filter(challenge => !seenChallenges.has(challenge.id))
     .sort(() => Math.random() - 0.5);
 
