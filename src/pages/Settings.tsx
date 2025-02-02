@@ -45,7 +45,17 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { Profile } from "@/types/settings";
+
+interface Profile {
+  id: string;
+  display_name: string | null;
+  bio: string | null;
+  avatar_url: string | null;
+  email_notifications: boolean;
+  push_notifications: boolean;
+  theme: 'light' | 'dark' | 'system';
+  created_at: string;
+}
 
 const profileFormSchema = z.object({
   display_name: z.string().min(2).max(30).nullable(),
@@ -80,7 +90,7 @@ export default function SettingsPage() {
         return;
       }
 
-      const { data: profile, error } = await supabase
+      const { data: profileData, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", user.id)
@@ -95,20 +105,20 @@ export default function SettingsPage() {
         return;
       }
 
-      if (profile) {
-        setProfile(profile);
+      if (profileData) {
+        setProfile(profileData);
         form.reset({
-          display_name: profile.display_name,
-          bio: profile.bio,
-          email_notifications: profile.email_notifications,
-          push_notifications: profile.push_notifications,
+          display_name: profileData.display_name,
+          bio: profileData.bio,
+          email_notifications: profileData.email_notifications,
+          push_notifications: profileData.push_notifications,
         });
 
-        if (profile.avatar_url) {
+        if (profileData.avatar_url) {
           const { data: { publicUrl } } = supabase
             .storage
             .from('avatars')
-            .getPublicUrl(profile.avatar_url);
+            .getPublicUrl(profileData.avatar_url);
           setAvatarUrl(publicUrl);
         }
       }
