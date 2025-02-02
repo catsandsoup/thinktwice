@@ -2,7 +2,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Challenge } from "@/data/challengeTypes";
 
 export async function fetchAllChallenges(): Promise<Challenge[]> {
-  // Fetch base challenges
+  console.log('Fetching challenges from Supabase...');
+  
   const { data: challenges, error: challengesError } = await supabase
     .from('challenges')
     .select(`
@@ -27,7 +28,12 @@ export async function fetchAllChallenges(): Promise<Challenge[]> {
     throw challengesError;
   }
 
-  if (!challenges) return [];
+  if (!challenges) {
+    console.log('No challenges found');
+    return [];
+  }
+
+  console.log('Raw challenges from Supabase:', challenges);
 
   return challenges.map(challenge => {
     const baseChallenge = {
