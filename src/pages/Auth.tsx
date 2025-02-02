@@ -42,6 +42,11 @@ const authSchema = z.object({
     ),
 });
 
+const testAccounts = [
+  { email: "work@montyg.me", label: "Admin Account" },
+  { email: "houseofmanuela@gmail.com", label: "Test Account" },
+];
+
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -122,6 +127,10 @@ export default function AuthPage() {
     }
   };
 
+  const setTestAccount = (email: string) => {
+    form.setValue("email", email);
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-8">
       <Card className="w-full max-w-md overflow-hidden bg-[#E5DEFF] bg-opacity-50 backdrop-blur-sm">
@@ -132,6 +141,18 @@ export default function AuthPage() {
           <CardDescription className="text-center text-base text-muted-foreground">
             Sign in to your account to continue
           </CardDescription>
+          <div className="flex flex-col gap-2">
+            {testAccounts.map((account) => (
+              <Button
+                key={account.email}
+                variant="outline"
+                className="w-full text-sm"
+                onClick={() => setTestAccount(account.email)}
+              >
+                {account.label} ({account.email})
+              </Button>
+            ))}
+          </div>
         </CardHeader>
         <Tabs defaultValue="email" className="w-full">
           <TabsList className="grid w-full grid-cols-3 p-1">
