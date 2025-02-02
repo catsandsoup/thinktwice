@@ -10,6 +10,7 @@ import BridgeBuilder from "@/pages/BridgeBuilder";
 import NotFound from "@/pages/NotFound";
 import QuestionManager from "@/pages/QuestionManager";
 import Settings from "@/pages/Settings";
+import Auth from "@/pages/Auth";
 
 // Initialize the query client
 const queryClient = new QueryClient({
@@ -29,6 +30,7 @@ function App() {
         <Sonner />
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Auth />} />
           <Route path="/argument-analysis" element={<ArgumentAnalysis />} />
           <Route path="/beginners-journey" element={<BeginnersJourney />} />
           <Route path="/thinking-tools" element={<ThinkingTools />} />
