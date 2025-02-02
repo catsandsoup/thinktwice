@@ -20,23 +20,32 @@ export function QuestionsNavigation() {
   const { data: challenges } = useQuery({
     queryKey: ["challenges"],
     queryFn: async () => {
+      console.log("Fetching challenges...");
       const { data, error } = await supabase
         .from("challenges")
         .select("*")
         .order("difficulty", { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching challenges:", error);
+        throw error;
+      }
+      
+      console.log("Fetched challenges:", data);
       return data;
     },
   });
 
   const groupedChallenges = challenges?.reduce((acc, challenge) => {
-    if (!acc[challenge.difficulty]) {
-      acc[challenge.difficulty] = [];
+    const key = challenge.difficulty;
+    if (!acc[key]) {
+      acc[key] = [];
     }
-    acc[challenge.difficulty].push(challenge);
+    acc[key].push(challenge);
     return acc;
   }, {} as Record<string, typeof challenges>);
+
+  console.log("Grouped challenges:", groupedChallenges);
 
   return (
     <>
