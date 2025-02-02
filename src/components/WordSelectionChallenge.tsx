@@ -8,23 +8,23 @@ type WordSelectionChallengeProps = WordSelectionChallengeType & {
   onComplete: (correct: boolean, xp: number) => void;
 };
 
-export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
+export function WordSelectionChallenge({ passage, keyWords, xpReward, onComplete }: WordSelectionChallengeProps) {
   const [selectedSentences, setSelectedSentences] = useState<Set<number>>(new Set());
   const [showAnswer, setShowAnswer] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const { toast } = useToast();
 
   // Split the passage into sentences
-  const sentences = props.passage
+  const sentences = passage
     .split(/(?<=[.!?])\s+/)
     .filter(sentence => sentence.trim().length > 0);
 
   const isKeywordInSentence = (sentence: string, index: number) => {
-    return props.keyWords.some(kw => sentence.includes(kw.word));
+    return keyWords.some(kw => sentence.includes(kw.word));
   };
 
   const getExplanationForSentence = (sentence: string) => {
-    for (const keyword of props.keyWords) {
+    for (const keyword of keyWords) {
       if (sentence.includes(keyword.word)) {
         return keyword.explanation;
       }
@@ -54,7 +54,7 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
 
     const isCorrect = Array.from(selectedSentences).every(index => 
       isKeywordInSentence(sentences[index], index)
-    ) && props.keyWords.every(keyword => 
+    ) && keyWords.every(keyword => 
       sentences.some((sentence, index) => 
         selectedSentences.has(index) && sentence.includes(keyword.word)
       )
@@ -65,7 +65,7 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
         title: "Correct! 🎉",
         description: "You've identified all the key sentences!",
       });
-      onComplete(true, props.xpReward);
+      onComplete(true, xpReward);
       setWrongAttempts(0);
     } else {
       toast({
@@ -129,7 +129,7 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
       {showAnswer && (
         <div className="p-4 bg-muted rounded-lg space-y-4">
           <p className="font-medium">Key Sentences:</p>
-          {props.keyWords.map((kw, index) => (
+          {keyWords.map((kw, index) => (
             <div key={index} className="space-y-1">
               <p className="font-medium text-primary">{kw.word}</p>
               <p className="text-sm text-muted-foreground">{kw.explanation}</p>
