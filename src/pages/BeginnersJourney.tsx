@@ -27,22 +27,19 @@ const BeginnersJourney = () => {
         ['fallacy', 'media', 'source', 'headline'].includes(challenge.type)
       );
       
-      // Create a map to detect and remove duplicates based on content similarity
-      const uniqueChallenges = new Map<string, ChallengeType>();
+      // Use a Set to track unique IDs
+      const seenIds = new Set<string>();
+      const uniqueChallenges: ChallengeType[] = [];
       
-      beginnerChallenges.forEach(challenge => {
-        // Create a unique key based on normalized content
-        const contentKey = `${challenge.title.toLowerCase().trim()}-${challenge.description.toLowerCase().trim()}`;
-        
-        // Only keep the first instance of each challenge
-        if (!uniqueChallenges.has(contentKey)) {
-          uniqueChallenges.set(contentKey, challenge);
+      for (const challenge of beginnerChallenges) {
+        if (!seenIds.has(challenge.id)) {
+          seenIds.add(challenge.id);
+          uniqueChallenges.push(challenge);
         }
-      });
+      }
       
-      // Convert back to array and shuffle
-      return Array.from(uniqueChallenges.values())
-        .sort(() => Math.random() - 0.5);
+      // Shuffle the unique challenges
+      return uniqueChallenges.sort(() => Math.random() - 0.5);
     }
   });
 
