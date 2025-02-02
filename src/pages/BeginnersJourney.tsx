@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Challenge } from "@/components/Challenge";
 import { QuizHeader } from "@/components/QuizHeader";
+import { Button } from "@/components/ui/button"; // Add this import
 import { supabase } from "@/integrations/supabase/client";
 import { allChallenges } from "@/data/challenges";
 import { motion, AnimatePresence } from "framer-motion";
