@@ -52,39 +52,33 @@ const Index = () => {
             mission="Learn to spot the difference between facts and opinions in social media posts"
             actionText="Start Your Investigation"
           />
-          <div className="opacity-50 pointer-events-none">
-            <LearningPath
-              title="Truth Explorer"
-              description="Find out what makes a good explanation"
-              level="intermediate"
-              onClick={() => handlePathClick("Intermediate")}
-              progress={0}
-              mission="Discover reliable ways to check information you see online"
-              actionText="Begin Quest"
-            />
-          </div>
-          <div className="opacity-50 pointer-events-none">
-            <LearningPath
-              title="Fact Finder"
-              description="Learn to check if something is really true"
-              level="advanced"
-              onClick={() => handlePathClick("Advanced")}
-              progress={0}
-              mission="Discover reliable ways to check information you see online"
-              actionText="Begin Quest"
-            />
-          </div>
-          <div className="opacity-50 pointer-events-none">
-            <LearningPath
-              title="Digital Guardian"
-              description="Protect yourself from misleading information"
-              level="advanced"
-              onClick={() => handlePathClick("Advanced")}
-              progress={0}
-              mission="Learn to recognize and avoid misleading online content"
-              actionText="Accept Challenge"
-            />
-          </div>
+          <LearningPath
+            title="Truth Explorer"
+            description="Find out what makes a good explanation"
+            level="intermediate"
+            onClick={() => handlePathClick("Intermediate")}
+            progress={0}
+            mission="Discover reliable ways to check information you see online"
+            actionText="Begin Quest"
+          />
+          <LearningPath
+            title="Fact Finder"
+            description="Learn to check if something is really true"
+            level="advanced"
+            onClick={() => handlePathClick("Advanced")}
+            progress={0}
+            mission="Discover reliable ways to check information you see online"
+            actionText="Begin Quest"
+          />
+          <LearningPath
+            title="Digital Guardian"
+            description="Protect yourself from misleading information"
+            level="advanced"
+            onClick={() => handlePathClick("Advanced")}
+            progress={0}
+            mission="Learn to recognize and avoid misleading online content"
+            actionText="Accept Challenge"
+          />
         </div>
       </main>
     </div>
