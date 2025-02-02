@@ -38,12 +38,11 @@ const TruthExplorer = () => {
           totalChallenges={intermediateChallenges.length}
         />
 
-        {intermediateChallenges.length > 0 ? (
-          <Challenge {...intermediateChallenges[currentChallenge]} onComplete={handleComplete} />
-        ) : (
-          <div className="text-center py-8">
-            <p>Loading challenges...</p>
-          </div>
+        {intermediateChallenges.length > 0 && (
+          <Challenge 
+            {...intermediateChallenges[currentChallenge]} 
+            onComplete={handleComplete} 
+          />
         )}
       </div>
     </div>

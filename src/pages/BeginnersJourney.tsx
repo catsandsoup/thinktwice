@@ -38,12 +38,11 @@ const BeginnersJourney = () => {
           totalChallenges={beginnerChallenges.length}
         />
 
-        {beginnerChallenges.length > 0 ? (
-          <Challenge {...beginnerChallenges[currentChallenge]} onComplete={handleComplete} />
-        ) : (
-          <div className="text-center py-8">
-            <p>Loading challenges...</p>
-          </div>
+        {beginnerChallenges.length > 0 && (
+          <Challenge 
+            {...beginnerChallenges[currentChallenge]} 
+            onComplete={handleComplete} 
+          />
         )}
       </div>
     </div>
