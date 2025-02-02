@@ -6,7 +6,6 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import BeginnersJourney from "./pages/BeginnersJourney";
-import TruthExplorer from "./pages/TruthExplorer";
 import { Toaster } from "@/components/ui/sonner";
 
 const queryClient = new QueryClient();
@@ -32,14 +31,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <BeginnersJourney />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/truth-explorer"
-              element={
-                <ProtectedRoute>
-                  <TruthExplorer />
                 </ProtectedRoute>
               }
             />

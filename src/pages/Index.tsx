@@ -16,9 +16,6 @@ const Index = () => {
       case "Level 1":
         navigate('/beginners-journey');
         break;
-      case "Level 2":
-        navigate('/truth-explorer');
-        break;
       default:
         toast({
           title: "Coming Soon!",
@@ -49,15 +46,6 @@ const Index = () => {
                 progress={0}
                 mission="Learn to identify facts vs opinions, spot logical fallacies, and analyze headlines critically through interactive challenges"
                 actionText="Start Level 1"
-              />
-              <LearningPath
-                title="Level 2: Truth Explorer"
-                description="Advanced critical analysis techniques"
-                level="intermediate"
-                onClick={() => handlePathClick("Level 2")}
-                progress={0}
-                mission="Master complex reasoning, evaluate evidence quality, and identify hidden assumptions in arguments"
-                actionText="Start Level 2"
               />
             </div>
           </div>
