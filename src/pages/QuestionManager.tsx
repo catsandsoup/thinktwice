@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -12,8 +11,6 @@ import {
 } from "@/components/ui/table";
 
 export default function QuestionManager() {
-  const [selectedJourney, setSelectedJourney] = useState("");
-
   const { data: feedback } = useQuery({
     queryKey: ['feedback'],
     queryFn: async () => {
@@ -37,10 +34,8 @@ export default function QuestionManager() {
           challenges (
             title
           ),
-          user:user_id (
-            profile:profiles (
-              display_name
-            )
+          user:profiles!challenge_feedback_user_id_fkey (
+            display_name
           )
         `)
         .order('created_at', { ascending: false });
@@ -71,7 +66,7 @@ export default function QuestionManager() {
             {feedback?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.challenges?.title}</TableCell>
-                <TableCell>{item.user?.profile?.display_name}</TableCell>
+                <TableCell>{item.user?.display_name}</TableCell>
                 <TableCell>{item.rating} ⭐</TableCell>
                 <TableCell>{item.feedback_text}</TableCell>
                 <TableCell>

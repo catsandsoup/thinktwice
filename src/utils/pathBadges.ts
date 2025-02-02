@@ -7,20 +7,6 @@ export const awardPathBadge = async (pathName: string) => {
     if (!user) return;
 
     // First check if user already has this badge
-    const { data: existingBadge } = await supabase
-      .from('user_badges')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('badges.name', pathName)
-      .join('badges', { 'badges.id': 'user_badges.badge_id' })
-      .maybeSingle();
-
-    if (existingBadge) {
-      console.log(`User already has ${pathName} badge`);
-      return;
-    }
-
-    // Get the badge ID
     const { data: badge } = await supabase
       .from('badges')
       .select('id')
@@ -29,6 +15,19 @@ export const awardPathBadge = async (pathName: string) => {
 
     if (!badge) {
       console.error(`Badge ${pathName} not found`);
+      return;
+    }
+
+    // Check if user already has this badge
+    const { data: existingBadge } = await supabase
+      .from('user_badges')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('badge_id', badge.id)
+      .maybeSingle();
+
+    if (existingBadge) {
+      console.log(`User already has ${pathName} badge`);
       return;
     }
 
