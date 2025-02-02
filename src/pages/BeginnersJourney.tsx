@@ -27,21 +27,34 @@ const BeginnersJourney = () => {
         ['fallacy', 'media', 'source', 'headline'].includes(challenge.type)
       );
       
-      // Use a Set to track unique IDs
-      const seenIds = new Set<string>();
-      const uniqueChallenges: ChallengeType[] = [];
+      // Create a map to store unique challenges by ID
+      const uniqueMap = new Map<string, ChallengeType>();
       
-      for (const challenge of beginnerChallenges) {
-        if (!seenIds.has(challenge.id)) {
-          seenIds.add(challenge.id);
-          uniqueChallenges.push(challenge);
+      // Only keep one instance of each challenge based on ID
+      beginnerChallenges.forEach(challenge => {
+        if (!uniqueMap.has(challenge.id)) {
+          uniqueMap.set(challenge.id, challenge);
         }
-      }
+      });
       
-      // Shuffle the unique challenges
-      return uniqueChallenges.sort(() => Math.random() - 0.5);
+      // Convert to array and shuffle
+      return Array.from(uniqueMap.values()).sort(() => Math.random() - 0.5);
     }
   });
+
+  // Load seen challenges from localStorage on mount
+  useEffect(() => {
+    const loadSeenChallenges = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const storedChallenges = localStorage.getItem(`seen-challenges-${user.id}`);
+        if (storedChallenges) {
+          setSeenChallenges(new Set(JSON.parse(storedChallenges)));
+        }
+      }
+    };
+    loadSeenChallenges();
+  }, []);
 
   // Memoize the filtered challenges to prevent unnecessary re-renders
   const availableChallenges = useMemo(() => {
@@ -87,9 +100,15 @@ const BeginnersJourney = () => {
           setUserProgress({ stars: newStars, level: newLevel });
         }
 
-        // Mark current challenge as seen
+        // Mark current challenge as seen and persist to localStorage
         if (challenges && challenges[currentChallenge]) {
-          setSeenChallenges(prev => new Set([...prev, challenges[currentChallenge].id]));
+          const newSeenChallenges = new Set(seenChallenges);
+          newSeenChallenges.add(challenges[currentChallenge].id);
+          setSeenChallenges(newSeenChallenges);
+          localStorage.setItem(
+            `seen-challenges-${user.id}`,
+            JSON.stringify(Array.from(newSeenChallenges))
+          );
         }
       }
       
