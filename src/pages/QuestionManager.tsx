@@ -29,25 +29,17 @@ export default function QuestionManager() {
         rating,
         feedback_text,
         created_at,
-        challenges:challenge_id (
+        challenges (
           title
         ),
-        user_id,
-        profiles!challenge_feedback_user_id_fkey (
+        profiles (
           display_name
         )
       `);
 
     if (error) throw error;
     
-    // Transform the data to ensure it matches our type
-    const transformedData = data?.map(item => ({
-      ...item,
-      profiles: item.profiles ? { display_name: item.profiles.display_name } : null,
-      challenges: item.challenges ? { title: item.challenges.title } : null
-    }));
-
-    return transformedData as FeedbackWithDetails[];
+    return data as FeedbackWithDetails[];
   }, []);
 
   const { data: feedback, error, isLoading } = useQuery({

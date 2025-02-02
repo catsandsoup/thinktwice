@@ -4,7 +4,7 @@ export type FeedbackWithDetails = {
   feedback_text: string | null;
   created_at: string | null;
   challenges: {
-    title: string | null;
+    title: string;
   } | null;
   profiles: {
     display_name: string | null;
