@@ -37,32 +37,52 @@ const Index = () => {
           />
           <div className="opacity-50 pointer-events-none">
             <LearningPath
-              title="Truth Explorer"
-              description="Find out what makes a good explanation"
+              title="Argument Analysis"
+              description="Master the art of evaluating and constructing sound arguments"
               level="intermediate"
-              onClick={() => handlePathClick("Intermediate")}
-              mission="Discover reliable ways to check information you see online"
-              actionText="Begin Quest"
+              onClick={() => handlePathClick("Argument")}
+              mission="Learn to identify logical fallacies and strengthen your reasoning skills"
+              actionText="Begin Analysis"
             />
           </div>
           <div className="opacity-50 pointer-events-none">
             <LearningPath
-              title="Fact Finder"
-              description="Learn to check if something is really true"
+              title="Financial Literacy"
+              description="Think critically about financial decisions and claims"
               level="advanced"
-              onClick={() => handlePathClick("Advanced")}
-              mission="Discover reliable ways to check information you see online"
-              actionText="Begin Quest"
+              onClick={() => handlePathClick("Finance")}
+              mission="Develop skills to evaluate investment claims and make informed financial decisions"
+              actionText="Start Learning"
             />
           </div>
           <div className="opacity-50 pointer-events-none">
             <LearningPath
-              title="Digital Guardian"
-              description="Protect yourself from misleading information"
+              title="Scientific Method"
+              description="Apply scientific thinking to everyday claims"
               level="advanced"
-              onClick={() => handlePathClick("Advanced")}
-              mission="Learn to recognize and avoid misleading online content"
-              actionText="Accept Challenge"
+              onClick={() => handlePathClick("Science")}
+              mission="Learn to evaluate scientific claims and understand research methodology"
+              actionText="Explore Science"
+            />
+          </div>
+          <div className="opacity-50 pointer-events-none">
+            <LearningPath
+              title="Research Skills"
+              description="Find and evaluate reliable information effectively"
+              level="intermediate"
+              onClick={() => handlePathClick("Research")}
+              mission="Master the art of finding and evaluating credible sources"
+              actionText="Begin Research"
+            />
+          </div>
+          <div className="opacity-50 pointer-events-none">
+            <LearningPath
+              title="Media Literacy"
+              description="Navigate and analyze modern media landscape"
+              level="intermediate"
+              onClick={() => handlePathClick("Media")}
+              mission="Develop critical skills for evaluating news and social media content"
+              actionText="Start Journey"
             />
           </div>
         </div>
