@@ -1,30 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Challenge } from "@/components/Challenge";
 import { QuizHeader } from "@/components/QuizHeader";
 import { argumentAnalysisChallenges } from "@/data/challenges/argumentAnalysis";
 import { AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { shuffleArray } from "@/lib/utils";
 
 const ArgumentAnalysis = () => {
   const [currentChallengeIndex, setCurrentChallengeIndex] = useState(0);
   const [completedChallenges, setCompletedChallenges] = useState<string[]>([]);
+  const [randomizedChallenges, setRandomizedChallenges] = useState(argumentAnalysisChallenges);
+
+  // Initialize randomized challenges on component mount
+  useEffect(() => {
+    setRandomizedChallenges(shuffleArray(argumentAnalysisChallenges));
+  }, []);
 
   const handleChallengeComplete = (correct: boolean, xp: number) => {
-    const currentChallenge = argumentAnalysisChallenges[currentChallengeIndex];
+    const currentChallenge = randomizedChallenges[currentChallengeIndex];
     
     if (correct) {
-      toast.success(`Well done! You earned ${xp} XP!`);
+      toast.success(`Well done! You earned ${xp} XP!`, {
+        duration: 3000 // 3 seconds
+      });
       setCompletedChallenges([...completedChallenges, currentChallenge.id]);
     } else {
-      toast.error("That's not quite right. Try again!");
+      toast.error("That's not quite right. Try again!", {
+        duration: 3000
+      });
       return;
     }
 
-    if (currentChallengeIndex < argumentAnalysisChallenges.length - 1) {
+    if (currentChallengeIndex < randomizedChallenges.length - 1) {
       setCurrentChallengeIndex(currentChallengeIndex + 1);
     } else {
-      toast.success("Congratulations! You've completed all the argument analysis challenges!");
+      toast.success("Congratulations! You've completed all the argument analysis challenges!", {
+        duration: 3000
+      });
     }
   };
 
@@ -40,14 +53,14 @@ const ArgumentAnalysis = () => {
         <QuizHeader
           title="Argument Analysis"
           currentQuestion={currentChallengeIndex + 1}
-          totalQuestions={argumentAnalysisChallenges.length}
+          totalQuestions={randomizedChallenges.length}
         />
 
         <AnimatePresence mode="wait">
-          {currentChallengeIndex < argumentAnalysisChallenges.length && (
+          {currentChallengeIndex < randomizedChallenges.length && (
             <Challenge
-              key={argumentAnalysisChallenges[currentChallengeIndex].id}
-              {...argumentAnalysisChallenges[currentChallengeIndex]}
+              key={randomizedChallenges[currentChallengeIndex].id}
+              {...randomizedChallenges[currentChallengeIndex]}
               onComplete={handleChallengeComplete}
             />
           )}
