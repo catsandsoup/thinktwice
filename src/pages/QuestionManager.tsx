@@ -43,11 +43,14 @@ export default function QuestionManager() {
       const { data, error } = await supabase
         .from('challenge_feedback')
         .select(`
-          *,
+          id,
+          rating,
+          feedback_text,
+          created_at,
           challenges:challenge_id (
             title
           ),
-          profiles:user_id (
+          user:profiles!challenge_feedback_user_id_fkey (
             display_name
           )
         `);
@@ -58,7 +61,7 @@ export default function QuestionManager() {
       const transformedData = data?.map(item => ({
         ...item,
         user: {
-          display_name: item.profiles?.display_name
+          display_name: item.user?.display_name
         }
       })) as FeedbackWithDetails[];
 
