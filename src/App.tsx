@@ -12,6 +12,7 @@ import { AdminPanel } from "@/components/AdminPanel";
 import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
 import AuthCallback from "./pages/AuthCallback";
+import QuestionManager from "./pages/QuestionManager";
 import { useEffect, useState } from "react";
 import { supabase } from "./integrations/supabase/client";
 
@@ -57,6 +58,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <AdminPanel />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/questions"
+                element={
+                  <ProtectedRoute>
+                    <QuestionManager />
                   </ProtectedRoute>
                 }
               />

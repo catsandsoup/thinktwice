@@ -74,6 +74,7 @@ export type Database = {
           description: string
           difficulty: Database["public"]["Enums"]["difficulty_level"]
           id: string
+          journey_id: string | null
           title: string
           type: Database["public"]["Enums"]["challenge_type"]
           xp_reward: number
@@ -83,6 +84,7 @@ export type Database = {
           description: string
           difficulty: Database["public"]["Enums"]["difficulty_level"]
           id?: string
+          journey_id?: string | null
           title: string
           type: Database["public"]["Enums"]["challenge_type"]
           xp_reward?: number
@@ -92,11 +94,20 @@ export type Database = {
           description?: string
           difficulty?: Database["public"]["Enums"]["difficulty_level"]
           id?: string
+          journey_id?: string | null
           title?: string
           type?: Database["public"]["Enums"]["challenge_type"]
           xp_reward?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "challenges_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       completed_challenges: {
         Row: {
@@ -237,6 +248,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      journeys: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          title: string
+          type: Database["public"]["Enums"]["journey_type"]
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          title: string
+          type: Database["public"]["Enums"]["journey_type"]
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          title?: string
+          type?: Database["public"]["Enums"]["journey_type"]
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       matching_challenges: {
         Row: {
@@ -584,6 +622,7 @@ export type Database = {
         | "matching"
         | "highlight"
       difficulty_level: "beginner" | "intermediate" | "advanced"
+      journey_type: "finance" | "science" | "critical_thinking"
     }
     CompositeTypes: {
       [_ in never]: never
