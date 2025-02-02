@@ -1,11 +1,5 @@
 import { Challenge } from "./challengeTypes";
 
-/**
- * This file contains all critical thinking challenges organized by difficulty level.
- * Challenges are designed to help users develop various analytical and evaluation skills
- * through interactive exercises.
- */
-
 export const beginnerChallenges: Challenge[] = [
   {
     id: "1",
@@ -353,8 +347,156 @@ export const generationalChallenges: Challenge[] = [
   },
 ];
 
+export const modernChallenges: Challenge[] = [
+  {
+    id: "15",
+    title: "Financial Market Pattern Recognition",
+    type: "highlight",
+    description: "Identify potential red flags in investment trends and marketing. Look for common manipulation tactics used in financial promotions.",
+    difficulty: "advanced",
+    xpReward: 20,
+    statement: "🚀 Don't miss out on MoonCoin! 📈 Already up 500% this week! Celebrity influencers are calling it the next Bitcoin. Our unique blockchain technology is revolutionizing the industry. Limited time offer - early investors get special access to our exclusive community. Join the movement before it's too late! #tothemoon #crypto #financialfreedom",
+    highlights: [
+      {
+        text: "up 500% this week",
+        explanation: "Extreme short-term gains often indicate unsustainable speculation rather than fundamental value"
+      },
+      {
+        text: "Celebrity influencers",
+        explanation: "Celebrity endorsements in financial products often involve undisclosed compensation and lack genuine expertise"
+      },
+      {
+        text: "Limited time offer",
+        explanation: "Creating artificial urgency is a common tactic to pressure people into making hasty decisions without proper research"
+      }
+    ]
+  },
+  {
+    id: "16",
+    title: "Multi-Factor Analysis in Current Events",
+    type: "matching",
+    description: "Connect surface-level observations with deeper systemic factors in today's most pressing issues. Consider how multiple factors interact to create complex situations.",
+    difficulty: "advanced",
+    xpReward: 20,
+    pairs: [
+      {
+        id: "16a",
+        claim: "Rising housing costs in major cities",
+        evidence: "Intersection of zoning laws, remote work migration, investment properties, interest rates, and construction costs"
+      },
+      {
+        id: "16b",
+        claim: "Growing mental health concerns among young adults",
+        evidence: "Combined effects of social media usage, economic pressure, changing work culture, reduced community connections, and healthcare access"
+      },
+      {
+        id: "16c",
+        claim: "Shifts in retail shopping patterns",
+        evidence: "Interplay between e-commerce technology, pandemic behavior changes, supply chain restructuring, and changing consumer values"
+      }
+    ]
+  },
+  {
+    id: "17",
+    title: "Digital Wellness and Attention Economy",
+    type: "highlight",
+    description: "Analyze how technology affects our thinking and behavior patterns. Identify common justifications and misconceptions about digital habits.",
+    difficulty: "intermediate",
+    xpReward: 15,
+    statement: "I've been trying to focus on work, but I keep checking my phone. The notifications give me a little dopamine hit, and I tell myself it's important to stay connected. Sometimes I'll open Instagram to check one thing and find myself still scrolling an hour later. I feel more productive when I'm multitasking between different apps and conversations. Besides, isn't this just how modern work culture is?",
+    highlights: [
+      {
+        text: "dopamine hit",
+        explanation: "Recognition of how apps exploit natural reward systems to create habitual usage patterns"
+      },
+      {
+        text: "still scrolling an hour later",
+        explanation: "Infinite scroll and algorithmic content feeds are designed to capture and retain attention indefinitely"
+      },
+      {
+        text: "productive when I'm multitasking",
+        explanation: "Common misconception about multitasking efficiency, which often reduces deep focus and quality of work"
+      }
+    ]
+  },
+  {
+    id: "18",
+    title: "Evidence-Based Decision Making",
+    type: "matching",
+    description: "Evaluate different types of evidence in modern digital contexts. Learn to distinguish between reliable and unreliable sources of information.",
+    difficulty: "intermediate",
+    xpReward: 15,
+    pairs: [
+      {
+        id: "18a",
+        claim: "This skincare product has 10k positive reviews!",
+        evidence: "Analysis reveals many reviews are from incentivized customers and bot accounts"
+      },
+      {
+        id: "18b",
+        claim: "Everyone on TikTok is using this studying technique",
+        evidence: "Limited peer-reviewed research on the method's effectiveness across different learning styles"
+      },
+      {
+        id: "18c",
+        claim: "My friend tried this diet and lost 20 pounds",
+        evidence: "Individual anecdote that doesn't account for different metabolisms, lifestyles, and long-term sustainability"
+      }
+    ]
+  },
+  {
+    id: "19",
+    title: "System Failure Analysis",
+    type: "highlight",
+    description: "Examine how multiple factors contribute to system breakdowns in modern organizations. Identify interconnected causes rather than simple blame attribution.",
+    difficulty: "advanced",
+    xpReward: 20,
+    statement: "The new app launch was a disaster. The servers crashed right after launch because too many users tried to log in at once. The marketing team had done an amazing job building hype on social media, but the development team said they weren't given enough time for proper testing. Customer service was overwhelmed with complaints, and our brand reputation took a hit. The CEO blamed the technical team, who blamed the project managers, who blamed the unrealistic deadline.",
+    highlights: [
+      {
+        text: "marketing team had done an amazing job building hype",
+        explanation: "Success in one area (marketing) can create problems if not coordinated with other systems (technical infrastructure)"
+      },
+      {
+        text: "weren't given enough time for proper testing",
+        explanation: "Pressure to meet deadlines can lead to cutting crucial preparation steps, creating cascade failures"
+      },
+      {
+        text: "blamed the technical team, who blamed the project managers",
+        explanation: "Linear blame attribution often masks systemic issues in organizational structure and communication"
+      }
+    ]
+  },
+  {
+    id: "20",
+    title: "Long-Term Impact Analysis",
+    type: "matching",
+    description: "Analyze how current technological and social trends might shape future society. Consider multiple dimensions of change and potential consequences.",
+    difficulty: "advanced",
+    xpReward: 20,
+    pairs: [
+      {
+        id: "20a",
+        claim: "Rise of AI-generated content in creative industries",
+        evidence: "Shifts in job markets, questions of artistic authenticity, potential loss of human creative development, and changes in how we value original work"
+      },
+      {
+        id: "20b",
+        claim: "Increasing reliance on gig economy platforms",
+        evidence: "Changes in worker protections, evolution of career planning, impacts on traditional employment, and shifts in professional skill development"
+      },
+      {
+        id: "20c",
+        claim: "Growing preference for virtual social interactions",
+        evidence: "Effects on emotional intelligence, changes in community building, impacts on mental health, and evolution of social norms"
+      }
+    ]
+  }
+];
+
 export const allChallenges: Challenge[] = [
   ...beginnerChallenges,
   ...advancedChallenges,
-  ...generationalChallenges
+  ...generationalChallenges,
+  ...modernChallenges
 ];
