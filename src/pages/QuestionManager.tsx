@@ -18,7 +18,7 @@ type FeedbackWithDetails = {
   challenges: {
     title: string | null;
   } | null;
-  user: {
+  profiles: {
     display_name: string | null;
   } | null;
 };
@@ -50,22 +50,13 @@ export default function QuestionManager() {
           challenges:challenge_id (
             title
           ),
-          user:profiles (
+          profiles!challenge_feedback_user_id_fkey (
             display_name
           )
         `);
 
       if (error) throw error;
-
-      // Transform the data to match our type
-      const transformedData = data?.map(item => ({
-        ...item,
-        user: {
-          display_name: item.user?.display_name
-        }
-      })) as FeedbackWithDetails[];
-
-      return transformedData;
+      return data as FeedbackWithDetails[];
     },
   });
 
@@ -90,7 +81,7 @@ export default function QuestionManager() {
             {feedback?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.challenges?.title}</TableCell>
-                <TableCell>{item.user?.display_name}</TableCell>
+                <TableCell>{item.profiles?.display_name}</TableCell>
                 <TableCell>{item.rating} ⭐</TableCell>
                 <TableCell>{item.feedback_text}</TableCell>
                 <TableCell>
