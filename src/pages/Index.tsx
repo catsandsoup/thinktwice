@@ -2,9 +2,9 @@ import { LearningPath } from "@/components/LearningPath";
 import { UserAchievements } from "@/components/UserAchievements";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { awardPathBadge } from "@/utils/pathBadges";
 import {
   Sheet,
   SheetContent,
@@ -18,23 +18,22 @@ const Index = () => {
   const navigate = useNavigate();
 
   const handlePathClick = async (path: string) => {
-    // Temporarily removed auth check to allow direct access to paths
     switch (path) {
       case "Beginner":
         navigate('/beginners-journey');
-        await awardPathBadge(path);
+        await awardPathBadge("Beginner's Path");
         break;
       case "Argument":
         navigate('/argument-analysis');
-        await awardPathBadge(path);
+        await awardPathBadge("Argument Master");
         break;
       case "Tools":
         navigate('/thinking-tools');
-        await awardPathBadge(path);
+        await awardPathBadge("Tool Expert");
         break;
       case "Bridge":
         navigate('/bridge-builder');
-        await awardPathBadge(path);
+        await awardPathBadge("Bridge Builder");
         break;
       default:
         toast.info(`The ${path} path will be available in the next update.`, {

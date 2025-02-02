@@ -37,8 +37,10 @@ export default function QuestionManager() {
           challenges (
             title
           ),
-          profiles (
-            display_name
+          user:user_id (
+            profile:profiles (
+              display_name
+            )
           )
         `)
         .order('created_at', { ascending: false });
@@ -69,7 +71,7 @@ export default function QuestionManager() {
             {feedback?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.challenges?.title}</TableCell>
-                <TableCell>{item.profiles?.display_name}</TableCell>
+                <TableCell>{item.user?.profile?.display_name}</TableCell>
                 <TableCell>{item.rating} ⭐</TableCell>
                 <TableCell>{item.feedback_text}</TableCell>
                 <TableCell>
