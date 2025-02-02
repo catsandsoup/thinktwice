@@ -8,6 +8,7 @@ import { fetchAllChallenges } from "@/lib/queries";
 import { shuffleArray } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const STARS_PER_LEVEL = 25;
 
@@ -15,6 +16,35 @@ const BeginnersJourney = () => {
   const navigate = useNavigate();
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [userProgress, setUserProgress] = useState({ level: 1, stars: 0 });
+
+  // Fetch user progress
+  useEffect(() => {
+    const fetchUserProgress = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate('/');
+        return;
+      }
+
+      const { data: progress, error } = await supabase
+        .from('user_progress')
+        .select('level, stars')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching user progress:', error);
+        toast.error('Failed to load your progress');
+        return;
+      }
+
+      if (progress) {
+        setUserProgress(progress);
+      }
+    };
+
+    fetchUserProgress();
+  }, [navigate]);
 
   const { data: challenges, isLoading, error } = useQuery({
     queryKey: ['challenges'],
@@ -24,25 +54,6 @@ const BeginnersJourney = () => {
       return shuffleArray([...beginnerChallenges]);
     }
   });
-
-  useEffect(() => {
-    const fetchUserProgress = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: progress } = await supabase
-          .from('user_progress')
-          .select('level, stars')
-          .eq('user_id', user.id)
-          .single();
-
-        if (progress) {
-          setUserProgress(progress);
-        }
-      }
-    };
-
-    fetchUserProgress();
-  }, []);
 
   const handleComplete = async (correct: boolean, xp: number) => {
     if (correct) {
@@ -59,8 +70,12 @@ const BeginnersJourney = () => {
           })
           .eq('user_id', user.id);
 
-        if (!updateError) {
+        if (updateError) {
+          console.error('Error updating progress:', updateError);
+          toast.error('Failed to update your progress');
+        } else {
           setUserProgress({ stars: newStars, level: newLevel });
+          toast.success(`You earned a star! ${STARS_PER_LEVEL - (newStars % STARS_PER_LEVEL)} more to reach level ${newLevel + 1}`);
         }
       }
       
@@ -121,7 +136,6 @@ const BeginnersJourney = () => {
     );
   }
 
-  const maxXp = STARS_PER_LEVEL;
   const currentLevelStars = userProgress.stars % STARS_PER_LEVEL;
 
   return (
@@ -131,7 +145,7 @@ const BeginnersJourney = () => {
           currentChallenge={currentChallenge}
           totalChallenges={challenges.length}
           xp={currentLevelStars}
-          maxXp={maxXp}
+          maxXp={STARS_PER_LEVEL}
           streak={userProgress.level}
         />
 
