@@ -15,6 +15,8 @@ export function StandardChallenge(props: StandardChallengeProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showNextQuestion, setShowNextQuestion] = useState(false);
+  const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
 
   const correctOptions = props.options.filter(opt => opt.isCorrect);
   const isMultipleChoice = correctOptions.length > 1;
@@ -41,11 +43,12 @@ export function StandardChallenge(props: StandardChallengeProps) {
 
     if (showNextQuestion) {
       props.onComplete(true, props.xpReward);
-      // Reset state for next question
       setSelected([]);
       setIsSubmitted(false);
       setIsCorrect(false);
       setShowNextQuestion(false);
+      setWrongAttempts(0);
+      setShowAnswer(false);
       return;
     }
 
@@ -61,6 +64,9 @@ export function StandardChallenge(props: StandardChallengeProps) {
     
     if (isAllCorrect) {
       setShowNextQuestion(true);
+      setWrongAttempts(0);
+    } else {
+      setWrongAttempts(prev => prev + 1);
     }
   };
 
@@ -69,6 +75,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
     setIsSubmitted(false);
     setIsCorrect(false);
     setShowNextQuestion(false);
+    setShowAnswer(false);
   };
 
   return (
@@ -95,14 +102,14 @@ export function StandardChallenge(props: StandardChallengeProps) {
               <div className="flex-1 space-y-1">
                 <Label
                   htmlFor={option.id}
-                  className="text-sm font-medium cursor-pointer"
+                  className="text-sm font-medium cursor-pointer whitespace-pre-wrap break-words"
                 >
                   {option.text}
                 </Label>
                 {isSubmitted && (selected.includes(option.id) || option.isCorrect) && (
                   <p className={cn(
-                    "text-sm mt-1",
-                    option.isCorrect ? "text-green-600" : "text-red-600"
+                    "text-sm mt-1 whitespace-pre-wrap break-words",
+                    option.isCorrect ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
                   )}>
                     {option.explanation}
                   </p>
@@ -115,6 +122,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
             value={selected[0]}
             onValueChange={(value) => handleSelect(value)}
             disabled={isSubmitted}
+            className="space-y-4"
           >
             {props.options.map((option) => (
               <div
@@ -131,14 +139,14 @@ export function StandardChallenge(props: StandardChallengeProps) {
                 <div className="flex-1 space-y-1">
                   <Label
                     htmlFor={option.id}
-                    className="text-sm font-medium cursor-pointer"
+                    className="text-sm font-medium cursor-pointer whitespace-pre-wrap break-words"
                   >
                     {option.text}
                   </Label>
                   {isSubmitted && (selected.includes(option.id) || option.isCorrect) && (
                     <p className={cn(
-                      "text-sm mt-1",
-                      option.isCorrect ? "text-green-600" : "text-red-600"
+                      "text-sm mt-1 whitespace-pre-wrap break-words",
+                      option.isCorrect ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
                     )}>
                       {option.explanation}
                     </p>
@@ -168,7 +176,29 @@ export function StandardChallenge(props: StandardChallengeProps) {
             {showNextQuestion ? "Next Question" : "Submit Answer"}
           </Button>
         )}
+
+        {wrongAttempts >= 3 && !showNextQuestion && (
+          <Button
+            variant="outline"
+            onClick={() => setShowAnswer(!showAnswer)}
+            className="whitespace-nowrap"
+          >
+            {showAnswer ? "Hide Answer" : "Display Answer"}
+          </Button>
+        )}
       </div>
+
+      {showAnswer && (
+        <div className="p-4 bg-muted rounded-lg space-y-4">
+          <p className="font-medium">Correct Answer{correctOptions.length > 1 ? 's' : ''}:</p>
+          {props.options.filter(opt => opt.isCorrect).map((option, index) => (
+            <div key={index} className="space-y-1">
+              <p className="font-medium text-primary whitespace-pre-wrap break-words">{option.text}</p>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">{option.explanation}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
