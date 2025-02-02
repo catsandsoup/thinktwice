@@ -14,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { ChallengeType } from "@/data/challengeTypes";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { Grip, Plus, Trash2 } from "lucide-react";
+import { ChallengeCard } from "@/components/challenges/ChallengeCard";
+import { StandardChallenge } from "@/components/challenges/StandardChallenge";
 
 type Option = {
   id: string;
@@ -106,114 +108,143 @@ export function QuestionForm({ journeyId }: { journeyId: string }) {
     }
   };
 
+  const previewChallenge = {
+    id: "preview",
+    title,
+    description,
+    type,
+    difficulty,
+    options: options.map(opt => ({
+      id: opt.id,
+      text: opt.text,
+      isCorrect: opt.isCorrect,
+      explanation: opt.explanation
+    })),
+    xpReward: 10
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <Input
-          placeholder="Question title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <Textarea
-          placeholder="Question description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <div className="grid grid-cols-2 gap-4">
-          <Select value={type} onValueChange={(value) => setType(value as ChallengeType)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="fallacy">Fallacy</SelectItem>
-              <SelectItem value="headline">Headline</SelectItem>
-              <SelectItem value="media">Media</SelectItem>
-              <SelectItem value="source">Source</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={difficulty} onValueChange={(value) => setDifficulty(value as any)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select difficulty" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="beginner">Beginner</SelectItem>
-              <SelectItem value="intermediate">Intermediate</SelectItem>
-              <SelectItem value="advanced">Advanced</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-medium">Answer Options</h3>
-          <Button onClick={handleAddOption} variant="outline" size="sm">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Option
-          </Button>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="space-y-6">
+        <div className="space-y-4">
+          <Input
+            placeholder="Question title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <Textarea
+            placeholder="Question description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <div className="grid grid-cols-2 gap-4">
+            <Select value={type} onValueChange={(value) => setType(value as ChallengeType)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="fallacy">Fallacy</SelectItem>
+                <SelectItem value="headline">Headline</SelectItem>
+                <SelectItem value="media">Media</SelectItem>
+                <SelectItem value="source">Source</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={difficulty} onValueChange={(value) => setDifficulty(value as any)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select difficulty" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="beginner">Beginner</SelectItem>
+                <SelectItem value="intermediate">Intermediate</SelectItem>
+                <SelectItem value="advanced">Advanced</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="options">
-            {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
-                {options.map((option, index) => (
-                  <Draggable key={option.id} draggableId={option.id} index={index}>
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        className="p-4 border rounded-lg space-y-4"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div {...provided.dragHandleProps}>
-                            <Grip className="w-5 h-5 text-gray-400" />
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium">Answer Options</h3>
+            <Button onClick={handleAddOption} variant="outline" size="sm">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Option
+            </Button>
+          </div>
+
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="options">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+                  {options.map((option, index) => (
+                    <Draggable key={option.id} draggableId={option.id} index={index}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          className="p-4 border rounded-lg space-y-4"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div {...provided.dragHandleProps}>
+                              <Grip className="w-5 h-5 text-gray-400" />
+                            </div>
+                            <Input
+                              placeholder="Option text"
+                              value={option.text}
+                              onChange={(e) =>
+                                handleOptionChange(option.id, "text", e.target.value)
+                              }
+                              className="flex-1"
+                            />
+                            <Button
+                              variant={option.isCorrect ? "default" : "outline"}
+                              onClick={() =>
+                                handleOptionChange(option.id, "isCorrect", !option.isCorrect)
+                              }
+                            >
+                              {option.isCorrect ? "Correct" : "Incorrect"}
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              onClick={() => handleRemoveOption(option.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </div>
-                          <Input
-                            placeholder="Option text"
-                            value={option.text}
+                          <Textarea
+                            placeholder="Explanation for this option"
+                            value={option.explanation}
                             onChange={(e) =>
-                              handleOptionChange(option.id, "text", e.target.value)
+                              handleOptionChange(option.id, "explanation", e.target.value)
                             }
-                            className="flex-1"
                           />
-                          <Button
-                            variant={option.isCorrect ? "default" : "outline"}
-                            onClick={() =>
-                              handleOptionChange(option.id, "isCorrect", !option.isCorrect)
-                            }
-                          >
-                            {option.isCorrect ? "Correct" : "Incorrect"}
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="icon"
-                            onClick={() => handleRemoveOption(option.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
                         </div>
-                        <Textarea
-                          placeholder="Explanation for this option"
-                          value={option.explanation}
-                          onChange={(e) =>
-                            handleOptionChange(option.id, "explanation", e.target.value)
-                          }
-                        />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
+
+        <Button onClick={handleSubmit} className="w-full">
+          Create Question
+        </Button>
       </div>
 
-      <Button onClick={handleSubmit} className="w-full">
-        Create Question
-      </Button>
+      <div className="lg:sticky lg:top-4">
+        <h3 className="text-lg font-medium mb-4">Preview</h3>
+        {(title || description || options.length > 0) && (
+          <ChallengeCard challenge={previewChallenge}>
+            <StandardChallenge
+              {...previewChallenge}
+              onComplete={() => {}}
+            />
+          </ChallengeCard>
+        )}
+      </div>
     </div>
   );
 }
