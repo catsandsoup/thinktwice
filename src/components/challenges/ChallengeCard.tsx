@@ -19,7 +19,7 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
           <CardTitle className="text-xl md:text-2xl font-semibold break-words animate-slide-in">
             {challenge.title}
           </CardTitle>
-          <p className="text-sm md:text-base text-muted-foreground whitespace-pre-wrap break-words mt-2 animate-slide-in">
+          <p className="text-base md:text-lg leading-relaxed text-muted-foreground whitespace-pre-wrap break-words mt-2 animate-slide-in">
             {challenge.description}
           </p>
         </CardHeader>
