@@ -32,15 +32,15 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
                 challenge.difficulty === "beginner" ? "default" :
                 challenge.difficulty === "intermediate" ? "secondary" : "outline"
               }
-              className="mt-1"
+              className="mt-1 whitespace-nowrap"
             >
               {challenge.difficulty}
             </Badge>
             <div className="space-y-1 text-left">
-              <CardTitle className="text-lg font-medium" id={`question-${challenge.title.toLowerCase().replace(/\s+/g, '-')}`}>
+              <CardTitle className="text-xl sm:text-2xl font-medium leading-tight" id={`question-${challenge.title.toLowerCase().replace(/\s+/g, '-')}`}>
                 {challenge.title}
               </CardTitle>
-              <CardDescription className="text-sm text-gray-600">
+              <CardDescription className="text-base text-gray-600 leading-relaxed">
                 {challenge.description}
               </CardDescription>
             </div>
@@ -50,9 +50,6 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
       
       <CardContent className="px-4 pb-4 space-y-4">
         {children}
-        <div className="text-xs text-gray-500 text-center">
-          Complete this challenge to earn {challenge.xpReward} detective stars
-        </div>
       </CardContent>
     </Card>
   );

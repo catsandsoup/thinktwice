@@ -75,7 +75,7 @@ const BeginnersJourney = () => {
         <Button 
           variant="ghost" 
           onClick={() => navigate('/')}
-          className="absolute right-4 top-4 flex items-center gap-1.5 text-sm"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Exit Journey
