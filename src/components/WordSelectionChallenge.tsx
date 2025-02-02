@@ -13,6 +13,7 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
   const [isCorrect, setIsCorrect] = useState(false);
   const [showNextQuestion, setShowNextQuestion] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
 
   const handleWordClick = (word: string) => {
     if (isSubmitted) return;
@@ -38,6 +39,7 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
       setIsCorrect(false);
       setShowNextQuestion(false);
       setWrongAttempts(0);
+      setShowAnswer(false);
       return;
     }
 
@@ -52,6 +54,7 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
     if (isAllCorrect) {
       setShowNextQuestion(true);
       setWrongAttempts(0);
+      setShowAnswer(false);
     } else {
       setWrongAttempts(prev => prev + 1);
     }
@@ -62,6 +65,7 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
     setIsSubmitted(false);
     setIsCorrect(false);
     setShowNextQuestion(false);
+    setShowAnswer(false);
   };
 
   const renderText = () => {

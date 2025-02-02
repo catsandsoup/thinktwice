@@ -3,6 +3,10 @@ import { Button } from "@/components/ui/button";
 import { MatchingChallenge as MatchingChallengeType } from "@/data/challengeTypes";
 import { useToast } from "@/hooks/use-toast";
 
+type MatchingChallengeProps = MatchingChallengeType & {
+  onComplete: (correct: boolean, xp: number) => void;
+};
+
 export function MatchingChallenge({ pairs, xpReward, onComplete }: MatchingChallengeProps) {
   const [selectedPair, setSelectedPair] = useState<{ claim?: string; evidence?: string }>({});
   const [matchedPairs, setMatchedPairs] = useState<Set<string>>(new Set());
@@ -57,8 +61,6 @@ export function MatchingChallenge({ pairs, xpReward, onComplete }: MatchingChall
     }
     setSelectedPair({});
   };
-
-  // ... keep existing code (grid layout for claims and evidence)
 
   return (
     <div className="space-y-4">
