@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import BeginnersJourney from "./pages/BeginnersJourney";
 import ArgumentAnalysis from "./pages/ArgumentAnalysis";
 import { AdminPanel } from "@/components/AdminPanel";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
               <Route path="/beginners-journey" element={<BeginnersJourney />} />
               <Route path="/argument-analysis" element={<ArgumentAnalysis />} />
               <Route path="/admin" element={<AdminPanel />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

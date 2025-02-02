@@ -1,63 +1,49 @@
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Menu, Settings, User, Shield } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
+import { Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function MainNav() {
-  const navigate = useNavigate();
-  
-  const { data: userRole } = useQuery({
-    queryKey: ['userRole'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-      
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
-        
-      if (error) throw error;
-      return data?.role;
-    },
-  });
-
   return (
-    <div className="flex items-center justify-between p-4 border-b">
-      <h1 className="text-xl font-bold">Think Twice</h1>
-      
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Menu className="w-6 h-6" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>Navigation</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/admin")}>
-            <User className="w-4 h-4 mr-2" />
-            Dashboard
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/settings")}>
-            <Settings className="w-4 h-4 mr-2" />
-            Settings
-          </DropdownMenuItem>
-          {userRole === 'admin' && (
-            <DropdownMenuItem onClick={() => navigate("/admin")}>
-              <Shield className="w-4 h-4 mr-2" />
-              Admin Panel
-            </DropdownMenuItem>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center">
+        <div className="mr-4 hidden md:flex">
+          <Link to="/" className="mr-6 flex items-center space-x-2">
+            <span className="hidden font-bold sm:inline-block">
+              Critical Thinking
+            </span>
+          </Link>
+          <nav className="flex items-center space-x-6 text-sm font-medium">
+            <Link
+              to="/beginners-journey"
+              className="transition-colors hover:text-foreground/80 text-foreground"
+            >
+              Beginner's Journey
+            </Link>
+            <Link
+              to="/argument-analysis"
+              className="transition-colors hover:text-foreground/80 text-foreground"
+            >
+              Argument Analysis
+            </Link>
+            <Link
+              to="/admin"
+              className="transition-colors hover:text-foreground/80 text-foreground"
+            >
+              Admin
+            </Link>
+          </nav>
+        </div>
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <nav className="flex items-center">
+            <Link to="/settings">
+              <Button variant="ghost" size="icon">
+                <Settings className="h-5 w-5" />
+                <span className="sr-only">Settings</span>
+              </Button>
+            </Link>
+          </nav>
+        </div>
+      </div>
+    </header>
   );
 }
