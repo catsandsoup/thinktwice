@@ -1,13 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Challenge } from "@/components/Challenge";
 import { ChallengeProgress } from "@/components/ChallengeProgress";
-import { useQuery } from "@tanstack/react-query";
-import { fetchAllChallenges } from "@/lib/queries";
-import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
-import { Challenge as ChallengeType } from "@/data/challengeTypes";
+import { beginnerChallenges } from "@/data/challenges";
 
 const STARS_PER_LEVEL = 25;
 
@@ -16,31 +13,6 @@ const BeginnersJourney = () => {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [userProgress, setUserProgress] = useState({ level: 1, stars: 0 });
   const [seenChallenges, setSeenChallenges] = useState<Set<string>>(new Set());
-
-  const { data: challenges, isLoading, error } = useQuery({
-    queryKey: ['challenges'],
-    queryFn: fetchAllChallenges,
-    select: (data) => {
-      // Filter beginner challenges and ensure we get all types
-      const beginnerChallenges = data.filter(challenge => 
-        challenge.difficulty === 'beginner' &&
-        ['fallacy', 'media', 'source', 'headline'].includes(challenge.type)
-      );
-      
-      // Create a map to store unique challenges by ID
-      const uniqueMap = new Map<string, ChallengeType>();
-      
-      // Only keep one instance of each challenge based on ID
-      beginnerChallenges.forEach(challenge => {
-        if (!uniqueMap.has(challenge.id)) {
-          uniqueMap.set(challenge.id, challenge);
-        }
-      });
-      
-      // Convert to array and shuffle
-      return Array.from(uniqueMap.values()).sort(() => Math.random() - 0.5);
-    }
-  });
 
   // Load seen challenges from localStorage on mount
   useEffect(() => {
@@ -56,12 +28,7 @@ const BeginnersJourney = () => {
     loadSeenChallenges();
   }, []);
 
-  // Memoize the filtered challenges to prevent unnecessary re-renders
-  const availableChallenges = useMemo(() => {
-    if (!challenges) return [];
-    return challenges.filter(challenge => !seenChallenges.has(challenge.id));
-  }, [challenges, seenChallenges]);
-
+  // Load user progress from Supabase
   useEffect(() => {
     const fetchUserProgress = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -80,6 +47,10 @@ const BeginnersJourney = () => {
 
     fetchUserProgress();
   }, []);
+
+  const availableChallenges = beginnerChallenges.filter(
+    challenge => !seenChallenges.has(challenge.id)
+  );
 
   const handleComplete = async (correct: boolean, xp: number) => {
     if (correct) {
@@ -101,9 +72,9 @@ const BeginnersJourney = () => {
         }
 
         // Mark current challenge as seen and persist to localStorage
-        if (challenges && challenges[currentChallenge]) {
+        if (availableChallenges[currentChallenge]) {
           const newSeenChallenges = new Set(seenChallenges);
-          newSeenChallenges.add(challenges[currentChallenge].id);
+          newSeenChallenges.add(availableChallenges[currentChallenge].id);
           setSeenChallenges(newSeenChallenges);
           localStorage.setItem(
             `seen-challenges-${user.id}`,
@@ -119,36 +90,6 @@ const BeginnersJourney = () => {
       }
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
-          <Skeleton className="h-8 w-full max-w-md" />
-          <Skeleton className="h-[400px] w-full" />
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
-          <div className="text-red-500">
-            Error loading challenges. Please try again later.
-          </div>
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/')}
-            className="w-full sm:w-auto"
-          >
-            Return Home
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   if (!availableChallenges || availableChallenges.length === 0) {
     return (
