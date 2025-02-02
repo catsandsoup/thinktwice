@@ -15,7 +15,6 @@ export function StandardChallenge(props: StandardChallengeProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
 
-  // Determine if this is a multiple choice question based on number of correct answers
   const correctOptions = props.options.filter(opt => opt.isCorrect);
   const isMultipleChoice = correctOptions.length > 1;
 
@@ -38,10 +37,11 @@ export function StandardChallenge(props: StandardChallengeProps) {
     }
 
     if (isSubmitted && isCorrect) {
+      props.onComplete(true, props.xpReward);
+      // Reset state for next question
       setSelected([]);
       setIsSubmitted(false);
       setIsCorrect(false);
-      props.onComplete(true, props.xpReward);
       return;
     }
 
@@ -70,7 +70,6 @@ export function StandardChallenge(props: StandardChallengeProps) {
     <div className="space-y-4">
       <div className="space-y-4">
         {isMultipleChoice ? (
-          // Multiple choice question using checkboxes
           props.options.map((option) => (
             <div
               key={option.id}
@@ -107,7 +106,6 @@ export function StandardChallenge(props: StandardChallengeProps) {
             </div>
           ))
         ) : (
-          // Single choice question using radio buttons
           <RadioGroup
             value={selected[0]}
             onValueChange={(value) => handleSelect(value)}
