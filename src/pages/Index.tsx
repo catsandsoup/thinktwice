@@ -2,17 +2,10 @@ import { LearningPath } from "@/components/LearningPath";
 import { UserAchievements } from "@/components/UserAchievements";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Settings, LogOut } from "lucide-react";
+import { ExpandableTabs } from "@/components/ui/expandable-tabs";
+import { supabase } from "@/integrations/supabase/client";
 import { awardPathBadge } from "@/utils/pathBadges";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -42,39 +35,40 @@ const Index = () => {
     }
   };
 
+  const handleNavigation = async (index: number | null) => {
+    if (index === 0) {
+      navigate("/settings");
+    } else if (index === 1) {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        toast.error("Error signing out");
+      } else {
+        navigate("/login");
+      }
+    }
+  };
+
+  const navigationTabs = [
+    { title: "Settings", icon: Settings },
+    { title: "Sign Out", icon: LogOut },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="container p-6 flex justify-between items-center">
-        <div className="text-center flex-1">
+      <header className="container p-6">
+        <div className="flex justify-center mb-4">
+          <ExpandableTabs 
+            tabs={navigationTabs} 
+            onChange={handleNavigation}
+            className="border-gray-200 dark:border-gray-800"
+          />
+        </div>
+        <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight">Think Twice</h1>
           <p className="text-xl text-gray-600">
             Master the art of clear, logical thinking
           </p>
         </div>
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
-              <SheetDescription>
-                Navigate through your learning journey
-              </SheetDescription>
-            </SheetHeader>
-            <nav className="mt-4 space-y-2">
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() => navigate("/settings")}
-              >
-                Settings
-              </Button>
-            </nav>
-          </SheetContent>
-        </Sheet>
       </header>
 
       <main className="container p-6 max-w-6xl mx-auto space-y-8">
