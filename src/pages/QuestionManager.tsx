@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { FeedbackWithDetails } from "@/types/feedback";
 import FeedbackTable from "@/components/feedback/FeedbackTable";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -31,7 +32,8 @@ export default function QuestionManager() {
         challenges:challenge_id (
           title
         ),
-        profiles (
+        user_id,
+        profiles!challenge_feedback_user_id_fkey (
           display_name
         )
       `);
@@ -41,7 +43,8 @@ export default function QuestionManager() {
     // Transform the data to ensure it matches our type
     const transformedData = data?.map(item => ({
       ...item,
-      profiles: item.profiles ? { display_name: item.profiles.display_name } : null
+      profiles: item.profiles ? { display_name: item.profiles.display_name } : null,
+      challenges: item.challenges ? { title: item.challenges.title } : null
     }));
 
     return transformedData as FeedbackWithDetails[];
