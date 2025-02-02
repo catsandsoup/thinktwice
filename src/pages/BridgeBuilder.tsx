@@ -34,6 +34,11 @@ export default function BridgeBuilder() {
             id,
             statement,
             highlight_texts (*)
+          ),
+          word_selection_challenges (
+            id,
+            passage,
+            word_selection_keywords (*)
           )
         `)
         .eq('journey_id', journey.id)
@@ -45,8 +50,9 @@ export default function BridgeBuilder() {
           id: challenge.id,
           title: challenge.title,
           description: challenge.description,
+          type: challenge.type,
           difficulty: challenge.difficulty,
-          xpReward: challenge.xp_reward,
+          xpReward: challenge.xp_reward
         };
 
         switch (challenge.type) {
@@ -75,7 +81,7 @@ export default function BridgeBuilder() {
               ...baseChallenge,
               type: "word-selection" as const,
               passage: challenge.word_selection_challenges?.[0]?.passage || '',
-              keyWords: challenge.word_selection_keywords?.map(kw => ({
+              keyWords: challenge.word_selection_challenges?.[0]?.word_selection_keywords?.map(kw => ({
                 word: kw.word,
                 explanation: kw.explanation
               })) || []
