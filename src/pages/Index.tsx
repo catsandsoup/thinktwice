@@ -1,4 +1,5 @@
 import { LearningPath } from "@/components/LearningPath";
+import { UserAchievements } from "@/components/UserAchievements";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
@@ -30,6 +31,8 @@ const Index = () => {
             Learn to make better decisions in your daily life
           </p>
         </div>
+
+        <UserAchievements />
 
         <div className="grid md:grid-cols-2 gap-8">
           <LearningPath
