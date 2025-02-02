@@ -17,25 +17,33 @@ export function JourneySelector({ value, onChange }: {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('journeys')
-        .select('*');
+        .select('*')
+        .in('type', ['argument', 'beginner'])
+        .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching journeys:', error);
+        throw error;
+      }
       return data;
     }
   });
 
   return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger>
-        <SelectValue placeholder="Select journey" />
-      </SelectTrigger>
-      <SelectContent>
-        {journeys?.map((journey) => (
-          <SelectItem key={journey.id} value={journey.id}>
-            {journey.title}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div className="space-y-2">
+      <label className="text-sm font-medium">Select Journey</label>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger>
+          <SelectValue placeholder="Select journey" />
+        </SelectTrigger>
+        <SelectContent>
+          {journeys?.map((journey) => (
+            <SelectItem key={journey.id} value={journey.id}>
+              {journey.title} ({journey.type})
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }
