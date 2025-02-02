@@ -10,11 +10,9 @@ import { ChevronLeft } from "lucide-react";
 const TruthExplorer = () => {
   const navigate = useNavigate();
   
-  const intermediateChallenges = useMemo(() => {
-    const filtered = challenges.filter(c => c.difficulty === "intermediate");
-    console.log("Intermediate challenges:", filtered);
-    return shuffleArray(filtered);
-  }, []);
+  const intermediateChallenges = useMemo(() => 
+    shuffleArray(challenges.filter(c => c.difficulty === "intermediate")), 
+  []);
   
   const [currentChallenge, setCurrentChallenge] = useState(0);
 
@@ -27,8 +25,6 @@ const TruthExplorer = () => {
       }
     }
   };
-
-  console.log("Current challenge index:", currentChallenge, "Total challenges:", intermediateChallenges.length);
 
   return (
     <div className="min-h-screen bg-background">
@@ -47,13 +43,7 @@ const TruthExplorer = () => {
           totalChallenges={intermediateChallenges.length}
         />
 
-        {intermediateChallenges.length > 0 ? (
-          <Challenge {...intermediateChallenges[currentChallenge]} onComplete={handleComplete} />
-        ) : (
-          <div className="text-center py-8">
-            <p>No challenges available at this time.</p>
-          </div>
-        )}
+        <Challenge {...intermediateChallenges[currentChallenge]} onComplete={handleComplete} />
       </div>
     </div>
   );
