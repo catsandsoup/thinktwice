@@ -1,20 +1,15 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Challenge } from "@/components/Challenge";
 import { ChallengeProgress } from "@/components/ChallengeProgress";
-import { challenges } from "@/data/challenges";
-import { shuffleArray } from "@/lib/utils";
+import { useChallenges } from "@/hooks/useChallenges";
 import { ChevronLeft } from "lucide-react";
 
 const BeginnersJourney = () => {
   const navigate = useNavigate();
-  
-  const beginnerChallenges = useMemo(() => 
-    shuffleArray(challenges.filter(c => c.difficulty === "beginner")), 
-  []);
-  
   const [currentChallenge, setCurrentChallenge] = useState(0);
+  const { data: beginnerChallenges = [] } = useChallenges("beginner");
 
   const handleComplete = (correct: boolean) => {
     if (correct) {
@@ -43,7 +38,13 @@ const BeginnersJourney = () => {
           totalChallenges={beginnerChallenges.length}
         />
 
-        <Challenge {...beginnerChallenges[currentChallenge]} onComplete={handleComplete} />
+        {beginnerChallenges.length > 0 ? (
+          <Challenge {...beginnerChallenges[currentChallenge]} onComplete={handleComplete} />
+        ) : (
+          <div className="text-center py-8">
+            <p>Loading challenges...</p>
+          </div>
+        )}
       </div>
     </div>
   );
