@@ -3,17 +3,13 @@ import { Button } from "@/components/ui/button";
 import { MatchingChallenge as MatchingChallengeType } from "@/data/challengeTypes";
 import { useToast } from "@/hooks/use-toast";
 
-interface MatchingChallengeProps extends MatchingChallengeType {
-  onComplete: (correct: boolean, xp: number) => void;
-}
-
 export function MatchingChallenge({ pairs, xpReward, onComplete }: MatchingChallengeProps) {
   const [selectedPair, setSelectedPair] = useState<{ claim?: string; evidence?: string }>({});
   const [matchedPairs, setMatchedPairs] = useState<Set<string>>(new Set());
   const [showAnswer, setShowAnswer] = useState(false);
+  const [wrongAttempts, setWrongAttempts] = useState(0);
   const { toast } = useToast();
 
-  // Randomize the evidence array while keeping the claims in order
   const randomizedEvidence = useMemo(() => {
     const evidenceArray = pairs.map(pair => pair.evidence);
     for (let i = evidenceArray.length - 1; i > 0; i--) {
@@ -37,6 +33,7 @@ export function MatchingChallenge({ pairs, xpReward, onComplete }: MatchingChall
       const newMatched = new Set(matchedPairs);
       newMatched.add(claim);
       setMatchedPairs(newMatched);
+      setWrongAttempts(0);
       
       if (newMatched.size === pairs.length) {
         toast({
@@ -56,9 +53,12 @@ export function MatchingChallenge({ pairs, xpReward, onComplete }: MatchingChall
         description: "These items don't match. Try different combinations.",
         variant: "destructive",
       });
+      setWrongAttempts(prev => prev + 1);
     }
     setSelectedPair({});
   };
+
+  // ... keep existing code (grid layout for claims and evidence)
 
   return (
     <div className="space-y-4">
@@ -109,13 +109,15 @@ export function MatchingChallenge({ pairs, xpReward, onComplete }: MatchingChall
           </Button>
         )}
         
-        <Button
-          variant="outline"
-          onClick={() => setShowAnswer(!showAnswer)}
-          className="whitespace-nowrap"
-        >
-          {showAnswer ? "Hide Answer" : "Display Answer"}
-        </Button>
+        {wrongAttempts >= 3 && (
+          <Button
+            variant="outline"
+            onClick={() => setShowAnswer(!showAnswer)}
+            className="whitespace-nowrap"
+          >
+            {showAnswer ? "Hide Answer" : "Display Answer"}
+          </Button>
+        )}
       </div>
 
       {showAnswer && (

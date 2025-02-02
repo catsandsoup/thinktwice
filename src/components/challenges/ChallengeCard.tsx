@@ -1,5 +1,4 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Challenge } from "@/data/challengeTypes";
 import { cn } from "@/lib/utils";
 
@@ -26,16 +25,7 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
     <Card className="w-full max-w-2xl mx-auto animate-fade-in shadow-sm" role="region" aria-label={`Question about ${challenge.type}`}>
       <CardHeader className="space-y-4 px-4 py-3">
         <div className={cn("rounded-lg space-y-2", getBgColor())}>
-          <div className="flex items-start gap-2">
-            <Badge 
-              variant={
-                challenge.difficulty === "beginner" ? "default" :
-                challenge.difficulty === "intermediate" ? "secondary" : "outline"
-              }
-              className="mt-1 whitespace-nowrap"
-            >
-              {challenge.difficulty}
-            </Badge>
+          <div className="flex items-start">
             <div className="space-y-1 text-left">
               <CardTitle className="text-xl sm:text-2xl font-medium leading-tight" id={`question-${challenge.title.toLowerCase().replace(/\s+/g, '-')}`}>
                 {challenge.title}

@@ -12,6 +12,7 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showNextQuestion, setShowNextQuestion] = useState(false);
+  const [wrongAttempts, setWrongAttempts] = useState(0);
 
   const handleWordClick = (word: string) => {
     if (isSubmitted) return;
@@ -36,6 +37,7 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
       setIsSubmitted(false);
       setIsCorrect(false);
       setShowNextQuestion(false);
+      setWrongAttempts(0);
       return;
     }
 
@@ -49,6 +51,9 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
     
     if (isAllCorrect) {
       setShowNextQuestion(true);
+      setWrongAttempts(0);
+    } else {
+      setWrongAttempts(prev => prev + 1);
     }
   };
 
@@ -62,7 +67,6 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
   const renderText = () => {
     const words = props.passage.split(/\s+/);
     return words.map((word, index) => {
-      // Find if this word is part of any keyword phrase
       const keywordPhrase = props.keyWords.find(kw => {
         const phraseWords = kw.word.split(/\s+/);
         const remainingWords = words.slice(index, index + phraseWords.length);
@@ -76,7 +80,6 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
         const isSelected = selectedWords.has(phrase);
         const isCorrectWord = isSubmitted && props.keyWords.some(kw => kw.word === phrase);
 
-        // Skip the next n-1 words as they're part of this phrase
         for (let i = 1; i < phraseWords.length; i++) {
           words[index + i] = '';
         }
@@ -136,7 +139,29 @@ export function WordSelectionChallenge(props: WordSelectionChallengeProps) {
             {showNextQuestion ? "Next Question" : "Submit Answer"}
           </Button>
         )}
+
+        {wrongAttempts >= 3 && !showNextQuestion && (
+          <Button
+            variant="outline"
+            onClick={() => setShowAnswer(!showAnswer)}
+            className="whitespace-nowrap"
+          >
+            {showAnswer ? "Hide Answer" : "Display Answer"}
+          </Button>
+        )}
       </div>
+
+      {showAnswer && (
+        <div className="p-4 bg-muted rounded-lg space-y-4">
+          <p className="font-medium">Correct Words:</p>
+          {props.keyWords.map((kw, index) => (
+            <div key={index} className="space-y-1">
+              <p className="font-medium text-primary">{kw.word}</p>
+              <p className="text-sm text-muted-foreground">{kw.explanation}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -10,6 +10,7 @@ interface HighlightChallengeProps extends HighlightChallengeType {
 export function HighlightChallenge({ statement, highlights, xpReward, onComplete }: HighlightChallengeProps) {
   const [selectedText, setSelectedText] = useState<Set<string>>(new Set());
   const [showAnswer, setShowAnswer] = useState(false);
+  const [wrongAttempts, setWrongAttempts] = useState(0);
   const { toast } = useToast();
 
   const handleTextSelect = () => {
@@ -42,7 +43,6 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
   const handleSubmit = () => {
     const correctHighlights = new Set(highlights.map(h => h.text));
     
-    // Check if each selected text matches or is close to a correct highlight
     const isCorrect = Array.from(selectedText).some(selected => 
       Array.from(correctHighlights).some(correct => 
         selected.includes(correct) || 
@@ -57,6 +57,7 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
         description: "You've identified the key statements correctly!",
       });
       onComplete(true, xpReward);
+      setWrongAttempts(0);
     } else {
       toast({
         title: "Try Again",
@@ -64,6 +65,7 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
         variant: "destructive",
       });
       setSelectedText(new Set());
+      setWrongAttempts(prev => prev + 1);
     }
   };
 
@@ -104,13 +106,15 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
           Submit Highlights
         </Button>
         
-        <Button
-          variant="outline"
-          onClick={() => setShowAnswer(!showAnswer)}
-          className="whitespace-nowrap"
-        >
-          {showAnswer ? "Hide Answer" : "Display Answer"}
-        </Button>
+        {wrongAttempts >= 3 && (
+          <Button
+            variant="outline"
+            onClick={() => setShowAnswer(!showAnswer)}
+            className="whitespace-nowrap"
+          >
+            {showAnswer ? "Hide Answer" : "Display Answer"}
+          </Button>
+        )}
       </div>
 
       {showAnswer && (
