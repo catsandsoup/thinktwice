@@ -47,10 +47,8 @@ export default function QuestionManager() {
           challenges:challenge_id (
             title
           ),
-          user:user_id (
-            profiles (
-              display_name
-            )
+          profiles:user_id (
+            display_name
           )
         `);
 
@@ -60,7 +58,7 @@ export default function QuestionManager() {
       const transformedData = data?.map(item => ({
         ...item,
         user: {
-          display_name: item.user?.profiles?.[0]?.display_name
+          display_name: item.profiles?.display_name
         }
       })) as FeedbackWithDetails[];
 
