@@ -14,14 +14,11 @@ export function StandardChallenge(props: StandardChallengeProps) {
   const [selected, setSelected] = useState<string[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [showNextButton, setShowNextButton] = useState(false);
 
   const correctOptions = props.options.filter(opt => opt.isCorrect);
   const isMultipleChoice = correctOptions.length > 1;
 
   const handleSelect = (optionId: string) => {
-    if (isSubmitted) return;
-    
     if (isMultipleChoice) {
       setSelected(prev => {
         if (prev.includes(optionId)) {
@@ -35,33 +32,38 @@ export function StandardChallenge(props: StandardChallengeProps) {
   };
 
   const handleSubmit = () => {
-    if (selected.length === 0 || isSubmitted) return;
+    if (selected.length === 0 && !isSubmitted) {
+      return;
+    }
+
+    if (isSubmitted && isCorrect) {
+      props.onComplete(true, props.xpReward);
+      // Reset state for next question
+      setSelected([]);
+      setIsSubmitted(false);
+      setIsCorrect(false);
+      return;
+    }
 
     const selectedOptions = props.options.filter(opt => selected.includes(opt.id));
+    
     const isAllCorrect = isMultipleChoice
       ? correctOptions.length === selectedOptions.length &&
         selectedOptions.every(opt => opt.isCorrect)
       : selectedOptions.length === 1 && selectedOptions[0].isCorrect;
-
+    
     setIsSubmitted(true);
     setIsCorrect(isAllCorrect);
-    setShowNextButton(isAllCorrect);
-  };
-
-  const handleNext = () => {
-    props.onComplete(true, props.xpReward);
-    // Reset state for next question
-    setSelected([]);
-    setIsSubmitted(false);
-    setIsCorrect(false);
-    setShowNextButton(false);
+    
+    if (isAllCorrect) {
+      props.onComplete(true, props.xpReward);
+    }
   };
 
   const handleRetry = () => {
     setSelected([]);
     setIsSubmitted(false);
     setIsCorrect(false);
-    setShowNextButton(false);
   };
 
   return (
@@ -82,7 +84,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
                   id={option.id}
                   checked={selected.includes(option.id)}
                   onCheckedChange={() => handleSelect(option.id)}
-                  disabled={isSubmitted}
+                  disabled={isSubmitted && isCorrect}
                 />
               </div>
               <div className="flex-1 space-y-1">
@@ -107,7 +109,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
           <RadioGroup
             value={selected[0]}
             onValueChange={(value) => handleSelect(value)}
-            disabled={isSubmitted}
+            disabled={isSubmitted && isCorrect}
           >
             {props.options.map((option) => (
               <div
@@ -144,33 +146,22 @@ export function StandardChallenge(props: StandardChallengeProps) {
       </div>
 
       <div className="flex gap-2">
-        {!isSubmitted ? (
+        {isSubmitted && !isCorrect ? (
+          <Button
+            onClick={handleRetry}
+            className="flex-1"
+            variant="secondary"
+          >
+            Try Again
+          </Button>
+        ) : (
           <Button
             onClick={handleSubmit}
             className="flex-1"
-            disabled={selected.length === 0}
+            aria-label={isSubmitted && isCorrect ? "Proceed to next question" : "Submit your answer"}
           >
-            Submit Answer
+            {isSubmitted && isCorrect ? "Next Question" : "Submit Answer"}
           </Button>
-        ) : (
-          <>
-            {showNextButton ? (
-              <Button
-                onClick={handleNext}
-                className="flex-1"
-              >
-                Next Question
-              </Button>
-            ) : (
-              <Button
-                onClick={handleRetry}
-                className="flex-1"
-                variant="secondary"
-              >
-                Try Again
-              </Button>
-            )}
-          </>
         )}
       </div>
     </div>
