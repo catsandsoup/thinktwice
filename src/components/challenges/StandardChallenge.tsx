@@ -90,10 +90,18 @@ export function StandardChallenge(props: StandardChallengeProps) {
 
   const handleFeedbackSubmit = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error("You must be logged in to submit feedback");
+        return;
+      }
+
       const { error } = await supabase
         .from('challenge_feedback')
         .insert({
           challenge_id: props.id,
+          user_id: user.id,
           rating,
           feedback_text: feedbackText
         });
