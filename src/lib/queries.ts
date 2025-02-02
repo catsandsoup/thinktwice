@@ -21,7 +21,8 @@ export async function fetchAllChallenges(): Promise<Challenge[]> {
         *,
         matching_pairs(*)
       )
-    `);
+    `)
+    .order('created_at', { ascending: false });  // Add ordering to get newest challenges first
 
   if (challengesError) {
     console.error('Error fetching challenges:', challengesError);
@@ -35,7 +36,7 @@ export async function fetchAllChallenges(): Promise<Challenge[]> {
 
   console.log('Raw challenges from Supabase:', challenges);
 
-  return challenges.map(challenge => {
+  const mappedChallenges = challenges.map(challenge => {
     const baseChallenge = {
       id: challenge.id,
       title: challenge.title,
@@ -50,7 +51,7 @@ export async function fetchAllChallenges(): Promise<Challenge[]> {
       case 'fallacy':
       case 'media':
       case 'source':
-        return {
+        const standardChallenge = {
           ...baseChallenge,
           type: challenge.type,
           options: challenge.standard_challenge_options?.map(opt => ({
@@ -60,6 +61,8 @@ export async function fetchAllChallenges(): Promise<Challenge[]> {
             explanation: opt.explanation
           })) || []
         };
+        console.log('Mapped standard challenge:', standardChallenge);
+        return standardChallenge;
 
       case 'word-selection':
         const wordSelection = challenge.word_selection_challenges?.[0];
@@ -100,5 +103,8 @@ export async function fetchAllChallenges(): Promise<Challenge[]> {
       default:
         return baseChallenge as Challenge;
     }
-  }) as Challenge[];
+  });
+
+  console.log('Final mapped challenges:', mappedChallenges);
+  return mappedChallenges;
 }
