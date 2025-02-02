@@ -23,11 +23,8 @@ const Index = () => {
         case "Tools":
           badgeName = 'Tool Expert';
           break;
-        case "Data":
-          badgeName = 'Data Guru';
-          break;
-        case "Emotion":
-          badgeName = 'Emotion Master';
+        case "Bridge":
+          badgeName = 'Bridge Builder';
           break;
         default:
           return;
@@ -83,6 +80,10 @@ const Index = () => {
         navigate('/thinking-tools');
         await awardPathBadge(path);
         break;
+      case "Bridge":
+        navigate('/bridge-builder');
+        await awardPathBadge(path);
+        break;
       default:
         toast.info(`The ${path} path will be available in the next update.`, {
           description: "Coming Soon!"
@@ -122,13 +123,13 @@ const Index = () => {
             labels={["Logical Fallacies", "Claim Evaluation", "Reasoning Skills"]}
           />
           <LearningPath
-            title="Data Detective"
-            description="Learn to spot misleading statistics and interpret data correctly"
+            title="Bridge Builder"
+            description="Balance emotional and logical thinking while building understanding"
             level="intermediate"
-            onClick={() => handlePathClick("Data")}
-            mission="Master the art of analyzing data and identifying statistical manipulation"
-            actionText="Unlock Module"
-            labels={["Statistical Analysis", "Data Interpretation", "Number Sense"]}
+            onClick={() => handlePathClick("Bridge")}
+            mission="Learn to identify emotional triggers and convert them into logical arguments"
+            actionText="Start Building Bridges"
+            labels={["Emotional Intelligence", "Logical Analysis", "Conflict Resolution"]}
           />
           <LearningPath
             title="Thinking Tools"
@@ -138,15 +139,6 @@ const Index = () => {
             mission="Learn and practice systematic approaches to problem-solving"
             actionText="Start Practice"
             labels={["Systematic Analysis", "Lateral Thinking", "Creative Problem-Solving"]}
-          />
-          <LearningPath
-            title="Emotion vs Logic"
-            description="Learn to separate emotional reactions from logical arguments"
-            level="advanced"
-            onClick={() => handlePathClick("Emotion")}
-            mission="Develop skills to recognize and manage emotional bias in decision-making"
-            actionText="Explore Challenges"
-            labels={["Emotional Intelligence", "Bias Recognition", "Objective Analysis"]}
           />
         </div>
       </main>

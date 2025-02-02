@@ -6,6 +6,7 @@ import Index from "@/pages/Index";
 import ArgumentAnalysis from "@/pages/ArgumentAnalysis";
 import BeginnersJourney from "@/pages/BeginnersJourney";
 import ThinkingTools from "@/pages/ThinkingTools";
+import BridgeBuilder from "@/pages/BridgeBuilder";
 import NotFound from "@/pages/NotFound";
 import QuestionManager from "@/pages/QuestionManager";
 import Settings from "@/pages/Settings";
@@ -31,6 +32,7 @@ function App() {
           <Route path="/argument-analysis" element={<ArgumentAnalysis />} />
           <Route path="/beginners-journey" element={<BeginnersJourney />} />
           <Route path="/thinking-tools" element={<ThinkingTools />} />
+          <Route path="/bridge-builder" element={<BridgeBuilder />} />
           <Route path="/question-manager" element={<QuestionManager />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
