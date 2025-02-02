@@ -105,14 +105,12 @@ export default function BridgeBuilder() {
 
   const handleChallengeComplete = (correct: boolean) => {
     if (correct) {
-      // Update completed challenges state
       setCompletedChallenges(prev => {
         const newCompleted = new Set(prev);
         newCompleted.add(allChallenges[currentChallengeIndex].id);
         return newCompleted;
       });
 
-      // Check if this was the last challenge
       if (currentChallengeIndex === allChallenges.length - 1) {
         toast.success("Congratulations! You've completed all challenges! 🎉");
         setTimeout(() => {
@@ -153,13 +151,6 @@ export default function BridgeBuilder() {
         currentQuestion={currentChallengeIndex + 1}
         totalQuestions={allChallenges.length}
       />
-
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Bridge Builder Journey</h1>
-        <p className="text-gray-600">
-          Master the art of balancing emotional and logical thinking
-        </p>
-      </div>
 
       <div className="mb-6">
         <div className="flex items-center gap-2 text-sm text-gray-600">
