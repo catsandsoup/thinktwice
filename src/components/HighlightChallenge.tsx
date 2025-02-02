@@ -3,135 +3,126 @@ import { Button } from "@/components/ui/button";
 import { HighlightChallenge as HighlightChallengeType } from "@/data/challengeTypes";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface HighlightChallengeProps extends HighlightChallengeType {
   onComplete: (correct: boolean, xp: number) => void;
 }
 
 export function HighlightChallenge({ statement, highlights, xpReward, onComplete }: HighlightChallengeProps) {
-  const [selectedSegments, setSelectedSegments] = useState<Set<number>>(new Set());
+  const [selectedSentences, setSelectedSentences] = useState<Set<number>>(new Set());
   const [showAnswer, setShowAnswer] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const { toast } = useToast();
 
-  // Split the statement into segments while preserving spaces
-  const segments = statement.split(/(\s+)/).filter(segment => segment.trim().length > 0);
+  // Split the statement into sentences
+  const sentences = statement
+    .split(/(?<=[.!?])\s+/)
+    .filter(sentence => sentence.trim().length > 0);
 
-  const isSegmentCorrect = (segment: string, index: number) => {
-    return highlights.some(highlight => {
-      const highlightWords = highlight.text.split(/\s+/);
-      const segmentWords = segments.slice(index, index + highlightWords.length)
-        .filter(s => s.trim().length > 0)
-        .join(' ');
-      return segmentWords === highlight.text;
-    });
+  const isSentenceCorrect = (sentence: string, index: number) => {
+    return highlights.some(highlight => sentence.includes(highlight.text));
   };
 
-  const getExplanationForSegment = (segment: string, index: number) => {
+  const getExplanationForSentence = (sentence: string) => {
     for (const highlight of highlights) {
-      const highlightWords = highlight.text.split(/\s+/);
-      const segmentWords = segments.slice(index, index + highlightWords.length)
-        .filter(s => s.trim().length > 0)
-        .join(' ');
-      if (segmentWords === highlight.text) {
+      if (sentence.includes(highlight.text)) {
         return highlight.explanation;
       }
     }
     return null;
   };
 
-  const toggleSegment = (index: number) => {
-    const newSelected = new Set(selectedSegments);
-    if (selectedSegments.has(index)) {
+  const toggleSentence = (index: number) => {
+    const newSelected = new Set(selectedSentences);
+    if (selectedSentences.has(index)) {
       newSelected.delete(index);
     } else {
       newSelected.add(index);
     }
-    setSelectedSegments(newSelected);
+    setSelectedSentences(newSelected);
   };
 
   const handleSubmit = () => {
-    if (selectedSegments.size === 0) {
+    if (selectedSentences.size === 0) {
       toast({
         title: "No Selection",
-        description: "Please select at least one segment before submitting.",
+        description: "Please select at least one sentence before submitting.",
         variant: "destructive",
       });
       return;
     }
 
-    const isCorrect = Array.from(selectedSegments).every(index => 
-      isSegmentCorrect(segments[index], index)
-    ) && highlights.every(highlight => {
-      const words = highlight.text.split(/\s+/);
-      return segments.some((segment, index) => {
-        if (!selectedSegments.has(index)) return false;
-        const segmentWords = segments.slice(index, index + words.length)
-          .filter(s => s.trim().length > 0)
-          .join(' ');
-        return segmentWords === highlight.text;
-      });
-    });
+    const isCorrect = Array.from(selectedSentences).every(index => 
+      isSentenceCorrect(sentences[index], index)
+    ) && highlights.every(highlight => 
+      sentences.some((sentence, index) => 
+        selectedSentences.has(index) && sentence.includes(highlight.text)
+      )
+    );
 
     if (isCorrect) {
       toast({
         title: "Correct! 🎉",
-        description: "You've identified the key statements correctly!",
+        description: "You've identified all the key sentences!",
       });
       onComplete(true, xpReward);
       setWrongAttempts(0);
     } else {
       toast({
         title: "Try Again",
-        description: "Some highlights are missing or incorrect.",
+        description: "Some selections are missing or incorrect.",
         variant: "destructive",
       });
-      setSelectedSegments(new Set());
+      setSelectedSentences(new Set());
       setWrongAttempts(prev => prev + 1);
     }
   };
 
   return (
     <div className="space-y-4">
-      <div className="p-4 bg-muted rounded-lg">
-        <div className="flex flex-wrap gap-2">
-          {segments.map((segment, index) => (
-            <button
-              key={index}
-              onClick={() => toggleSegment(index)}
-              className={cn(
-                "px-2 py-1.5 rounded transition-colors text-left min-h-[2.5rem]",
-                "hover:bg-primary/10 active:bg-primary/5",
-                "focus:outline-none focus:ring-2 focus:ring-primary/20",
-                "text-base sm:text-lg leading-normal",
-                "touch-manipulation",
-                selectedSegments.has(index) ? "bg-primary/20" : "bg-transparent",
-                showAnswer && isSegmentCorrect(segment, index) && "bg-green-200 dark:bg-green-800"
-              )}
-            >
-              {segment}
-            </button>
-          ))}
-        </div>
+      <div className="flex flex-col gap-2">
+        {sentences.map((sentence, index) => (
+          <motion.button
+            key={index}
+            onClick={() => toggleSentence(index)}
+            className={cn(
+              "p-4 rounded-lg border text-left transition-all",
+              "hover:bg-primary/5 active:bg-primary/10",
+              "focus:outline-none focus:ring-2 focus:ring-primary/20",
+              selectedSentences.has(index) && "bg-primary/10 border-primary",
+              showAnswer && isSentenceCorrect(sentence, index) && "bg-green-100 dark:bg-green-900/20 border-green-500",
+              showAnswer && selectedSentences.has(index) && !isSentenceCorrect(sentence, index) && 
+                "bg-red-100 dark:bg-red-900/20 border-red-500"
+            )}
+            initial={false}
+            animate={{
+              scale: selectedSentences.has(index) ? 1.02 : 1,
+              backgroundColor: selectedSentences.has(index) ? "var(--primary-10)" : "transparent"
+            }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <p className="text-base sm:text-lg leading-relaxed">{sentence}</p>
+            {showAnswer && selectedSentences.has(index) && (
+              <motion.p 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="text-sm mt-2 text-muted-foreground"
+              >
+                {getExplanationForSentence(sentence)}
+              </motion.p>
+            )}
+          </motion.button>
+        ))}
       </div>
 
-      {showAnswer && (
-        <div className="space-y-2">
-          {highlights.map((highlight, index) => (
-            <div key={index} className="p-3 bg-muted rounded">
-              <p className="font-medium text-primary">{highlight.text}</p>
-              <p className="text-sm text-muted-foreground mt-1">{highlight.explanation}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div className="flex flex-col sm:flex-row gap-2">
+      <div className="flex flex-col sm:flex-row gap-2 pt-4">
         <Button 
           onClick={handleSubmit} 
           className="flex-1 h-12 text-base"
+          size="lg"
         >
-          Submit Highlights
+          Check Answers
         </Button>
         
         {wrongAttempts >= 3 && (
@@ -139,8 +130,9 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
             variant="outline"
             onClick={() => setShowAnswer(!showAnswer)}
             className="h-12 text-base"
+            size="lg"
           >
-            {showAnswer ? "Hide Answer" : "Display Answer"}
+            {showAnswer ? "Hide Answer" : "Show Answer"}
           </Button>
         )}
       </div>
