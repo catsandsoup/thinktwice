@@ -14,7 +14,6 @@ const BeginnersJourney = () => {
   const [userProgress, setUserProgress] = useState({ level: 1, stars: 0 });
   const [seenChallenges, setSeenChallenges] = useState<Set<string>>(new Set());
 
-  // Load seen challenges from localStorage on mount
   useEffect(() => {
     const loadSeenChallenges = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -111,18 +110,15 @@ const BeginnersJourney = () => {
     );
   }
 
-  const maxXp = STARS_PER_LEVEL;
-  const currentLevelStars = userProgress.stars % STARS_PER_LEVEL;
-
   return (
     <div className="min-h-screen bg-background">
       <div className="container px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
         <ChallengeProgress
           currentChallenge={currentChallenge}
           totalChallenges={availableChallenges.length}
-          xp={currentLevelStars}
-          maxXp={maxXp}
-          streak={userProgress.level}
+          xp={0}
+          maxXp={0}
+          streak={0}
         />
 
         <Challenge {...availableChallenges[currentChallenge]} onComplete={handleComplete} />
