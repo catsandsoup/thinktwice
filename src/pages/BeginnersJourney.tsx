@@ -5,6 +5,7 @@ import { Challenge } from "@/components/Challenge";
 import { ChallengeProgress } from "@/components/ChallengeProgress";
 import { supabase } from "@/integrations/supabase/client";
 import { allChallenges } from "@/data/challenges";
+import { ArrowLeft } from "lucide-react";
 
 const STARS_PER_LEVEL = 25;
 
@@ -27,7 +28,6 @@ const BeginnersJourney = () => {
     loadSeenChallenges();
   }, []);
 
-  // Load user progress from Supabase
   useEffect(() => {
     const fetchUserProgress = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -112,24 +112,22 @@ const BeginnersJourney = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
+      <div className="container relative px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/')}
+          className="absolute right-4 top-4 flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Exit Journey
+        </Button>
+
         <ChallengeProgress
           currentChallenge={currentChallenge}
           totalChallenges={availableChallenges.length}
-          xp={0}
-          maxXp={0}
-          streak={0}
         />
 
         <Challenge {...availableChallenges[currentChallenge]} onComplete={handleComplete} />
-
-        <Button 
-          variant="outline" 
-          onClick={() => navigate('/')}
-          className="w-full sm:w-auto"
-        >
-          Exit Journey
-        </Button>
       </div>
     </div>
   );
