@@ -32,7 +32,7 @@ const Index = () => {
             description="Spot clues that help you make better choices"
             level="beginner"
             onClick={() => handlePathClick("Beginner")}
-            mission="Learn to spot the difference between facts and opinions in social media posts"
+            mission="Learn to analyze social media posts and identify reliable information from questionable claims"
             actionText="Start Your Investigation"
           />
           <div className="opacity-50 pointer-events-none">
