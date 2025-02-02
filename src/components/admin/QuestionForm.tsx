@@ -108,11 +108,14 @@ export function QuestionForm({ journeyId }: { journeyId: string }) {
     }
   };
 
+  // Only show preview for standard challenge types
+  const isStandardType = type === "headline" || type === "fallacy" || type === "media" || type === "source";
+
   const previewChallenge = {
     id: "preview",
     title,
     description,
-    type,
+    type: isStandardType ? type : "fallacy", // Fallback to fallacy if not a standard type
     difficulty,
     options: options.map(opt => ({
       id: opt.id,
@@ -236,7 +239,7 @@ export function QuestionForm({ journeyId }: { journeyId: string }) {
 
       <div className="lg:sticky lg:top-4">
         <h3 className="text-lg font-medium mb-4">Preview</h3>
-        {(title || description || options.length > 0) && (
+        {isStandardType && (title || description || options.length > 0) && (
           <ChallengeCard challenge={previewChallenge}>
             <StandardChallenge
               {...previewChallenge}
