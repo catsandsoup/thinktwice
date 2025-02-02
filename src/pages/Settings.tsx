@@ -46,29 +46,12 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 
-interface Profile {
-  id: string;
-  display_name: string | null;
-  bio: string | null;
-  avatar_url: string | null;
-  email_notifications: boolean;
-  push_notifications: boolean;
-  theme: 'light' | 'dark' | 'system';
-  enterprise_id: string | null;
-  two_factor_enabled: boolean;
-  created_at: string;
-}
-
 const profileFormSchema = z.object({
   display_name: z.string().min(2).max(30).nullable(),
   bio: z.string().max(160).nullable(),
   email_notifications: z.boolean(),
   push_notifications: z.boolean(),
 });
-
-const isValidTheme = (theme: string): theme is 'light' | 'dark' | 'system' => {
-  return ['light', 'dark', 'system'].includes(theme);
-};
 
 export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -112,14 +95,7 @@ export default function SettingsPage() {
       }
 
       if (profileData) {
-        // Validate theme before setting profile
-        const theme = isValidTheme(profileData.theme) ? profileData.theme : 'system';
-        
-        setProfile({
-          ...profileData,
-          theme,
-        } as Profile);
-
+        setProfile(profileData);
         form.reset({
           display_name: profileData.display_name,
           bio: profileData.bio,
@@ -249,8 +225,8 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="container max-w-4xl py-10">
-      <div className="space-y-6">
+    <div className="container max-w-4xl py-6">
+      <div className="space-y-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
           <p className="text-muted-foreground">
@@ -258,8 +234,8 @@ export default function SettingsPage() {
           </p>
         </div>
 
-        <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList>
+        <Tabs defaultValue="profile" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-4 gap-4 bg-muted p-1">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="h-4 w-4" />
               Profile
@@ -286,28 +262,26 @@ export default function SettingsPage() {
                   Update your profile information.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={avatarUrl || "/placeholder.svg"}
-                      alt="Avatar"
-                      className="h-20 w-20 rounded-full object-cover"
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <img
+                    src={avatarUrl || "/placeholder.svg"}
+                    alt="Avatar"
+                    className="h-20 w-20 rounded-full object-cover"
+                  />
+                  <Label
+                    htmlFor="avatar"
+                    className="cursor-pointer rounded-md bg-secondary px-4 py-2 text-secondary-foreground hover:bg-secondary/80"
+                  >
+                    Change Avatar
+                    <Input
+                      id="avatar"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarUpload}
                     />
-                    <Label
-                      htmlFor="avatar"
-                      className="cursor-pointer rounded-md bg-secondary px-4 py-2 text-secondary-foreground hover:bg-secondary/80"
-                    >
-                      Change Avatar
-                      <Input
-                        id="avatar"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleAvatarUpload}
-                      />
-                    </Label>
-                  </div>
+                  </Label>
                 </div>
 
                 <Form {...form}>
@@ -449,7 +423,6 @@ export default function SettingsPage() {
                   <Button
                     variant="outline"
                     onClick={() => {
-                      // Implement password change logic
                       toast({
                         title: "Coming Soon",
                         description: "Password change will be implemented in a future update.",

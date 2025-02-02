@@ -446,6 +446,7 @@ export type Database = {
         Row: {
           id: string
           last_activity_date: string | null
+          last_login: string | null
           streak_count: number
           total_challenges_completed: number
           user_id: string
@@ -453,6 +454,7 @@ export type Database = {
         Insert: {
           id?: string
           last_activity_date?: string | null
+          last_login?: string | null
           streak_count?: number
           total_challenges_completed?: number
           user_id: string
@@ -460,6 +462,7 @@ export type Database = {
         Update: {
           id?: string
           last_activity_date?: string | null
+          last_login?: string | null
           streak_count?: number
           total_challenges_completed?: number
           user_id?: string
