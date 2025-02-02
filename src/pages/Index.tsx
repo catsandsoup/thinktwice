@@ -14,6 +14,9 @@ const Index = () => {
       case "Argument":
         navigate('/argument-analysis');
         break;
+      case "Tools":
+        navigate('/thinking-tools');
+        break;
       default:
         toast({
           title: "Coming Soon!",
@@ -69,7 +72,7 @@ const Index = () => {
             onClick={() => handlePathClick("Tools")}
             mission="Learn and practice systematic approaches to problem-solving"
             actionText="Start Practice"
-            labels={["5 Whys", "Lateral Thinking", "Systematic Approach"]}
+            labels={["Systematic Analysis", "Lateral Thinking", "Creative Problem-Solving"]}
           />
           <LearningPath
             title="Emotion vs Logic"
