@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Challenge } from "@/components/Challenge";
 import { ChallengeProgress } from "@/components/ChallengeProgress";
 import { supabase } from "@/integrations/supabase/client";
-import { beginnerChallenges } from "@/data/challenges";
+import { allChallenges } from "@/data/challenges";
 
 const STARS_PER_LEVEL = 25;
 
@@ -48,7 +48,7 @@ const BeginnersJourney = () => {
     fetchUserProgress();
   }, []);
 
-  const availableChallenges = beginnerChallenges.filter(
+  const availableChallenges = allChallenges.filter(
     challenge => !seenChallenges.has(challenge.id)
   );
 
