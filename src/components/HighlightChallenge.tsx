@@ -1,138 +1,77 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { HighlightChallenge as HighlightChallengeType } from "@/data/challengeTypes";
 import { useToast } from "@/hooks/use-toast";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface HighlightChallengeProps extends HighlightChallengeType {
   onComplete: (correct: boolean, xp: number) => void;
 }
 
 export function HighlightChallenge({ statement, highlights, xpReward, onComplete }: HighlightChallengeProps) {
-  const [selectedText, setSelectedText] = useState<Set<string>>(new Set());
+  const [selectedSegments, setSelectedSegments] = useState<Set<number>>(new Set());
   const [showAnswer, setShowAnswer] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
-  const [touchStart, setTouchStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [touchEnd, setTouchEnd] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const isMobile = useIsMobile();
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Disable default text selection behavior on mobile
-    if (isMobile) {
-      document.body.style.webkitUserSelect = 'none';
-      document.body.style.userSelect = 'none';
-      return () => {
-        document.body.style.webkitUserSelect = '';
-        document.body.style.userSelect = '';
-      };
-    }
-  }, [isMobile]);
+  // Split the statement into segments while preserving spaces
+  const segments = statement.split(/(\s+)/).filter(segment => segment.trim().length > 0);
 
-  const handleTextSelect = () => {
-    if (isMobile) return;
-    
-    const selection = window.getSelection();
-    if (!selection || selection.isCollapsed) return;
-
-    const text = selection.toString().trim();
-    if (!text) return;
-
-    addSelectedText(text);
-    selection.removeAllRanges();
+  const isSegmentCorrect = (segment: string, index: number) => {
+    return highlights.some(highlight => {
+      const highlightWords = highlight.text.split(/\s+/);
+      const segmentWords = segments.slice(index, index + highlightWords.length)
+        .filter(s => s.trim().length > 0)
+        .join(' ');
+      return segmentWords === highlight.text;
+    });
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    setTouchStart({ x: touch.clientX, y: touch.clientY });
-    setTouchEnd({ x: touch.clientX, y: touch.clientY });
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    e.preventDefault(); // Prevent scrolling while selecting
-    const touch = e.touches[0];
-    setTouchEnd({ x: touch.clientX, y: touch.clientY });
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    e.preventDefault();
-    
-    // Calculate distance moved
-    const deltaX = Math.abs(touchEnd.x - touchStart.x);
-    const deltaY = Math.abs(touchEnd.y - touchStart.y);
-    
-    // If movement was too small or mostly vertical, ignore it
-    if (deltaX < 20 || deltaY > deltaX) return;
-
-    const textContainer = e.currentTarget;
-    const range = document.createRange();
-    const textNode = Array.from(textContainer.childNodes).find(node => 
-      node.nodeType === Node.TEXT_NODE
-    );
-
-    if (!textNode) return;
-
-    // Calculate relative positions within the text container
-    const rect = textContainer.getBoundingClientRect();
-    const startX = (touchStart.x - rect.left) / rect.width;
-    const endX = (touchEnd.x - rect.left) / rect.width;
-
-    // Map touch positions to text positions
-    const startOffset = Math.max(0, Math.min(
-      Math.floor(startX * statement.length),
-      statement.length
-    ));
-    const endOffset = Math.max(0, Math.min(
-      Math.floor(endX * statement.length),
-      statement.length
-    ));
-
-    try {
-      // Set the range based on whether the user dragged left or right
-      if (startX <= endX) {
-        range.setStart(textNode, startOffset);
-        range.setEnd(textNode, endOffset);
-      } else {
-        range.setStart(textNode, endOffset);
-        range.setEnd(textNode, startOffset);
+  const getExplanationForSegment = (segment: string, index: number) => {
+    for (const highlight of highlights) {
+      const highlightWords = highlight.text.split(/\s+/);
+      const segmentWords = segments.slice(index, index + highlightWords.length)
+        .filter(s => s.trim().length > 0)
+        .join(' ');
+      if (segmentWords === highlight.text) {
+        return highlight.explanation;
       }
-
-      const selectedText = range.toString().trim();
-      if (selectedText) {
-        addSelectedText(selectedText);
-      }
-    } catch (error) {
-      console.error('Error setting range:', error);
     }
+    return null;
   };
 
-  const addSelectedText = (text: string) => {
-    const newSelected = new Set(selectedText);
-    if (selectedText.has(text)) {
-      newSelected.delete(text);
+  const toggleSegment = (index: number) => {
+    const newSelected = new Set(selectedSegments);
+    if (selectedSegments.has(index)) {
+      newSelected.delete(index);
     } else {
-      newSelected.add(text);
+      newSelected.add(index);
     }
-    setSelectedText(newSelected);
-  };
-
-  const isTextCloseEnough = (selected: string, correct: string) => {
-    const selectedPos = statement.indexOf(selected);
-    const correctPos = statement.indexOf(correct);
-    const margin = Math.min(selected.length, correct.length) / 2;
-    return Math.abs(selectedPos - correctPos) <= margin;
+    setSelectedSegments(newSelected);
   };
 
   const handleSubmit = () => {
-    const correctHighlights = new Set(highlights.map(h => h.text));
-    
-    const isCorrect = Array.from(selectedText).some(selected => 
-      Array.from(correctHighlights).some(correct => 
-        selected.includes(correct) || 
-        correct.includes(selected) ||
-        isTextCloseEnough(selected, correct)
-      )
-    );
+    if (selectedSegments.size === 0) {
+      toast({
+        title: "No Selection",
+        description: "Please select at least one segment before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const isCorrect = Array.from(selectedSegments).every(index => 
+      isSegmentCorrect(segments[index], index)
+    ) && highlights.every(highlight => {
+      const words = highlight.text.split(/\s+/);
+      return segments.some((segment, index) => {
+        if (!selectedSegments.has(index)) return false;
+        const segmentWords = segments.slice(index, index + words.length)
+          .filter(s => s.trim().length > 0)
+          .join(' ');
+        return segmentWords === highlight.text;
+      });
+    });
 
     if (isCorrect) {
       toast({
@@ -147,46 +86,43 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
         description: "Some highlights are missing or incorrect.",
         variant: "destructive",
       });
-      setSelectedText(new Set());
+      setSelectedSegments(new Set());
       setWrongAttempts(prev => prev + 1);
     }
   };
 
   return (
     <div className="space-y-4">
-      <div 
-        className="highlight-text-container p-4 bg-muted rounded-lg whitespace-pre-wrap text-base leading-relaxed"
-        onMouseUp={handleTextSelect}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        {statement}
-      </div>
-      
-      <div className="space-y-2">
-        <h3 className="font-semibold">Selected Statements:</h3>
-        {Array.from(selectedText).map((text, index) => (
-          <div 
-            key={index}
-            className="p-2 bg-primary/10 rounded flex justify-between items-center"
-          >
-            <span className="text-sm flex-1 mr-2">{text}</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                const newSelected = new Set(selectedText);
-                newSelected.delete(text);
-                setSelectedText(newSelected);
-              }}
-              className="shrink-0"
+      <div className="p-4 bg-muted rounded-lg">
+        <div className="flex flex-wrap gap-1">
+          {segments.map((segment, index) => (
+            <button
+              key={index}
+              onClick={() => toggleSegment(index)}
+              className={cn(
+                "px-1 py-0.5 rounded transition-colors text-left",
+                "hover:bg-primary/10",
+                "focus:outline-none focus:ring-2 focus:ring-primary/20",
+                selectedSegments.has(index) && "bg-primary/20",
+                showAnswer && isSegmentCorrect(segment, index) && "bg-green-200 dark:bg-green-800"
+              )}
             >
-              Remove
-            </Button>
-          </div>
-        ))}
+              {segment}
+            </button>
+          ))}
+        </div>
       </div>
+
+      {showAnswer && (
+        <div className="space-y-2">
+          {highlights.map((highlight, index) => (
+            <div key={index} className="p-2 bg-muted rounded">
+              <p className="font-medium text-primary">{highlight.text}</p>
+              <p className="text-sm text-muted-foreground">{highlight.explanation}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="flex gap-2">
         <Button 
@@ -206,18 +142,6 @@ export function HighlightChallenge({ statement, highlights, xpReward, onComplete
           </Button>
         )}
       </div>
-
-      {showAnswer && (
-        <div className="p-4 bg-muted rounded-lg space-y-4">
-          <p className="font-medium">Correct Highlights:</p>
-          {highlights.map((highlight, index) => (
-            <div key={index} className="space-y-1">
-              <p className="font-medium text-primary">{highlight.text}</p>
-              <p className="text-sm text-muted-foreground">{highlight.explanation}</p>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
