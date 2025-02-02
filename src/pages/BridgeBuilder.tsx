@@ -39,47 +39,95 @@ export default function BridgeBuilder() {
         .eq('journey_id', journey.id)
         .order('difficulty');
 
-      // Map database fields to our frontend types
-      return challenges?.map(challenge => ({
-        id: challenge.id,
-        title: challenge.title,
-        description: challenge.description,
-        type: challenge.type,
-        difficulty: challenge.difficulty,
-        xpReward: challenge.xp_reward, // Map xp_reward to xpReward
-        options: challenge.standard_challenge_options?.map(opt => ({
-          id: opt.id,
-          text: opt.text,
-          isCorrect: opt.is_correct,
-          explanation: opt.explanation
-        })) || [],
-        pairs: challenge.matching_challenges?.[0]?.matching_pairs?.map(pair => ({
-          id: pair.id,
-          claim: pair.claim,
-          evidence: pair.evidence
-        })) || [],
-        statement: challenge.highlight_challenges?.[0]?.statement || '',
-        highlights: challenge.highlight_challenges?.[0]?.highlight_texts?.map(ht => ({
-          text: ht.text,
-          explanation: ht.explanation
-        })) || []
-      })) || [];
+      // Map database fields to our frontend types and ensure type safety
+      return challenges?.map(challenge => {
+        const baseChallenge = {
+          id: challenge.id,
+          title: challenge.title,
+          description: challenge.description,
+          difficulty: challenge.difficulty,
+          xpReward: challenge.xp_reward,
+        };
+
+        switch (challenge.type) {
+          case "highlight":
+            return {
+              ...baseChallenge,
+              type: "highlight" as const,
+              statement: challenge.highlight_challenges?.[0]?.statement || '',
+              highlights: challenge.highlight_challenges?.[0]?.highlight_texts?.map(ht => ({
+                text: ht.text,
+                explanation: ht.explanation
+              })) || []
+            };
+          case "matching":
+            return {
+              ...baseChallenge,
+              type: "matching" as const,
+              pairs: challenge.matching_challenges?.[0]?.matching_pairs?.map(pair => ({
+                id: pair.id,
+                claim: pair.claim,
+                evidence: pair.evidence
+              })) || []
+            };
+          case "word-selection":
+            return {
+              ...baseChallenge,
+              type: "word-selection" as const,
+              passage: challenge.word_selection_challenges?.[0]?.passage || '',
+              keyWords: challenge.word_selection_keywords?.map(kw => ({
+                word: kw.word,
+                explanation: kw.explanation
+              })) || []
+            };
+          default:
+            return {
+              ...baseChallenge,
+              type: challenge.type as "headline" | "fallacy" | "media" | "source",
+              options: challenge.standard_challenge_options?.map(opt => ({
+                id: opt.id,
+                text: opt.text,
+                isCorrect: opt.is_correct,
+                explanation: opt.explanation
+              })) || []
+            };
+        }
+      }) || [];
     },
   });
 
-  const handleChallengeComplete = (correct: boolean, xp: number) => {
+  const handleChallengeComplete = async (correct: boolean, xp: number) => {
     if (correct) {
-      setCompletedChallenges(prev => {
-        const newCompleted = new Set(prev);
-        newCompleted.add(allChallenges[currentChallengeIndex].id);
-        return newCompleted;
-      });
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('User not authenticated');
 
-      if (currentChallengeIndex < allChallenges.length - 1) {
-        toast.success("Great job! Moving to the next challenge.");
-        setCurrentChallengeIndex(prev => prev + 1);
-      } else {
-        toast.success("Congratulations! You've completed all challenges!");
+        // Record the completed challenge
+        const { error: completionError } = await supabase
+          .from('completed_challenges')
+          .insert({
+            challenge_id: allChallenges[currentChallengeIndex].id,
+            user_id: user.id,
+            xp_earned: xp
+          });
+
+        if (completionError) throw completionError;
+
+        setCompletedChallenges(prev => {
+          const newCompleted = new Set(prev);
+          newCompleted.add(allChallenges[currentChallengeIndex].id);
+          return newCompleted;
+        });
+
+        if (currentChallengeIndex < allChallenges.length - 1) {
+          toast.success("Great job! Moving to the next challenge.");
+          setCurrentChallengeIndex(prev => prev + 1);
+        } else {
+          toast.success("Congratulations! You've completed all challenges!");
+        }
+      } catch (error) {
+        console.error('Error updating progress:', error);
+        toast.error("Failed to save progress");
       }
     }
   };
