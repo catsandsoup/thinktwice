@@ -21,8 +21,11 @@ const BeginnersJourney = () => {
     queryKey: ['challenges'],
     queryFn: fetchAllChallenges,
     select: (data) => {
-      // Filter beginner challenges
-      const beginnerChallenges = data.filter(challenge => challenge.difficulty === 'beginner');
+      // Filter beginner challenges and ensure we get all types
+      const beginnerChallenges = data.filter(challenge => 
+        challenge.difficulty === 'beginner' &&
+        ['fallacy', 'media', 'source', 'headline'].includes(challenge.type)
+      );
       
       // Create a map to detect and remove duplicates based on content similarity
       const uniqueChallenges = new Map<string, ChallengeType>();
@@ -39,8 +42,7 @@ const BeginnersJourney = () => {
       
       // Convert back to array and shuffle
       return Array.from(uniqueChallenges.values())
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 5); // Limit to 5 unique challenges per session
+        .sort(() => Math.random() - 0.5);
     }
   });
 
