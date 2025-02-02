@@ -48,12 +48,23 @@ export default function QuestionManager() {
             title
           ),
           user:user_id (
-            display_name
+            profiles (
+              display_name
+            )
           )
         `);
 
       if (error) throw error;
-      return data as FeedbackWithDetails[];
+
+      // Transform the data to match our type
+      const transformedData = data?.map(item => ({
+        ...item,
+        user: {
+          display_name: item.user?.profiles?.[0]?.display_name
+        }
+      })) as FeedbackWithDetails[];
+
+      return transformedData;
     },
   });
 

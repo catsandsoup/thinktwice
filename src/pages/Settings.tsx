@@ -7,6 +7,7 @@ import { Loader2, CreditCard, Bell, User, Shield, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Profile } from "@/types/settings";
+import { validateProfileTheme } from "@/utils/profileUtils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -472,4 +473,5 @@ useEffect(() => {
     </div>
   );
 }
+
 
