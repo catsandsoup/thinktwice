@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BeginnersJourney from "./pages/BeginnersJourney";
+import ArgumentAnalysis from "./pages/ArgumentAnalysis";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/beginners-journey" element={<BeginnersJourney />} />
+          <Route path="/argument-analysis" element={<ArgumentAnalysis />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -6,13 +6,18 @@ const Index = () => {
   const navigate = useNavigate();
 
   const handlePathClick = (path: string) => {
-    if (path === "Beginner") {
-      navigate('/beginners-journey');
-    } else {
-      toast({
-        title: "Coming Soon!",
-        description: `The ${path} path will be available in the next update.`,
-      });
+    switch (path) {
+      case "Beginner":
+        navigate('/beginners-journey');
+        break;
+      case "Argument":
+        navigate('/argument-analysis');
+        break;
+      default:
+        toast({
+          title: "Coming Soon!",
+          description: `The ${path} path will be available in the next update.`,
+        });
     }
   };
 
@@ -35,16 +40,14 @@ const Index = () => {
             mission="Learn to analyze social media posts and identify reliable information from questionable claims"
             actionText="Start Your Investigation"
           />
-          <div className="opacity-50 pointer-events-none">
-            <LearningPath
-              title="Argument Analysis"
-              description="Master the art of evaluating and constructing sound arguments"
-              level="intermediate"
-              onClick={() => handlePathClick("Argument")}
-              mission="Learn to identify logical fallacies and strengthen your reasoning skills"
-              actionText="Begin Analysis"
-            />
-          </div>
+          <LearningPath
+            title="Argument Analysis"
+            description="Master the art of evaluating and constructing sound arguments"
+            level="intermediate"
+            onClick={() => handlePathClick("Argument")}
+            mission="Learn to identify logical fallacies and strengthen your reasoning skills"
+            actionText="Begin Analysis"
+          />
           <div className="opacity-50 pointer-events-none">
             <LearningPath
               title="Financial Literacy"
