@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Apple, ArrowRight, Mail, Shield, Globe } from "lucide-react";
+import { Apple, ArrowRight, Mail, Globe } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -123,13 +123,10 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="container flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-4 py-8 md:px-6 lg:px-8">
-      <Card className="w-full max-w-md overflow-hidden bg-gradient-to-br from-card to-secondary/80 backdrop-blur-sm">
+    <div className="flex min-h-screen items-center justify-center px-4 py-8">
+      <Card className="w-full max-w-md overflow-hidden bg-[#E5DEFF] bg-opacity-50 backdrop-blur-sm">
         <CardHeader className="space-y-3 pb-8">
-          <div className="flex justify-center">
-            <Shield className="h-12 w-12 text-primary animate-fade-in" aria-hidden="true" />
-          </div>
-          <CardTitle className="text-center font-display text-2xl font-bold tracking-tight md:text-3xl">
+          <CardTitle className="text-center font-display text-2xl font-bold tracking-tight text-foreground md:text-3xl">
             Welcome Back
           </CardTitle>
           <CardDescription className="text-center text-base text-muted-foreground">
@@ -140,7 +137,7 @@ export default function AuthPage() {
           <TabsList className="grid w-full grid-cols-3 p-1">
             <TabsTrigger 
               value="email" 
-              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="flex items-center gap-2 data-[state=active]:bg-primary/90 data-[state=active]:text-primary-foreground"
               aria-label="Email sign in"
             >
               <Mail className="h-4 w-4" aria-hidden="true" />
@@ -148,7 +145,7 @@ export default function AuthPage() {
             </TabsTrigger>
             <TabsTrigger 
               value="google" 
-              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="flex items-center gap-2 data-[state=active]:bg-primary/90 data-[state=active]:text-primary-foreground"
               aria-label="Google sign in"
             >
               <Globe className="h-4 w-4" aria-hidden="true" />
@@ -156,7 +153,7 @@ export default function AuthPage() {
             </TabsTrigger>
             <TabsTrigger 
               value="apple" 
-              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="flex items-center gap-2 data-[state=active]:bg-primary/90 data-[state=active]:text-primary-foreground"
               aria-label="Apple sign in"
             >
               <Apple className="h-4 w-4" aria-hidden="true" />
