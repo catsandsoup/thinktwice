@@ -122,6 +122,7 @@ export default function BridgeBuilder() {
 
         if (completionError) throw completionError;
 
+        // Update completed challenges state
         setCompletedChallenges(prev => {
           const newCompleted = new Set(prev);
           newCompleted.add(allChallenges[currentChallengeIndex].id);
@@ -131,16 +132,15 @@ export default function BridgeBuilder() {
         // Check if this was the last challenge
         if (currentChallengeIndex === allChallenges.length - 1) {
           toast.success("Congratulations! You've completed all challenges! 🎉");
-          // Add a slight delay before navigating to allow the toast to be seen
           setTimeout(() => {
             navigate('/');
           }, 2000);
         } else {
           toast.success("Great job! Moving to the next challenge.");
-          // Add a slight delay to allow the animation to complete
+          // Ensure state update happens after the animation
           setTimeout(() => {
-            setCurrentChallengeIndex(prev => prev + 1);
-          }, 500);
+            setCurrentChallengeIndex(currentChallengeIndex + 1);
+          }, 300);
         }
       } catch (error) {
         console.error('Error updating progress:', error);
@@ -204,7 +204,6 @@ export default function BridgeBuilder() {
           transition={{ duration: 0.3 }}
         >
           <Challenge
-            key={currentChallenge.id}
             {...currentChallenge}
             onComplete={handleChallengeComplete}
           />
