@@ -14,11 +14,14 @@ export function StandardChallenge(props: StandardChallengeProps) {
   const [selected, setSelected] = useState<string[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [showNextQuestion, setShowNextQuestion] = useState(false);
 
   const correctOptions = props.options.filter(opt => opt.isCorrect);
   const isMultipleChoice = correctOptions.length > 1;
 
   const handleSelect = (optionId: string) => {
+    if (isSubmitted) return;
+    
     if (isMultipleChoice) {
       setSelected(prev => {
         if (prev.includes(optionId)) {
@@ -36,12 +39,13 @@ export function StandardChallenge(props: StandardChallengeProps) {
       return;
     }
 
-    if (isSubmitted && isCorrect) {
+    if (showNextQuestion) {
       props.onComplete(true, props.xpReward);
       // Reset state for next question
       setSelected([]);
       setIsSubmitted(false);
       setIsCorrect(false);
+      setShowNextQuestion(false);
       return;
     }
 
@@ -56,7 +60,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
     setIsCorrect(isAllCorrect);
     
     if (isAllCorrect) {
-      props.onComplete(true, props.xpReward);
+      setShowNextQuestion(true);
     }
   };
 
@@ -64,6 +68,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
     setSelected([]);
     setIsSubmitted(false);
     setIsCorrect(false);
+    setShowNextQuestion(false);
   };
 
   return (
@@ -84,7 +89,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
                   id={option.id}
                   checked={selected.includes(option.id)}
                   onCheckedChange={() => handleSelect(option.id)}
-                  disabled={isSubmitted && isCorrect}
+                  disabled={isSubmitted}
                 />
               </div>
               <div className="flex-1 space-y-1">
@@ -109,7 +114,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
           <RadioGroup
             value={selected[0]}
             onValueChange={(value) => handleSelect(value)}
-            disabled={isSubmitted && isCorrect}
+            disabled={isSubmitted}
           >
             {props.options.map((option) => (
               <div
@@ -158,9 +163,9 @@ export function StandardChallenge(props: StandardChallengeProps) {
           <Button
             onClick={handleSubmit}
             className="flex-1"
-            aria-label={isSubmitted && isCorrect ? "Proceed to next question" : "Submit your answer"}
+            aria-label={showNextQuestion ? "Proceed to next question" : "Submit your answer"}
           >
-            {isSubmitted && isCorrect ? "Next Question" : "Submit Answer"}
+            {showNextQuestion ? "Next Question" : "Submit Answer"}
           </Button>
         )}
       </div>
