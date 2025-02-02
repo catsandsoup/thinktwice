@@ -38,45 +38,48 @@ export function QuestionsNavigation() {
     return acc;
   }, {} as Record<string, typeof challenges>);
 
-  const difficultyColors = {
-    beginner: "bg-primary text-white",
-    intermediate: "bg-secondary text-white",
-  };
-
   return (
     <>
-      <SidebarTrigger className="fixed top-4 left-4 z-50" />
+      <SidebarTrigger className="fixed top-4 left-4 z-50 md:top-8" />
       <Sidebar variant="floating">
-        <SidebarContent className="bg-background">
-          {groupedChallenges && Object.entries(groupedChallenges).map(([difficulty, challenges], index) => (
-            <div key={difficulty} className="mb-4">
-              {index > 0 && <Separator className="my-6" />}
-              <SidebarGroup className={`rounded-lg p-4 ${difficultyColors[difficulty as keyof typeof difficultyColors] || ''}`}>
-                <SidebarGroupLabel className="text-lg font-semibold capitalize mb-2">
-                  {difficulty} Level
-                </SidebarGroupLabel>
-                <SidebarGroupContent>
-                  <SidebarMenu className="max-h-[60vh] overflow-y-auto pr-2">
-                    {challenges?.map((challenge) => (
-                      <SidebarMenuItem key={challenge.id}>
-                        <SidebarMenuButton
-                          tooltip={challenge.description}
-                          className="text-base hover:bg-white/20 transition-colors"
-                          onClick={() => {
-                            const path = difficulty === 'beginner' ? '/beginners-journey' : '/truth-explorer';
-                            navigate(`${path}#${challenge.id}`);
-                          }}
-                        >
-                          <BookOpen className="h-5 w-5" />
-                          <span className="font-medium">{challenge.title}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-            </div>
-          ))}
+        <SidebarContent className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="h-full overflow-y-auto px-2 py-4">
+            {groupedChallenges && Object.entries(groupedChallenges).map(([difficulty, challenges], index) => (
+              <div key={difficulty} className="mb-6 last:mb-0">
+                {index > 0 && <Separator className="my-6" />}
+                <div className={`rounded-xl p-6 ${
+                  difficulty === 'beginner' 
+                    ? 'bg-[#6366F1] text-white' 
+                    : 'bg-[#0D9488] text-white'
+                }`}>
+                  <SidebarGroup>
+                    <SidebarGroupLabel className="text-2xl font-bold mb-4">
+                      {difficulty === 'beginner' ? 'Beginner Level' : 'Intermediate Level'}
+                    </SidebarGroupLabel>
+                    <SidebarGroupContent>
+                      <SidebarMenu className="space-y-1">
+                        {challenges?.map((challenge) => (
+                          <SidebarMenuItem key={challenge.id}>
+                            <SidebarMenuButton
+                              tooltip={challenge.description}
+                              className="w-full text-left px-4 py-3 rounded-lg text-base font-medium hover:bg-white/20 transition-colors"
+                              onClick={() => {
+                                const path = difficulty === 'beginner' ? '/beginners-journey' : '/truth-explorer';
+                                navigate(`${path}#${challenge.id}`);
+                              }}
+                            >
+                              <BookOpen className="h-5 w-5 shrink-0" />
+                              <span className="truncate">{challenge.title}</span>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        ))}
+                      </SidebarMenu>
+                    </SidebarGroupContent>
+                  </SidebarGroup>
+                </div>
+              </div>
+            ))}
+          </div>
         </SidebarContent>
       </Sidebar>
     </>

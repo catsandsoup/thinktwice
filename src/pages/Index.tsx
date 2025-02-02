@@ -31,7 +31,7 @@ const Index = () => {
     <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full bg-gray-50">
         <QuestionsNavigation />
-        <main className="flex-1 pt-16">
+        <main className="flex-1 pt-20 md:pt-24">
           <div className="container p-6 max-w-6xl mx-auto space-y-8">
             <div className="text-center space-y-4">
               <h1 className="text-4xl font-bold tracking-tight">Your Thinking Journey</h1>
