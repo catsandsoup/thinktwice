@@ -39,35 +39,36 @@ export function QuestionsNavigation() {
   }, {} as Record<string, typeof challenges>);
 
   const difficultyColors = {
-    beginner: "bg-primary/10 border-primary/20",
-    intermediate: "bg-secondary/10 border-secondary/20",
+    beginner: "bg-primary text-white",
+    intermediate: "bg-secondary text-white",
   };
 
   return (
     <>
-      <SidebarTrigger className="fixed top-8 left-4 z-50" />
+      <SidebarTrigger className="fixed top-4 left-4 z-50" />
       <Sidebar variant="floating">
-        <SidebarContent>
+        <SidebarContent className="bg-background">
           {groupedChallenges && Object.entries(groupedChallenges).map(([difficulty, challenges], index) => (
-            <div key={difficulty}>
-              {index > 0 && <Separator className="my-4 bg-white/10" />}
-              <SidebarGroup className={`rounded-lg border p-4 ${difficultyColors[difficulty as keyof typeof difficultyColors] || ''}`}>
-                <SidebarGroupLabel className="capitalize">
+            <div key={difficulty} className="mb-4">
+              {index > 0 && <Separator className="my-6" />}
+              <SidebarGroup className={`rounded-lg p-4 ${difficultyColors[difficulty as keyof typeof difficultyColors] || ''}`}>
+                <SidebarGroupLabel className="text-lg font-semibold capitalize mb-2">
                   {difficulty} Level
                 </SidebarGroupLabel>
                 <SidebarGroupContent>
-                  <SidebarMenu>
+                  <SidebarMenu className="max-h-[60vh] overflow-y-auto pr-2">
                     {challenges?.map((challenge) => (
                       <SidebarMenuItem key={challenge.id}>
                         <SidebarMenuButton
                           tooltip={challenge.description}
+                          className="text-base hover:bg-white/20 transition-colors"
                           onClick={() => {
                             const path = difficulty === 'beginner' ? '/beginners-journey' : '/truth-explorer';
                             navigate(`${path}#${challenge.id}`);
                           }}
                         >
-                          <BookOpen className="h-4 w-4" />
-                          <span>{challenge.title}</span>
+                          <BookOpen className="h-5 w-5" />
+                          <span className="font-medium">{challenge.title}</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     ))}
