@@ -13,10 +13,10 @@ const Index = () => {
 
   const handlePathClick = (path: string) => {
     switch(path) {
-      case "Beginner":
+      case "Level 1":
         navigate('/beginners-journey');
         break;
-      case "Intermediate":
+      case "Level 2":
         navigate('/truth-explorer');
         break;
       default:
@@ -42,19 +42,19 @@ const Index = () => {
 
             <div className="grid md:grid-cols-2 gap-8">
               <LearningPath
-                title="Everyday Detective"
+                title="Level 1: Everyday Detective"
                 description="Master the basics of critical thinking"
                 level="beginner"
-                onClick={() => handlePathClick("Beginner")}
-                progress={60}
+                onClick={() => handlePathClick("Level 1")}
+                progress={0}
                 mission="Learn to identify facts vs opinions, spot logical fallacies, and analyze headlines critically through interactive challenges"
                 actionText="Start Level 1"
               />
               <LearningPath
-                title="Truth Explorer"
+                title="Level 2: Truth Explorer"
                 description="Advanced critical analysis techniques"
                 level="intermediate"
-                onClick={() => handlePathClick("Intermediate")}
+                onClick={() => handlePathClick("Level 2")}
                 progress={0}
                 mission="Master complex reasoning, evaluate evidence quality, and identify hidden assumptions in arguments"
                 actionText="Start Level 2"
