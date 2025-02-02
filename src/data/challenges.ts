@@ -494,9 +494,22 @@ export const modernChallenges: Challenge[] = [
   }
 ];
 
-export const allChallenges: Challenge[] = [
+// Helper function to remove duplicates based on challenge ID
+const removeDuplicates = (challenges: Challenge[]): Challenge[] => {
+  const seen = new Set<string>();
+  return challenges.filter(challenge => {
+    if (seen.has(challenge.id)) {
+      console.warn(`Duplicate challenge ID found: ${challenge.id}`);
+      return false;
+    }
+    seen.add(challenge.id);
+    return true;
+  });
+};
+
+export const allChallenges: Challenge[] = removeDuplicates([
   ...beginnerChallenges,
   ...advancedChallenges,
   ...generationalChallenges,
   ...modernChallenges
-];
+]);
