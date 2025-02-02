@@ -195,5 +195,257 @@ export const argumentAnalysisChallenges: Challenge[] = [
         explanation: "The argument actually suggests the opposite"
       }
     ]
+  },
+  {
+    id: "ct1",
+    title: "Social Media Health Claims",
+    description: "You're scrolling through social media and see these health-related posts. Which ones demonstrate circular reasoning?",
+    type: "fallacy",
+    difficulty: "intermediate",
+    xpReward: 15,
+    options: [
+      {
+        id: "ct1a",
+        text: "This detox tea works because it cleanses your body of toxins. You can tell it's cleansing because it's a detox tea.",
+        isCorrect: true,
+        explanation: "This is circular reasoning because it uses the claim (it's a detox tea) to prove itself, without providing any actual evidence of how it works or what toxins it removes."
+      },
+      {
+        id: "ct1b",
+        text: "Our multivitamin contains 12 essential nutrients that studies show may help support immune function.",
+        isCorrect: false,
+        explanation: "While this might be a marketing claim, it's not circular reasoning - it refers to external evidence (studies) rather than using the claim to prove itself."
+      },
+      {
+        id: "ct1c",
+        text: "Natural medicine is better because it's natural. And we know natural things are better for you.",
+        isCorrect: true,
+        explanation: "This is circular reasoning because it assumes 'natural is better' to prove that 'natural is better' without providing any independent evidence or reasoning."
+      }
+    ]
+  },
+  {
+    id: "ct2",
+    title: "Political Debate Analysis",
+    description: "During a local town hall meeting about public transportation funding, which statements represent strawman arguments?",
+    type: "fallacy",
+    difficulty: "intermediate",
+    xpReward: 15,
+    options: [
+      {
+        id: "ct2a",
+        text: "The opposition wants to eliminate all cars and force everyone to take overcrowded buses!",
+        isCorrect: true,
+        explanation: "This misrepresents a likely proposal for increased public transit funding as an extreme position of banning all cars, making it a classic strawman argument."
+      },
+      {
+        id: "ct2b",
+        text: "The current bus system is running at 85% capacity during peak hours, suggesting we need more routes.",
+        isCorrect: false,
+        explanation: "This uses specific data to make a reasonable argument rather than misrepresenting an opposing position."
+      },
+      {
+        id: "ct2c",
+        text: "Anyone who supports reducing bus service clearly wants poor people to lose their jobs.",
+        isCorrect: true,
+        explanation: "This strawman distorts a position about service adjustment into an attack on the poor, misrepresenting the actual argument."
+      }
+    ]
+  },
+  {
+    id: "ct3",
+    title: "Celebrity Endorsements",
+    description: "You're reading product reviews online. Which statements demonstrate an appeal to authority?",
+    type: "fallacy",
+    difficulty: "intermediate",
+    xpReward: 15,
+    options: [
+      {
+        id: "ct3a",
+        text: "This skincare line must be effective because [Famous Actor] says it's the secret to their perfect skin.",
+        isCorrect: true,
+        explanation: "This relies on a celebrity's endorsement rather than scientific evidence, despite the celebrity having no relevant expertise in dermatology."
+      },
+      {
+        id: "ct3b",
+        text: "According to clinical trials conducted by dermatologists, 85% of participants showed improvement after 8 weeks.",
+        isCorrect: false,
+        explanation: "This cites relevant scientific evidence rather than merely appealing to authority figures."
+      },
+      {
+        id: "ct3c",
+        text: "My favorite lifestyle influencer swears by this supplement, so it must be safe and effective.",
+        isCorrect: true,
+        explanation: "This appeals to an influencer's authority on health matters without any supporting scientific evidence."
+      }
+    ]
+  },
+  {
+    id: "ct4",
+    title: "Technology Policy Debate",
+    description: "In a discussion about social media regulation, identify which arguments represent slippery slope fallacies.",
+    type: "fallacy",
+    difficulty: "intermediate",
+    xpReward: 15,
+    options: [
+      {
+        id: "ct4a",
+        text: "If we start requiring age verification, next they'll demand our fingerprints, then DNA samples, and eventually we'll live in a complete surveillance state!",
+        isCorrect: true,
+        explanation: "This exaggerates a specific policy proposal into an extreme scenario without evidence for each step in the claimed progression."
+      },
+      {
+        id: "ct4b",
+        text: "Based on similar policies in other countries, age verification might increase administrative costs by 15-20%.",
+        isCorrect: false,
+        explanation: "This makes a specific, reasonable prediction based on existing evidence rather than claiming an extreme inevitable outcome."
+      },
+      {
+        id: "ct4c",
+        text: "If we let platforms moderate content, soon they'll be censoring everything and we'll lose all free speech forever!",
+        isCorrect: true,
+        explanation: "This makes an extreme leap from content moderation to complete censorship without justifying the connection."
+      }
+    ]
+  },
+  {
+    id: "ct5",
+    title: "Customer Review Analysis",
+    description: "You're researching a new restaurant. Which conclusions demonstrate hasty generalization?",
+    type: "fallacy",
+    difficulty: "beginner",
+    xpReward: 10,
+    options: [
+      {
+        id: "ct5a",
+        text: "The restaurant was crowded on opening night, so it must be the most popular place in town.",
+        isCorrect: true,
+        explanation: "This generalizes from a single, unusual night (opening) to make a broad claim about overall popularity."
+      },
+      {
+        id: "ct5b",
+        text: "After analyzing 500 reviews over six months, the restaurant maintains a 4.2-star average rating.",
+        isCorrect: false,
+        explanation: "This uses a large, representative sample over time to draw a reasonable conclusion."
+      },
+      {
+        id: "ct5c",
+        text: "My friend got food poisoning there once, so the restaurant must have terrible hygiene standards.",
+        isCorrect: true,
+        explanation: "This generalizes from a single incident to make a broad claim about overall restaurant quality."
+      }
+    ]
+  },
+  {
+    id: "ct6",
+    title: "Health Trends Analysis",
+    description: "Examine these health-related claims. Which ones demonstrate the post hoc fallacy?",
+    type: "fallacy",
+    difficulty: "intermediate",
+    xpReward: 15,
+    options: [
+      {
+        id: "ct6a",
+        text: "I started using this crystal necklace, and my headaches went away the next day. The crystal must have healing powers!",
+        isCorrect: true,
+        explanation: "This assumes the crystal caused the improvement simply because it happened afterward, ignoring other possible causes."
+      },
+      {
+        id: "ct6b",
+        text: "In controlled studies, patients who took this medication showed 40% fewer symptoms compared to the placebo group.",
+        isCorrect: false,
+        explanation: "This uses controlled scientific methodology to establish causation, not just temporal sequence."
+      },
+      {
+        id: "ct6c",
+        text: "Ever since they installed 5G towers in our neighborhood, more people have been getting colds. The towers must be making us sick!",
+        isCorrect: true,
+        explanation: "This assumes causation from temporal sequence, ignoring other factors that could explain increased illness rates."
+      }
+    ]
+  },
+  {
+    id: "ct7",
+    title: "Marketing Message Analysis",
+    description: "Review these advertising messages. Which ones primarily rely on appeal to emotion rather than facts?",
+    type: "fallacy",
+    difficulty: "beginner",
+    xpReward: 10,
+    options: [
+      {
+        id: "ct7a",
+        text: "Don't let your family down! Only bad parents would choose a cheaper car seat for their precious child.",
+        isCorrect: true,
+        explanation: "This manipulates parental guilt and fear without providing safety data or product specifications."
+      },
+      {
+        id: "ct7b",
+        text: "Our car seat exceeded federal safety standards by 50% in independent crash tests.",
+        isCorrect: false,
+        explanation: "This uses specific, verifiable data rather than emotional manipulation to make its point."
+      },
+      {
+        id: "ct7c",
+        text: "Every time you buy non-organic produce, you're destroying the planet your children will inherit!",
+        isCorrect: true,
+        explanation: "This relies on guilt and environmental fear without providing specific data about environmental impacts."
+      }
+    ]
+  },
+  {
+    id: "ct8",
+    title: "News Media Analysis",
+    description: "Examine these news headlines and identify which ones create false equivalence.",
+    type: "fallacy",
+    difficulty: "advanced",
+    xpReward: 20,
+    options: [
+      {
+        id: "ct8a",
+        text: "Scientists and Social Media Influencers Disagree: Who Should You Trust About Climate Change?",
+        isCorrect: true,
+        explanation: "This creates a false equivalence between peer-reviewed scientific research and unqualified social media opinions."
+      },
+      {
+        id: "ct8b",
+        text: "Climate Study Shows Varying Predictions from Different Research Teams",
+        isCorrect: false,
+        explanation: "This acknowledges legitimate scientific debate between qualified researchers rather than creating false equivalence."
+      },
+      {
+        id: "ct8c",
+        text: "Both Sides Claim Victory: Factory Pollution vs Local Health Concerns",
+        isCorrect: true,
+        explanation: "This creates a false equivalence between corporate profit motives and public health impacts."
+      }
+    ]
+  },
+  {
+    id: "ct9",
+    title: "Political Debate Tactics",
+    description: "During a debate about education funding, identify which responses are red herrings.",
+    type: "fallacy",
+    difficulty: "advanced",
+    xpReward: 20,
+    options: [
+      {
+        id: "ct9a",
+        text: "Instead of discussing school budgets, let's talk about how the opposition leader took an expensive vacation last year!",
+        isCorrect: true,
+        explanation: "This introduces an irrelevant personal attack to divert from the education funding discussion."
+      },
+      {
+        id: "ct9b",
+        text: "The data shows our per-student spending is 20% below the national average.",
+        isCorrect: false,
+        explanation: "This directly addresses the education funding issue with relevant data."
+      },
+      {
+        id: "ct9c",
+        text: "Why focus on education when there are potholes all over our streets? Fix the roads first!",
+        isCorrect: true,
+        explanation: "This introduces an unrelated issue to divert attention from the education funding discussion."
+      }
+    ]
   }
 ];
