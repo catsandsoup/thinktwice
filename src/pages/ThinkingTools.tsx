@@ -15,9 +15,9 @@ export default function ThinkingTools() {
     queryFn: fetchAllChallenges,
   });
 
-  // Filter challenges that start with SYS_LAT_ and sort by difficulty
+  // Filter challenges that are thinking tools related and sort by difficulty
   const challenges = allChallenges
-    .filter((challenge: ChallengeType) => challenge.id.startsWith('sys_lat_'))
+    .filter((challenge: ChallengeType) => !challenge.id.startsWith('sys_lat_'))
     .sort((a: ChallengeType, b: ChallengeType) => {
       const difficultyOrder = { beginner: 0, intermediate: 1, advanced: 2 };
       return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
