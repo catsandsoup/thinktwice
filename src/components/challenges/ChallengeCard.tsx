@@ -84,8 +84,8 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
 
   return (
     <Card className="w-full max-w-2xl mx-auto animate-fade-in" role="region" aria-label={`Question about ${challenge.type}`}>
-      <CardHeader className="space-y-4">
-        <div className={cn("p-4 rounded-lg", getBgColor())}>
+      <CardHeader className="space-y-3 px-4 py-3">
+        <div className={cn("p-3 rounded-lg w-full", getBgColor())}>
           <div className="flex justify-center mb-2">
             <Badge 
               variant={
@@ -104,8 +104,8 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
           </CardDescription>
         </div>
         
-        <div className="flex items-start space-x-3 bg-yellow-50 p-4 rounded-lg w-full">
-          <LightbulbIcon className="w-5 h-5 text-yellow-600 flex-shrink-0" />
+        <div className="flex items-start space-x-3 bg-yellow-50 p-3 rounded-lg w-full">
+          <LightbulbIcon className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-1" />
           <div className="space-y-2 text-sm text-gray-600 w-full">
             <p>What to Look For:</p>
             <ul className="list-disc list-inside space-y-1">
@@ -117,7 +117,7 @@ export function ChallengeCard({ challenge, children }: ChallengeCardProps) {
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 px-4 py-3">
         {children}
         <div className="flex items-center justify-center text-sm text-gray-600">
           <span>Complete this mission to earn {challenge.xpReward} detective stars!</span>
