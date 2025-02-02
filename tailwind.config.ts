@@ -25,16 +25,16 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#6366F1",
+          DEFAULT: "#9b87f5",
           foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "#0D9488",
-          foreground: "#ffffff",
+          DEFAULT: "#D6BCFA",
+          foreground: "#221F26",
         },
         accent: {
-          DEFAULT: "#F97316",
-          foreground: "#ffffff",
+          DEFAULT: "#D3E4FD",
+          foreground: "#221F26",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -53,6 +53,10 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        sans: ["SF Pro Text", "system-ui", "sans-serif"],
+        display: ["SF Pro Display", "system-ui", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
