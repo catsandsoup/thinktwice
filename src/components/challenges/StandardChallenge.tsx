@@ -14,7 +14,6 @@ export function StandardChallenge(props: StandardChallengeProps) {
   const [selected, setSelected] = useState<string[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [showAnswer, setShowAnswer] = useState(false);
 
   // Determine if this is a multiple choice question based on number of correct answers
   const correctOptions = props.options.filter(opt => opt.isCorrect);
@@ -59,6 +58,12 @@ export function StandardChallenge(props: StandardChallengeProps) {
     if (isAllCorrect) {
       props.onComplete(true, props.xpReward);
     }
+  };
+
+  const handleRetry = () => {
+    setSelected([]);
+    setIsSubmitted(false);
+    setIsCorrect(false);
   };
 
   return (
@@ -143,13 +148,23 @@ export function StandardChallenge(props: StandardChallengeProps) {
       </div>
 
       <div className="flex gap-2">
-        <Button
-          onClick={handleSubmit}
-          className="flex-1"
-          aria-label={isSubmitted && isCorrect ? "Proceed to next question" : "Submit your answer"}
-        >
-          {isSubmitted && isCorrect ? "Next Question" : "Submit Answer"}
-        </Button>
+        {isSubmitted && !isCorrect ? (
+          <Button
+            onClick={handleRetry}
+            className="flex-1"
+            variant="secondary"
+          >
+            Try Again
+          </Button>
+        ) : (
+          <Button
+            onClick={handleSubmit}
+            className="flex-1"
+            aria-label={isSubmitted && isCorrect ? "Proceed to next question" : "Submit your answer"}
+          >
+            {isSubmitted && isCorrect ? "Next Question" : "Submit Answer"}
+          </Button>
+        )}
       </div>
     </div>
   );
