@@ -202,6 +202,39 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          email_notifications: boolean | null
+          id: string
+          push_notifications: boolean | null
+          theme: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          email_notifications?: boolean | null
+          id: string
+          push_notifications?: boolean | null
+          theme?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          email_notifications?: boolean | null
+          id?: string
+          push_notifications?: boolean | null
+          theme?: string | null
+        }
+        Relationships: []
+      }
       standard_challenge_options: {
         Row: {
           challenge_id: string | null
