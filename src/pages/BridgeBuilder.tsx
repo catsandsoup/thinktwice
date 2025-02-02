@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Challenge } from "@/components/Challenge";
 import { QuizHeader } from "@/components/QuizHeader";
 import { useQuery } from "@tanstack/react-query";
-import { Challenge as ChallengeType } from "@/data/challengeTypes";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +15,7 @@ export default function BridgeBuilder() {
   const { data: allChallenges = [], isLoading } = useQuery({
     queryKey: ['bridge-builder-challenges'],
     queryFn: async () => {
+      // First get the Bridge Builder journey ID
       const { data: journey } = await supabase
         .from('journeys')
         .select('id')
@@ -24,6 +24,7 @@ export default function BridgeBuilder() {
 
       if (!journey) throw new Error('Bridge Builder journey not found');
 
+      // Then fetch only challenges for this journey
       const { data: challenges } = await supabase
         .from('challenges')
         .select(`
