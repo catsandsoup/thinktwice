@@ -12,7 +12,6 @@ const ArgumentAnalysis = () => {
   const [completedChallenges, setCompletedChallenges] = useState<string[]>([]);
   const [randomizedChallenges, setRandomizedChallenges] = useState(argumentAnalysisChallenges);
 
-  // Initialize randomized challenges on component mount
   useEffect(() => {
     setRandomizedChallenges(shuffleArray(argumentAnalysisChallenges));
   }, []);
@@ -22,7 +21,7 @@ const ArgumentAnalysis = () => {
     
     if (correct) {
       toast.success(`Well done! You earned ${xp} XP!`, {
-        duration: 3000 // 3 seconds
+        duration: 3000
       });
       setCompletedChallenges([...completedChallenges, currentChallenge.id]);
     } else {
@@ -47,14 +46,32 @@ const ArgumentAnalysis = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="min-h-screen bg-gray-50"
+      className="min-h-screen bg-background"
     >
-      <div className="container px-4 space-y-8">
+      <div className="container px-4 py-4 space-y-4">
         <QuizHeader
           title="Argument Analysis"
           currentQuestion={currentChallengeIndex + 1}
           totalQuestions={randomizedChallenges.length}
         />
+
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Argument Analysis</h1>
+          <p className="text-muted-foreground">
+            Master the art of analyzing and evaluating arguments
+          </p>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex-1 h-2 bg-secondary rounded-full">
+              <div 
+                className="h-full bg-primary rounded-full transition-all"
+                style={{ width: `${(completedChallenges.length / randomizedChallenges.length) * 100}%` }}
+              />
+            </div>
+          </div>
+        </div>
 
         <AnimatePresence mode="wait">
           {currentChallengeIndex < randomizedChallenges.length && (

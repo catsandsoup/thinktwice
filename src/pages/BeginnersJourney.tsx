@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Challenge } from "@/components/Challenge";
 import { QuizHeader } from "@/components/QuizHeader";
 import { supabase } from "@/integrations/supabase/client";
@@ -85,12 +84,30 @@ const BeginnersJourney = () => {
       transition={{ duration: 0.3 }}
       className={`min-h-screen bg-background ${isExiting ? 'animate-fade-out' : ''}`}
     >
-      <div className="container px-4 space-y-4">
+      <div className="container px-4 py-4 space-y-4">
         <QuizHeader
           title="Beginner's Journey"
           currentQuestion={currentChallenge + 1}
           totalQuestions={availableChallenges.length}
         />
+
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Beginner's Journey</h1>
+          <p className="text-muted-foreground">
+            Start your journey into systematic thinking
+          </p>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex-1 h-2 bg-secondary rounded-full">
+              <div 
+                className="h-full bg-primary rounded-full transition-all"
+                style={{ width: `${((currentChallenge + 1) / availableChallenges.length) * 100}%` }}
+              />
+            </div>
+          </div>
+        </div>
 
         <AnimatePresence mode="wait">
           <motion.div
