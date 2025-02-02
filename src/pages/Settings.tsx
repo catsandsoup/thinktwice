@@ -54,6 +54,8 @@ interface Profile {
   email_notifications: boolean;
   push_notifications: boolean;
   theme: 'light' | 'dark' | 'system';
+  enterprise_id: string | null;
+  two_factor_enabled: boolean;
   created_at: string;
 }
 
@@ -63,6 +65,10 @@ const profileFormSchema = z.object({
   email_notifications: z.boolean(),
   push_notifications: z.boolean(),
 });
+
+const isValidTheme = (theme: string): theme is 'light' | 'dark' | 'system' => {
+  return ['light', 'dark', 'system'].includes(theme);
+};
 
 export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -106,7 +112,14 @@ export default function SettingsPage() {
       }
 
       if (profileData) {
-        setProfile(profileData);
+        // Validate theme before setting profile
+        const theme = isValidTheme(profileData.theme) ? profileData.theme : 'system';
+        
+        setProfile({
+          ...profileData,
+          theme,
+        } as Profile);
+
         form.reset({
           display_name: profileData.display_name,
           bio: profileData.bio,
