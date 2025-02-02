@@ -123,32 +123,44 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="container flex min-h-[calc(100vh-3.5rem)] items-center justify-center">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-2">
+    <div className="container flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-4 py-8 md:px-6 lg:px-8">
+      <Card className="w-full max-w-md overflow-hidden bg-gradient-to-br from-card to-secondary/80 backdrop-blur-sm">
+        <CardHeader className="space-y-3 pb-8">
           <div className="flex justify-center">
-            <Shield className="h-12 w-12 text-primary" />
+            <Shield className="h-12 w-12 text-primary animate-fade-in" aria-hidden="true" />
           </div>
-          <CardTitle className="text-center text-2xl font-bold">
+          <CardTitle className="text-center font-display text-2xl font-bold tracking-tight md:text-3xl">
             Welcome Back
           </CardTitle>
-          <CardDescription className="text-center">
+          <CardDescription className="text-center text-base text-muted-foreground">
             Sign in to your account to continue
           </CardDescription>
         </CardHeader>
         <Tabs defaultValue="email" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="email" className="flex items-center gap-2">
-              <Mail className="h-4 w-4" />
-              Email
+          <TabsList className="grid w-full grid-cols-3 p-1">
+            <TabsTrigger 
+              value="email" 
+              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              aria-label="Email sign in"
+            >
+              <Mail className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">Email</span>
             </TabsTrigger>
-            <TabsTrigger value="google" className="flex items-center gap-2">
-              <Globe className="h-4 w-4" />
-              Google
+            <TabsTrigger 
+              value="google" 
+              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              aria-label="Google sign in"
+            >
+              <Globe className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">Google</span>
             </TabsTrigger>
-            <TabsTrigger value="apple" className="flex items-center gap-2">
-              <Apple className="h-4 w-4" />
-              Apple
+            <TabsTrigger 
+              value="apple" 
+              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              aria-label="Apple sign in"
+            >
+              <Apple className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">Apple</span>
             </TabsTrigger>
           </TabsList>
           <TabsContent value="email">
@@ -163,11 +175,12 @@ export default function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel className="text-sm font-medium">Email</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Enter your email"
                             type="email"
+                            className="h-11 bg-background/50 backdrop-blur-sm"
                             {...field}
                           />
                         </FormControl>
@@ -180,11 +193,12 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel className="text-sm font-medium">Password</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Enter your password"
                             type="password"
+                            className="h-11 bg-background/50 backdrop-blur-sm"
                             {...field}
                           />
                         </FormControl>
@@ -196,7 +210,7 @@ export default function AuthPage() {
                 <CardFooter className="flex flex-col space-y-4">
                   <Button
                     type="submit"
-                    className="w-full"
+                    className="h-11 w-full bg-primary font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -204,14 +218,14 @@ export default function AuthPage() {
                     ) : (
                       <span className="flex items-center gap-2">
                         Sign In
-                        <ArrowRight className="h-4 w-4" />
+                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
                       </span>
                     )}
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full"
+                    className="h-11 w-full border-primary/20 bg-background/50 font-medium backdrop-blur-sm hover:bg-primary/10"
                     onClick={() => form.handleSubmit(handleSignUp)()}
                     disabled={isLoading}
                   >
@@ -224,12 +238,12 @@ export default function AuthPage() {
           <TabsContent value="google">
             <CardContent>
               <Button
-                className="w-full"
+                className="h-11 w-full border-primary/20 bg-background/50 font-medium text-foreground backdrop-blur-sm hover:bg-primary/10"
                 variant="outline"
                 onClick={() => handleSocialSignIn("google")}
                 disabled={isLoading}
               >
-                <Globe className="mr-2 h-4 w-4" />
+                <Globe className="mr-2 h-4 w-4" aria-hidden="true" />
                 Continue with Google
               </Button>
             </CardContent>
@@ -237,12 +251,12 @@ export default function AuthPage() {
           <TabsContent value="apple">
             <CardContent>
               <Button
-                className="w-full"
+                className="h-11 w-full border-primary/20 bg-background/50 font-medium text-foreground backdrop-blur-sm hover:bg-primary/10"
                 variant="outline"
                 onClick={() => handleSocialSignIn("apple")}
                 disabled={isLoading}
               >
-                <Apple className="mr-2 h-4 w-4" />
+                <Apple className="mr-2 h-4 w-4" aria-hidden="true" />
                 Continue with Apple
               </Button>
             </CardContent>
