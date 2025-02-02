@@ -16,7 +16,11 @@ const BeginnersJourney = () => {
   const { data: challenges, isLoading, error } = useQuery({
     queryKey: ['challenges'],
     queryFn: fetchAllChallenges,
-    select: (data) => shuffleArray([...data])
+    select: (data) => {
+      // Filter for beginner challenges only
+      const beginnerChallenges = data.filter(challenge => challenge.difficulty === 'beginner');
+      return shuffleArray([...beginnerChallenges]);
+    }
   });
 
   const handleComplete = (correct: boolean, xp: number) => {
