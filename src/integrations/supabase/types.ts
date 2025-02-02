@@ -331,7 +331,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
-          user_id: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -388,47 +388,6 @@ export type Database = {
             referencedRelation: "word_selection_challenges"
             referencedColumns: ["id"]
           },
-        ]
-      }
-      profiles: {
-        Row: {
-          id: string
-          display_name: string | null
-          bio: string | null
-          avatar_url: string | null
-          email_notifications: boolean
-          push_notifications: boolean
-          theme: 'light' | 'dark' | 'system'
-          created_at: string
-        }
-        Insert: {
-          id: string
-          display_name?: string | null
-          bio?: string | null
-          avatar_url?: string | null
-          email_notifications?: boolean
-          push_notifications?: boolean
-          theme?: 'light' | 'dark' | 'system'
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          display_name?: string | null
-          bio?: string | null
-          avatar_url?: string | null
-          email_notifications?: boolean
-          push_notifications?: boolean
-          theme?: 'light' | 'dark' | 'system'
-          created_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
         ]
       }
     }
