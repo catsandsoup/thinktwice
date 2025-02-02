@@ -13,8 +13,11 @@ const Index = () => {
 
   const handlePathClick = (path: string) => {
     switch(path) {
-      case "Level 1":
+      case "Beginner":
         navigate('/beginners-journey');
+        break;
+      case "Intermediate":
+        navigate('/truth-explorer');
         break;
       default:
         toast({
@@ -39,13 +42,22 @@ const Index = () => {
 
             <div className="grid md:grid-cols-2 gap-8">
               <LearningPath
-                title="Level 1: Everyday Detective"
+                title="Everyday Detective"
                 description="Master the basics of critical thinking"
                 level="beginner"
-                onClick={() => handlePathClick("Level 1")}
-                progress={0}
+                onClick={() => handlePathClick("Beginner")}
+                progress={60}
                 mission="Learn to identify facts vs opinions, spot logical fallacies, and analyze headlines critically through interactive challenges"
                 actionText="Start Level 1"
+              />
+              <LearningPath
+                title="Truth Explorer"
+                description="Advanced critical analysis techniques"
+                level="intermediate"
+                onClick={() => handlePathClick("Intermediate")}
+                progress={0}
+                mission="Master complex reasoning, evaluate evidence quality, and identify hidden assumptions in arguments"
+                actionText="Start Level 2"
               />
             </div>
           </div>

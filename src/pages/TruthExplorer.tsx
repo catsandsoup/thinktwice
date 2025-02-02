@@ -7,24 +7,28 @@ import { challenges } from "@/data/challenges";
 import { shuffleArray } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 
-const BeginnersJourney = () => {
+const TruthExplorer = () => {
   const navigate = useNavigate();
   
-  const beginnerChallenges = useMemo(() => 
-    shuffleArray(challenges.filter(c => c.difficulty === "beginner")), 
-  []);
+  const intermediateChallenges = useMemo(() => {
+    const filtered = challenges.filter(c => c.difficulty === "intermediate");
+    console.log("Intermediate challenges:", filtered);
+    return shuffleArray(filtered);
+  }, []);
   
   const [currentChallenge, setCurrentChallenge] = useState(0);
 
   const handleComplete = (correct: boolean) => {
     if (correct) {
-      if (currentChallenge === beginnerChallenges.length - 1) {
+      if (currentChallenge === intermediateChallenges.length - 1) {
         navigate('/');
       } else {
         setCurrentChallenge(prev => prev + 1);
       }
     }
   };
+
+  console.log("Current challenge index:", currentChallenge, "Total challenges:", intermediateChallenges.length);
 
   return (
     <div className="min-h-screen bg-background">
@@ -40,13 +44,19 @@ const BeginnersJourney = () => {
 
         <ChallengeProgress
           currentChallenge={currentChallenge}
-          totalChallenges={beginnerChallenges.length}
+          totalChallenges={intermediateChallenges.length}
         />
 
-        <Challenge {...beginnerChallenges[currentChallenge]} onComplete={handleComplete} />
+        {intermediateChallenges.length > 0 ? (
+          <Challenge {...intermediateChallenges[currentChallenge]} onComplete={handleComplete} />
+        ) : (
+          <div className="text-center py-8">
+            <p>No challenges available at this time.</p>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default BeginnersJourney;
+export default TruthExplorer;
