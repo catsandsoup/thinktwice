@@ -47,7 +47,7 @@ export default function QuestionManager() {
       feedback_text: item.feedback_text,
       created_at: item.created_at,
       challenges: item.challenges,
-      profiles: {
+      user: {
         display_name: item.user?.display_name || 'Anonymous'
       }
     }));

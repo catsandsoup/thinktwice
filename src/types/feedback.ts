@@ -6,7 +6,7 @@ export type FeedbackWithDetails = {
   challenges: {
     title: string;
   } | null;
-  profiles: {
+  user: {
     display_name: string | null;
   } | null;
 };
