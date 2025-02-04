@@ -55,14 +55,14 @@ export function LearningPreferences({ profile }: LearningPreferencesProps) {
   const form = useForm<LearningPreferencesValues>({
     resolver: zodResolver(learningPreferencesSchema),
     defaultValues: {
-      learning_style: "visual",
-      session_duration: "medium",
-      practice_frequency: "flexible",
-      starting_difficulty: "gentle",
-      notifications_enabled: profile?.notifications_enabled ?? true,
-      high_contrast: false,
-      dyslexic_font: false,
-      large_text: false,
+      learning_style: profile?.learning_preferences?.learning_style || "visual",
+      session_duration: profile?.learning_preferences?.session_duration || "medium",
+      practice_frequency: profile?.learning_preferences?.practice_frequency || "flexible",
+      starting_difficulty: profile?.learning_preferences?.starting_difficulty || "gentle",
+      notifications_enabled: profile?.learning_preferences?.notifications_enabled ?? true,
+      high_contrast: profile?.learning_preferences?.high_contrast || false,
+      dyslexic_font: profile?.learning_preferences?.dyslexic_font || false,
+      large_text: profile?.learning_preferences?.large_text || false,
     },
   });
 
@@ -74,11 +74,11 @@ export function LearningPreferences({ profile }: LearningPreferencesProps) {
       .from("profiles")
       .update({
         learning_preferences: values,
-        notifications_enabled: values.notifications_enabled,
       })
       .eq("id", user.id);
 
     if (error) {
+      console.error('Error updating learning preferences:', error);
       toast({
         title: "Error",
         description: "Failed to update learning preferences",
@@ -340,4 +340,4 @@ export function LearningPreferences({ profile }: LearningPreferencesProps) {
       </Form>
     </motion.div>
   );
-}
+});

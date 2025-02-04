@@ -361,6 +361,7 @@ export type Database = {
           email_notifications: boolean | null
           enterprise_id: string | null
           id: string
+          learning_preferences: Json | null
           push_notifications: boolean | null
           theme: string | null
           two_factor_enabled: boolean | null
@@ -373,6 +374,7 @@ export type Database = {
           email_notifications?: boolean | null
           enterprise_id?: string | null
           id: string
+          learning_preferences?: Json | null
           push_notifications?: boolean | null
           theme?: string | null
           two_factor_enabled?: boolean | null
@@ -385,6 +387,7 @@ export type Database = {
           email_notifications?: boolean | null
           enterprise_id?: string | null
           id?: string
+          learning_preferences?: Json | null
           push_notifications?: boolean | null
           theme?: string | null
           two_factor_enabled?: boolean | null
