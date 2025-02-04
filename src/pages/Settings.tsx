@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Loader2, CreditCard, Bell, User, Shield, ArrowLeft, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Profile } from "@/types/settings";
+import { Profile, LearningPreferences } from "@/types/settings";
 import { validateProfileTheme } from "@/utils/profileUtils";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +15,18 @@ import {
 import { ProfileSettings } from "@/components/settings/ProfileSettings";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
 import { PrivacySettings } from "@/components/settings/PrivacySettings";
-import { LearningPreferences } from "@/components/settings/LearningPreferences";
+import { LearningPreferences as LearningPreferencesComponent } from "@/components/settings/LearningPreferences";
+
+const defaultLearningPreferences: LearningPreferences = {
+  learning_style: "visual",
+  session_duration: "medium",
+  practice_frequency: "flexible",
+  starting_difficulty: "gentle",
+  notifications_enabled: true,
+  high_contrast: false,
+  dyslexic_font: false,
+  large_text: false,
+};
 
 export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -49,10 +60,14 @@ export default function SettingsPage() {
       }
 
       if (profileData) {
-        const validatedProfile = {
+        const validatedProfile: Profile = {
           ...profileData,
-          theme: validateProfileTheme(profileData.theme)
+          theme: validateProfileTheme(profileData.theme),
+          learning_preferences: profileData.learning_preferences 
+            ? profileData.learning_preferences as LearningPreferences 
+            : defaultLearningPreferences
         };
+        
         setProfile(validatedProfile);
 
         if (profileData.avatar_url) {
@@ -69,56 +84,6 @@ export default function SettingsPage() {
 
     fetchProfile();
   }, []);
-
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const fileExt = file.name.split('.').pop();
-    const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('avatars')
-      .upload(filePath, file);
-
-    if (uploadError) {
-      toast({
-        title: "Error",
-        description: "Failed to upload avatar",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const { error: updateError } = await supabase
-      .from('profiles')
-      .update({ avatar_url: filePath })
-      .eq('id', user.id);
-
-    if (updateError) {
-      toast({
-        title: "Error",
-        description: "Failed to update profile",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const { data: { publicUrl } } = supabase
-      .storage
-      .from('avatars')
-      .getPublicUrl(filePath);
-    
-    setAvatarUrl(publicUrl);
-    
-    toast({
-      title: "Success",
-      description: "Avatar updated successfully",
-    });
-  };
 
   if (isLoading) {
     return (
@@ -170,7 +135,7 @@ export default function SettingsPage() {
           </TabsList>
 
           <TabsContent value="learning">
-            <LearningPreferences profile={profile} />
+            <LearningPreferencesComponent profile={profile} />
           </TabsContent>
 
           <TabsContent value="profile">
