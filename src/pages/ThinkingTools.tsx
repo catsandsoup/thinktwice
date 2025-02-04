@@ -25,29 +25,41 @@ export default function ThinkingTools() {
           return [];
         }
 
-        // Get or create user journey
+        // Get the learning scenario for Thinking Tools
+        const { data: scenario } = await supabase
+          .from('learning_scenarios')
+          .select('id')
+          .eq('title', 'Thinking Tools Journey')
+          .maybeSingle();
+
+        if (!scenario) {
+          console.error('Thinking Tools scenario not found');
+          return [];
+        }
+
+        // Get or create user journey with the correct scenario_id
         const { data: userJourney, error: userJourneyError } = await supabase
           .from('user_journeys')
           .select('*')
           .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-          .eq('scenario_id', journey.id)
+          .eq('scenario_id', scenario.id)
           .maybeSingle();
 
         if (!userJourney && !userJourneyError) {
-          // Only create if it doesn't exist
           const { error: createError } = await supabase
             .from('user_journeys')
             .insert({
               user_id: (await supabase.auth.getUser()).data.user?.id,
-              scenario_id: journey.id
+              scenario_id: scenario.id
             });
 
           if (createError) {
             console.error('Error creating user journey:', createError);
+            toast.error("Failed to start journey");
           }
         }
 
-        // Then fetch only challenges for this journey
+        // Then fetch challenges for this journey
         const { data: challenges } = await supabase
           .from('challenges')
           .select(`
@@ -71,7 +83,7 @@ export default function ThinkingTools() {
           .eq('journey_id', journey.id)
           .order('difficulty');
 
-        // Map database fields to our frontend types and ensure type safety
+        // Map database fields to our frontend types
         return challenges?.map(challenge => {
           const baseChallenge = {
             id: challenge.id,
