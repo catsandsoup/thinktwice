@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { FeedbackTable } from "@/components/feedback/FeedbackTable";
+import FeedbackTable from "@/components/feedback/FeedbackTable";
 import type { FeedbackWithDetails } from "@/types/feedback";
 
 export default function QuestionManager() {
@@ -58,7 +58,7 @@ export default function QuestionManager() {
           </p>
         </div>
 
-        <FeedbackTable data={feedback} isLoading={isLoading} />
+        <FeedbackTable feedback={feedback} />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types/database";
 
-type TableNames = keyof Database['public'];
+type TableNames = keyof Database['public']['Tables'];
 
 export function AdminPanel() {
   const [selectedTable, setSelectedTable] = useState<TableNames>('challenges');
