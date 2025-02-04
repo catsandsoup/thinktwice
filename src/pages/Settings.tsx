@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, CreditCard, Bell, User, Shield, ArrowLeft, Brain } from "lucide-react";
+import { Loader2, Bell, User, Shield, ArrowLeft, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Profile, LearningPreferences } from "@/types/settings";
@@ -27,6 +27,21 @@ const defaultLearningPreferences: LearningPreferences = {
   dyslexic_font: false,
   large_text: false,
 };
+
+function isValidLearningPreferences(prefs: unknown): prefs is LearningPreferences {
+  if (!prefs || typeof prefs !== 'object') return false;
+  const p = prefs as Partial<LearningPreferences>;
+  return (
+    typeof p.learning_style === 'string' &&
+    typeof p.session_duration === 'string' &&
+    typeof p.practice_frequency === 'string' &&
+    typeof p.starting_difficulty === 'string' &&
+    typeof p.notifications_enabled === 'boolean' &&
+    typeof p.high_contrast === 'boolean' &&
+    typeof p.dyslexic_font === 'boolean' &&
+    typeof p.large_text === 'boolean'
+  );
+}
 
 export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -60,12 +75,29 @@ export default function SettingsPage() {
       }
 
       if (profileData) {
+        let preferences = defaultLearningPreferences;
+        
+        if (profileData.learning_preferences) {
+          try {
+            const parsedPrefs = typeof profileData.learning_preferences === 'string' 
+              ? JSON.parse(profileData.learning_preferences)
+              : profileData.learning_preferences;
+              
+            if (isValidLearningPreferences(parsedPrefs)) {
+              preferences = parsedPrefs;
+            }
+          } catch (e) {
+            console.error('Error parsing learning preferences:', e);
+          }
+        }
+
         const validatedProfile: Profile = {
           ...profileData,
           theme: validateProfileTheme(profileData.theme),
-          learning_preferences: profileData.learning_preferences 
-            ? profileData.learning_preferences as LearningPreferences 
-            : defaultLearningPreferences
+          learning_preferences: preferences,
+          email_notifications: profileData.email_notifications ?? true,
+          push_notifications: profileData.push_notifications ?? true,
+          two_factor_enabled: profileData.two_factor_enabled ?? false
         };
         
         setProfile(validatedProfile);
@@ -84,6 +116,56 @@ export default function SettingsPage() {
 
     fetchProfile();
   }, []);
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const fileExt = file.name.split('.').pop();
+    const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      toast({
+        title: "Error",
+        description: "Failed to upload avatar",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ avatar_url: filePath })
+      .eq('id', user.id);
+
+    if (updateError) {
+      toast({
+        title: "Error",
+        description: "Failed to update profile",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { data: { publicUrl } } = supabase
+      .storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+    
+    setAvatarUrl(publicUrl);
+    
+    toast({
+      title: "Success",
+      description: "Avatar updated successfully",
+    });
+  };
 
   if (isLoading) {
     return (
