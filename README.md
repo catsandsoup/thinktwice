@@ -1,69 +1,57 @@
-# Welcome to your Lovable project
+# Think Twice - Critical Thinking Training Platform
 
-## Project info
+Think Twice is an interactive web application designed to help users develop and strengthen their critical thinking skills through engaging challenges and structured learning paths.
 
-**URL**: https://lovable.dev/projects/802e4226-7849-4de1-a16c-ff2baebc4b08
+## Features
 
-## How can I edit this code?
+- **Interactive Learning Journeys**: Progress through carefully designed learning paths that gradually build your critical thinking capabilities
+- **Diverse Challenge Types**: 
+  - Argument Analysis
+  - Word Selection Exercises
+  - Matching Challenges
+  - Highlighting Key Information
+  - And more...
+- **Progress Tracking**: Monitor your advancement with XP rewards and achievement badges
+- **Personalized Experience**: Customize your learning preferences and difficulty levels
+- **Enterprise Support**: Special features for organizations to track team progress
 
-There are several ways of editing your application.
+## Technology Stack
 
-**Use Lovable**
+This application is built with modern web technologies:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/802e4226-7849-4de1-a16c-ff2baebc4b08) and start prompting.
+- **Frontend**: React + TypeScript
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Backend**: Supabase (Authentication, Database, Storage)
+- **Build Tool**: Vite
 
-Changes made via Lovable will be committed automatically to this repo.
+## Local Development
 
-**Use your preferred IDE**
+Requirements:
+- Node.js & npm - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+```bash
+# Clone the repository
+git clone <repository-url>
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+# Navigate to project directory
+cd think-twice
 
-Follow these steps:
+# Install dependencies
+npm install
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Contributing
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+We welcome contributions! Please feel free to submit a Pull Request.
 
-**Use GitHub Codespaces**
+## License
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## What technologies are used for this project?
+## Acknowledgments
 
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/802e4226-7849-4de1-a16c-ff2baebc4b08) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+- Built with [Lovable](https://lovable.dev)
+- UI components from [shadcn/ui](https://ui.shadcn.com/)
