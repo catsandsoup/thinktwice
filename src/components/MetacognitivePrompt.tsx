@@ -3,18 +3,42 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ThinkingContext, getMetacognitiveSupport, getReflectivePrompts } from "@/utils/thinkingFramework";
 import { motion, AnimatePresence } from "framer-motion";
+import { EmotionalAwareness } from "./EmotionalAwareness";
 
 interface MetacognitivePromptProps {
   context: ThinkingContext;
+  challengeId: string;
 }
 
-export function MetacognitivePrompt({ context }: MetacognitivePromptProps) {
+export function MetacognitivePrompt({ context, challengeId }: MetacognitivePromptProps) {
   const [showPrompts, setShowPrompts] = useState(false);
+  const [showEmotional, setShowEmotional] = useState(true);
   const support = getMetacognitiveSupport(context);
   const reflectivePrompts = getReflectivePrompts();
 
+  const handleEmotionalComplete = () => {
+    setShowEmotional(false);
+    setShowPrompts(true);
+  };
+
   return (
     <div className="space-y-4">
+      <AnimatePresence>
+        {showEmotional && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <EmotionalAwareness 
+              challengeId={challengeId}
+              onComplete={handleEmotionalComplete}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Button 
         variant="outline" 
         onClick={() => setShowPrompts(!showPrompts)}

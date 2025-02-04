@@ -70,9 +70,12 @@ export type Database = {
       }
       challenges: {
         Row: {
+          complexity_level: string | null
           created_at: string | null
+          decision_framework: Json | null
           description: string
           difficulty: Database["public"]["Enums"]["difficulty_level"]
+          emotional_context: Json | null
           id: string
           journey_id: string | null
           title: string
@@ -80,9 +83,12 @@ export type Database = {
           xp_reward: number
         }
         Insert: {
+          complexity_level?: string | null
           created_at?: string | null
+          decision_framework?: Json | null
           description: string
           difficulty: Database["public"]["Enums"]["difficulty_level"]
+          emotional_context?: Json | null
           id?: string
           journey_id?: string | null
           title: string
@@ -90,9 +96,12 @@ export type Database = {
           xp_reward?: number
         }
         Update: {
+          complexity_level?: string | null
           created_at?: string | null
+          decision_framework?: Json | null
           description?: string
           difficulty?: Database["public"]["Enums"]["difficulty_level"]
+          emotional_context?: Json | null
           id?: string
           journey_id?: string | null
           title?: string
@@ -134,6 +143,82 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "completed_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      decision_framework_progress: {
+        Row: {
+          challenge_id: string | null
+          completion_data: Json | null
+          created_at: string | null
+          framework_type: string | null
+          id: string
+          reflection_notes: string | null
+          user_id: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          completion_data?: Json | null
+          created_at?: string | null
+          framework_type?: string | null
+          id?: string
+          reflection_notes?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          completion_data?: Json | null
+          created_at?: string | null
+          framework_type?: string | null
+          id?: string
+          reflection_notes?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_framework_progress_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emotional_responses: {
+        Row: {
+          challenge_id: string | null
+          created_at: string | null
+          emotional_state: string | null
+          id: string
+          intensity: number | null
+          physical_response: string | null
+          user_id: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          created_at?: string | null
+          emotional_state?: string | null
+          id?: string
+          intensity?: number | null
+          physical_response?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          created_at?: string | null
+          emotional_state?: string | null
+          id?: string
+          intensity?: number | null
+          physical_response?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emotional_responses_challenge_id_fkey"
             columns: ["challenge_id"]
             isOneToOne: false
             referencedRelation: "challenges"
