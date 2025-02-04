@@ -29,14 +29,15 @@ export default function QuestionManager() {
         rating,
         feedback_text,
         created_at,
-        challenges (
+        challenges:challenge_id (
           title
         ),
         user_id,
-        profiles!challenge_feedback_user_id_fkey (
+        user:user_id (
           display_name
         )
-      `);
+      `)
+      .returns<FeedbackWithDetails>();
 
     if (error) throw error;
     
@@ -48,7 +49,7 @@ export default function QuestionManager() {
       created_at: item.created_at,
       challenges: item.challenges,
       profiles: {
-        display_name: item.profiles?.display_name || 'Anonymous'
+        display_name: item.user?.display_name || 'Anonymous'
       }
     }));
     
