@@ -32,7 +32,7 @@ export default function QuestionManager() {
         challenges:challenge_id (
           title
         ),
-        profiles:user_id (
+        user:user_id (
           display_name
         )
       `);
@@ -48,7 +48,7 @@ export default function QuestionManager() {
       created_at: item.created_at,
       challenges: item.challenges,
       profiles: {
-        display_name: item.profiles?.display_name || 'Anonymous'
+        display_name: item.user?.display_name || 'Anonymous'
       }
     }));
     
