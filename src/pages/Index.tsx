@@ -55,16 +55,28 @@ const Index = () => {
         return;
       }
 
-      const { error } = await supabase
+      // First check if user journey already exists
+      const { data: existingJourney } = await supabase
         .from('user_journeys')
-        .insert({
-          user_id: user.id,
-          scenario_id: scenarioId
-        });
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('scenario_id', scenarioId)
+        .maybeSingle();
 
-      if (error && error.code !== '23505') { // Ignore unique violation
-        toast.error("Failed to start journey");
-        return;
+      // Only create new journey if one doesn't exist
+      if (!existingJourney) {
+        const { error } = await supabase
+          .from('user_journeys')
+          .insert({
+            user_id: user.id,
+            scenario_id: scenarioId
+          });
+
+        if (error) {
+          console.error('Error creating journey:', error);
+          toast.error("Failed to start journey");
+          return;
+        }
       }
 
       // Navigate based on scenario
