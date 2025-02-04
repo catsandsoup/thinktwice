@@ -56,24 +56,30 @@ const Index = () => {
       }
 
       // First check if user journey already exists
-      const { data: existingJourney } = await supabase
+      const { data: existingJourney, error: checkError } = await supabase
         .from('user_journeys')
         .select('id')
         .eq('user_id', user.id)
         .eq('scenario_id', scenarioId)
         .maybeSingle();
 
+      if (checkError) {
+        console.error('Error checking existing journey:', checkError);
+        toast.error("Failed to check journey status");
+        return;
+      }
+
       // Only create new journey if one doesn't exist
       if (!existingJourney) {
-        const { error } = await supabase
+        const { error: insertError } = await supabase
           .from('user_journeys')
           .insert({
             user_id: user.id,
             scenario_id: scenarioId
           });
 
-        if (error) {
-          console.error('Error creating journey:', error);
+        if (insertError) {
+          console.error('Error creating journey:', insertError);
           toast.error("Failed to start journey");
           return;
         }
