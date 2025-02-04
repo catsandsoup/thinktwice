@@ -2,15 +2,17 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { NavigationTabs } from "@/components/index/NavigationTabs";
 import { ScenarioCard } from "@/components/index/ScenarioCard";
 import { UserProgress } from "@/components/index/UserProgress";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const navigate = useNavigate();
 
-  const { data: scenarios } = useQuery({
+  const { data: scenarios, isLoading: scenariosLoading, error: scenariosError } = useQuery({
     queryKey: ['learning-scenarios'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -26,17 +28,17 @@ const Index = () => {
     },
   });
 
-  const { data: userProgress } = useQuery({
+  const { data: userProgress, isLoading: progressLoading } = useQuery({
     queryKey: ['user-progress'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!user) return null;
 
       const { data, error } = await supabase
         .from('user_achievements')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
       
       if (error) {
         console.error('Error fetching progress:', error);
@@ -54,13 +56,15 @@ const Index = () => {
         return;
       }
 
+      toast.loading("Loading your journey...");
+
       const { data: existingJourney, error: updateError } = await supabase
         .from('user_journeys')
         .update({ last_activity: new Date().toISOString() })
         .eq('user_id', user.id)
         .eq('scenario_id', scenarioId)
         .select()
-        .single();
+        .maybeSingle();
 
       if (!existingJourney) {
         const { error: insertError } = await supabase
@@ -77,6 +81,8 @@ const Index = () => {
           return;
         }
       }
+
+      toast.dismiss();
 
       const scenario = scenarios?.find(s => s.id === scenarioId);
       switch(scenario?.title) {
@@ -105,7 +111,10 @@ const Index = () => {
     if (index === 0) {
       navigate("/settings");
     } else if (index === 1) {
+      toast.loading("Signing out...");
       const { error } = await supabase.auth.signOut();
+      toast.dismiss();
+      
       if (error) {
         toast.error("Error signing out");
       } else {
@@ -114,10 +123,35 @@ const Index = () => {
     }
   };
 
+  if (scenariosError) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Something went wrong
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            We couldn't load the learning scenarios
+          </p>
+          <Button onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="container p-6">
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-between items-center mb-4">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="text-gray-600 dark:text-gray-400"
+          >
+            ← Back
+          </Button>
           <NavigationTabs onNavigation={handleNavigation} />
         </div>
         <motion.div 
@@ -136,18 +170,26 @@ const Index = () => {
       </header>
 
       <main className="container p-6 max-w-4xl mx-auto">
-        <div className="grid gap-6 md:grid-cols-2">
-          {scenarios?.map((scenario, index) => (
-            <ScenarioCard
-              key={scenario.id}
-              scenario={scenario}
-              index={index}
-              onSelect={handleScenarioSelect}
-            />
-          ))}
-        </div>
+        {scenariosLoading ? (
+          <div className="flex justify-center items-center min-h-[200px]">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2">
+            {scenarios?.map((scenario, index) => (
+              <ScenarioCard
+                key={scenario.id}
+                scenario={scenario}
+                index={index}
+                onSelect={handleScenarioSelect}
+              />
+            ))}
+          </div>
+        )}
 
-        <UserProgress progress={userProgress} />
+        {!progressLoading && userProgress && (
+          <UserProgress progress={userProgress} />
+        )}
       </main>
     </div>
   );
