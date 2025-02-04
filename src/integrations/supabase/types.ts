@@ -710,6 +710,7 @@ export type Database = {
         | "critical_thinking"
         | "argument"
         | "beginner"
+        | "decision_making"
     }
     CompositeTypes: {
       [_ in never]: never

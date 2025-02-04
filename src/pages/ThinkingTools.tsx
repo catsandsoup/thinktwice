@@ -12,94 +12,125 @@ export default function ThinkingTools() {
   const { data: allChallenges = [], isLoading } = useQuery({
     queryKey: ['thinking-tools-challenges'],
     queryFn: async () => {
-      // First get the Thinking Tools journey ID
-      const { data: journey } = await supabase
-        .from('journeys')
-        .select('id')
-        .eq('title', 'Thinking Tools')
-        .single();
+      try {
+        // First get the Thinking Tools journey ID
+        const { data: journey } = await supabase
+          .from('journeys')
+          .select('id')
+          .eq('title', 'Thinking Tools')
+          .maybeSingle();
 
-      if (!journey) throw new Error('Thinking Tools journey not found');
-
-      // Then fetch only challenges for this journey
-      const { data: challenges } = await supabase
-        .from('challenges')
-        .select(`
-          *,
-          standard_challenge_options (*),
-          matching_challenges (
-            id,
-            matching_pairs (*)
-          ),
-          highlight_challenges (
-            id,
-            statement,
-            highlight_texts (*)
-          ),
-          word_selection_challenges (
-            id,
-            passage,
-            word_selection_keywords (*)
-          )
-        `)
-        .eq('journey_id', journey.id)
-        .order('difficulty');
-
-      // Map database fields to our frontend types and ensure type safety
-      return challenges?.map(challenge => {
-        const baseChallenge = {
-          id: challenge.id,
-          title: challenge.title,
-          description: challenge.description,
-          type: challenge.type,
-          difficulty: challenge.difficulty,
-          xpReward: challenge.xp_reward
-        };
-
-        switch (challenge.type) {
-          case "highlight":
-            return {
-              ...baseChallenge,
-              type: "highlight" as const,
-              statement: challenge.highlight_challenges?.[0]?.statement || '',
-              highlights: challenge.highlight_challenges?.[0]?.highlight_texts?.map(ht => ({
-                text: ht.text,
-                explanation: ht.explanation
-              })) || []
-            };
-          case "matching":
-            return {
-              ...baseChallenge,
-              type: "matching" as const,
-              pairs: challenge.matching_challenges?.[0]?.matching_pairs?.map(pair => ({
-                id: pair.id,
-                claim: pair.claim,
-                evidence: pair.evidence
-              })) || []
-            };
-          case "word-selection":
-            return {
-              ...baseChallenge,
-              type: "word-selection" as const,
-              passage: challenge.word_selection_challenges?.[0]?.passage || '',
-              keyWords: challenge.word_selection_challenges?.[0]?.word_selection_keywords?.map(kw => ({
-                word: kw.word,
-                explanation: kw.explanation
-              })) || []
-            };
-          default:
-            return {
-              ...baseChallenge,
-              type: challenge.type as "headline" | "fallacy" | "media" | "source",
-              options: challenge.standard_challenge_options?.map(opt => ({
-                id: opt.id,
-                text: opt.text,
-                isCorrect: opt.is_correct,
-                explanation: opt.explanation
-              })) || []
-            };
+        if (!journey) {
+          console.error('Thinking Tools journey not found');
+          return [];
         }
-      }) || [];
+
+        // Get or create user journey
+        const { data: userJourney, error: userJourneyError } = await supabase
+          .from('user_journeys')
+          .select('*')
+          .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+          .eq('scenario_id', journey.id)
+          .maybeSingle();
+
+        if (!userJourney && !userJourneyError) {
+          // Only create if it doesn't exist
+          const { error: createError } = await supabase
+            .from('user_journeys')
+            .insert({
+              user_id: (await supabase.auth.getUser()).data.user?.id,
+              scenario_id: journey.id
+            });
+
+          if (createError) {
+            console.error('Error creating user journey:', createError);
+          }
+        }
+
+        // Then fetch only challenges for this journey
+        const { data: challenges } = await supabase
+          .from('challenges')
+          .select(`
+            *,
+            standard_challenge_options (*),
+            matching_challenges (
+              id,
+              matching_pairs (*)
+            ),
+            highlight_challenges (
+              id,
+              statement,
+              highlight_texts (*)
+            ),
+            word_selection_challenges (
+              id,
+              passage,
+              word_selection_keywords (*)
+            )
+          `)
+          .eq('journey_id', journey.id)
+          .order('difficulty');
+
+        // Map database fields to our frontend types and ensure type safety
+        return challenges?.map(challenge => {
+          const baseChallenge = {
+            id: challenge.id,
+            title: challenge.title,
+            description: challenge.description,
+            type: challenge.type,
+            difficulty: challenge.difficulty,
+            xpReward: challenge.xp_reward
+          };
+
+          switch (challenge.type) {
+            case "highlight":
+              return {
+                ...baseChallenge,
+                type: "highlight" as const,
+                statement: challenge.highlight_challenges?.[0]?.statement || '',
+                highlights: challenge.highlight_challenges?.[0]?.highlight_texts?.map(ht => ({
+                  text: ht.text,
+                  explanation: ht.explanation
+                })) || []
+              };
+            case "matching":
+              return {
+                ...baseChallenge,
+                type: "matching" as const,
+                pairs: challenge.matching_challenges?.[0]?.matching_pairs?.map(pair => ({
+                  id: pair.id,
+                  claim: pair.claim,
+                  evidence: pair.evidence
+                })) || []
+              };
+            case "word-selection":
+              return {
+                ...baseChallenge,
+                type: "word-selection" as const,
+                passage: challenge.word_selection_challenges?.[0]?.passage || '',
+                keyWords: challenge.word_selection_challenges?.[0]?.word_selection_keywords?.map(kw => ({
+                  word: kw.word,
+                  explanation: kw.explanation
+                })) || []
+              };
+            default:
+              return {
+                ...baseChallenge,
+                type: challenge.type as "headline" | "fallacy" | "media" | "source",
+                options: challenge.standard_challenge_options?.map(opt => ({
+                  id: opt.id,
+                  text: opt.text,
+                  isCorrect: opt.is_correct,
+                  explanation: opt.explanation
+                })) || []
+              };
+          }
+        }) || [];
+      } catch (error) {
+        console.error('Error fetching challenges:', error);
+        toast.error("Failed to load challenges. Please try again.");
+        return [];
+      }
     }
   });
 
