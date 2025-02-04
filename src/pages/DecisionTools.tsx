@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
+import { Challenge as ChallengeType } from "@/data/challengeTypes";
 
 export default function DecisionTools() {
   const [currentChallenge, setCurrentChallenge] = useState(0);
@@ -14,13 +15,18 @@ export default function DecisionTools() {
   const { data: challenges = [], isLoading } = useQuery({
     queryKey: ['decision-tools-challenges'],
     queryFn: async () => {
-      const { data: journey } = await supabase
+      const { data: journey, error: journeyError } = await supabase
         .from('journeys')
         .select('id')
         .eq('title', 'Decision Making Tools')
-        .single();
+        .maybeSingle();
 
-      if (!journey) throw new Error('Journey not found');
+      if (journeyError) throw journeyError;
+      if (!journey) {
+        toast.error("Journey not found");
+        navigate('/');
+        return [];
+      }
 
       const { data: challenges, error } = await supabase
         .from('challenges')
@@ -46,7 +52,61 @@ export default function DecisionTools() {
         .order('difficulty');
 
       if (error) throw error;
-      return challenges || [];
+
+      return (challenges || []).map(challenge => {
+        const baseChallenge = {
+          id: challenge.id,
+          title: challenge.title,
+          description: challenge.description,
+          type: challenge.type,
+          difficulty: challenge.difficulty,
+          xpReward: challenge.xp_reward
+        };
+
+        switch (challenge.type) {
+          case 'highlight':
+            return {
+              ...baseChallenge,
+              type: 'highlight' as const,
+              statement: challenge.highlight_challenges?.[0]?.statement || '',
+              highlights: challenge.highlight_challenges?.[0]?.highlight_texts?.map(ht => ({
+                text: ht.text,
+                explanation: ht.explanation
+              })) || []
+            };
+          case 'matching':
+            return {
+              ...baseChallenge,
+              type: 'matching' as const,
+              pairs: challenge.matching_challenges?.[0]?.matching_pairs?.map(pair => ({
+                id: pair.id,
+                claim: pair.claim,
+                evidence: pair.evidence
+              })) || []
+            };
+          case 'word-selection':
+            return {
+              ...baseChallenge,
+              type: 'word-selection' as const,
+              passage: challenge.word_selection_challenges?.[0]?.passage || '',
+              keyWords: challenge.word_selection_challenges?.[0]?.word_selection_keywords?.map(kw => ({
+                word: kw.word,
+                explanation: kw.explanation
+              })) || []
+            };
+          default:
+            return {
+              ...baseChallenge,
+              type: challenge.type,
+              options: challenge.standard_challenge_options?.map(opt => ({
+                id: opt.id,
+                text: opt.text,
+                isCorrect: opt.is_correct,
+                explanation: opt.explanation
+              })) || []
+            };
+        }
+      }) as ChallengeType[];
     },
   });
 
@@ -87,7 +147,7 @@ export default function DecisionTools() {
         title="Decision Making Tools"
         currentQuestion={currentChallenge + 1}
         totalQuestions={challenges.length}
-        scenario="Master practical tools and frameworks for better decision making"
+        scenario="Learn to make informed decisions using various tools"
       />
 
       <AnimatePresence mode="wait">
@@ -100,7 +160,6 @@ export default function DecisionTools() {
         >
           <Challenge
             {...currentChallengeData}
-            xpReward={currentChallengeData.xp_reward}
             onComplete={handleComplete}
           />
         </motion.div>
