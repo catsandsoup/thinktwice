@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, CreditCard, Bell, User, Shield, ArrowLeft } from "lucide-react";
+import { Loader2, CreditCard, Bell, User, Shield, ArrowLeft, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Profile } from "@/types/settings";
@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/tabs";
 import { ProfileSettings } from "@/components/settings/ProfileSettings";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
-import { PaymentSettings } from "@/components/settings/PaymentSettings";
 import { PrivacySettings } from "@/components/settings/PrivacySettings";
+import { LearningPreferences } from "@/components/settings/LearningPreferences";
 
 export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -142,15 +142,19 @@ export default function SettingsPage() {
             <span className="sr-only">Go back</span>
           </Button>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+            <h2 className="text-2xl font-bold tracking-tight">Learning Preferences</h2>
             <p className="text-muted-foreground">
-              Manage your account settings and preferences.
+              Customize your learning experience to match your style and needs.
             </p>
           </div>
         </div>
 
-        <Tabs defaultValue="profile" className="space-y-4">
+        <Tabs defaultValue="learning" className="space-y-4">
           <TabsList className="grid w-full grid-cols-4 gap-4 bg-muted p-1">
+            <TabsTrigger value="learning" className="flex items-center gap-2">
+              <Brain className="h-4 w-4" />
+              Learning
+            </TabsTrigger>
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="h-4 w-4" />
               Profile
@@ -159,15 +163,15 @@ export default function SettingsPage() {
               <Bell className="h-4 w-4" />
               Notifications
             </TabsTrigger>
-            <TabsTrigger value="payment" className="flex items-center gap-2">
-              <CreditCard className="h-4 w-4" />
-              Payment
-            </TabsTrigger>
             <TabsTrigger value="privacy" className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
               Privacy
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="learning">
+            <LearningPreferences profile={profile} />
+          </TabsContent>
 
           <TabsContent value="profile">
             <ProfileSettings
@@ -179,10 +183,6 @@ export default function SettingsPage() {
 
           <TabsContent value="notifications">
             <NotificationSettings profile={profile} />
-          </TabsContent>
-
-          <TabsContent value="payment">
-            <PaymentSettings />
           </TabsContent>
 
           <TabsContent value="privacy">
