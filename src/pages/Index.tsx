@@ -84,22 +84,32 @@ const Index = () => {
 
       toast.dismiss();
 
+      // Map scenario titles to their corresponding routes and challenge types
+      const scenarioRoutes: { [key: string]: { route: string, challengeTypes: string[] } } = {
+        "I saw something online and wasn't sure if it was true": {
+          route: '/online-verification',
+          challengeTypes: ['media', 'source', 'headline']
+        },
+        "I had an argument and felt stuck": {
+          route: '/argument-analysis',
+          challengeTypes: ['fallacy', 'word-selection']
+        },
+        "I need to make an important decision": {
+          route: '/decision-tools',
+          challengeTypes: ['matching', 'highlight']
+        },
+        "I'm curious about thinking better": {
+          route: '/critical-thinking',
+          challengeTypes: ['word-selection', 'matching', 'highlight']
+        }
+      };
+
       const scenario = scenarios?.find(s => s.id === scenarioId);
-      switch(scenario?.title) {
-        case "I saw something online and wasn't sure if it was true":
-          navigate('/online-verification');
-          break;
-        case "I had an argument and felt stuck":
-          navigate('/argument-analysis');
-          break;
-        case "I need to make an important decision":
-          navigate('/decision-tools');
-          break;
-        case "I'm curious about thinking better":
-          navigate('/critical-thinking');
-          break;
-        default:
-          navigate('/online-verification');
+      if (scenario?.title && scenarioRoutes[scenario.title]) {
+        navigate(scenarioRoutes[scenario.title].route);
+      } else {
+        toast.error("Journey not found");
+        console.error('Unknown scenario title:', scenario?.title);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -144,14 +154,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="container p-6">
-        <div className="flex justify-between items-center mb-4">
-          <Button
-            variant="ghost"
-            onClick={() => navigate(-1)}
-            className="text-gray-600 dark:text-gray-400"
-          >
-            ← Back
-          </Button>
+        <div className="flex justify-end mb-4">
           <NavigationTabs onNavigation={handleNavigation} />
         </div>
         <motion.div 
