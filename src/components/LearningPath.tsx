@@ -34,32 +34,32 @@ export function LearningPath({
 
   const colors = {
     beginner: {
-      bg: "bg-purple-100",
-      icon: "bg-purple-600 text-white",
-      button: "bg-purple-600 hover:bg-purple-700",
-      mission: "bg-purple-50",
-      badge: "bg-purple-200 text-purple-700",
+      bg: "bg-purple-100 dark:bg-purple-900/20",
+      icon: "bg-purple-600 text-white dark:bg-purple-500",
+      button: "bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600",
+      mission: "bg-purple-50 dark:bg-purple-900/40",
+      badge: "bg-purple-200 text-purple-700 dark:bg-purple-900 dark:text-purple-300",
     },
     intermediate: {
-      bg: "bg-blue-100",
-      icon: "bg-blue-600 text-white",
-      button: "bg-blue-600 hover:bg-blue-700",
-      mission: "bg-blue-50",
-      badge: "bg-blue-200 text-blue-700",
+      bg: "bg-blue-100 dark:bg-blue-900/20",
+      icon: "bg-blue-600 text-white dark:bg-blue-500",
+      button: "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600",
+      mission: "bg-blue-50 dark:bg-blue-900/40",
+      badge: "bg-blue-200 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
     },
     advanced: {
-      bg: "bg-orange-100",
-      icon: "bg-orange-600 text-white",
-      button: "bg-orange-600 hover:bg-orange-700",
-      mission: "bg-orange-50",
-      badge: "bg-orange-200 text-orange-700",
+      bg: "bg-orange-100 dark:bg-orange-900/20",
+      icon: "bg-orange-600 text-white dark:bg-orange-500",
+      button: "bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600",
+      mission: "bg-orange-50 dark:bg-orange-900/40",
+      badge: "bg-orange-200 text-orange-700 dark:bg-orange-900 dark:text-orange-300",
     },
   }[level];
 
   return (
     <Card
       className={cn(
-        "relative overflow-hidden pointer-events-none",
+        "relative overflow-hidden transition-all duration-300 hover:shadow-lg",
         customColor ? `bg-[${customColor}]` : colors.bg
       )}
     >
@@ -70,7 +70,7 @@ export function LearningPath({
           </div>
           <div className="space-y-1 flex-1">
             <h3 className="text-xl font-bold line-clamp-1">{title}</h3>
-            <p className="text-gray-600 line-clamp-2">{description}</p>
+            <p className="text-gray-600 dark:text-gray-300 line-clamp-2">{description}</p>
           </div>
         </div>
 
@@ -89,14 +89,14 @@ export function LearningPath({
         )}
 
         <div className={cn("p-4 rounded-lg space-y-2", colors.mission)}>
-          <h4 className="font-semibold">Your Mission:</h4>
-          <p className="text-gray-600">{mission}</p>
+          <h4 className="font-semibold">Your Learning Goal:</h4>
+          <p className="text-gray-600 dark:text-gray-300">{mission}</p>
         </div>
 
         <button 
           onClick={onClick}
           className={cn(
-            "w-full py-3 px-4 rounded-lg text-white font-medium transition-all focus:ring-2 focus:ring-offset-2 pointer-events-auto",
+            "w-full py-3 px-4 rounded-lg text-white font-medium transition-all focus:ring-2 focus:ring-offset-2",
             colors.button
           )}
         >

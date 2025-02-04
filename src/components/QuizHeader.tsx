@@ -31,14 +31,14 @@ export function QuizHeader({
           className="h-12 px-4 text-base text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Journey
+          Return to Journey
         </Button>
         <motion.span 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-sm font-medium bg-primary/10 text-primary px-4 py-2 rounded-full"
         >
-          Step {currentQuestion} of {totalQuestions}
+          Progress: {currentQuestion} of {totalQuestions}
         </motion.span>
       </div>
       
@@ -48,7 +48,8 @@ export function QuizHeader({
           animate={{ opacity: 1 }}
           className="text-muted-foreground text-sm bg-muted p-4 rounded-lg"
         >
-          Your scenario: {scenario}
+          <h3 className="font-medium mb-2">Scenario Context:</h3>
+          <p>{scenario}</p>
         </motion.div>
       )}
       
@@ -59,7 +60,7 @@ export function QuizHeader({
       >
         <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Let's explore this concept through a real-world example. Take your time to think it through.
+          Take your time to analyze this situation. Consider different perspectives and approaches.
         </p>
       </motion.div>
     </header>
