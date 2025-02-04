@@ -340,4 +340,4 @@ export function LearningPreferences({ profile }: LearningPreferencesProps) {
       </Form>
     </motion.div>
   );
-});
+}
