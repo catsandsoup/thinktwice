@@ -75,7 +75,7 @@ export default function Auth() {
           email,
           password,
           options: {
-            emailRedirectTo: 'https://thinktwice.lovable.app/auth/callback',
+            emailRedirectTo: window.location.origin + '/auth/callback',
           },
         });
 

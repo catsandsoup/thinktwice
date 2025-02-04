@@ -603,7 +603,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      feedback_with_user: {
+        Row: {
+          challenge_id: string | null
+          challenge_title: string | null
+          created_at: string | null
+          feedback_text: string | null
+          id: string | null
+          rating: number | null
+          user_display_name: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_feedback_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
