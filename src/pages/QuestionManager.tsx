@@ -13,7 +13,7 @@ export default function QuestionManager() {
       setIsLoading(true);
       try {
         const { data, error } = await supabase
-          .from('feedback_with_user')
+          .from('challenge_feedback')
           .select(`
             id,
             rating,

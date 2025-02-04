@@ -5,10 +5,10 @@ export interface FeedbackWithDetails {
   created_at: string;
   challenges: {
     title: string;
-  };
+  } | null;
   user: {
     display_name: string | null;
-  };
+  } | null;
 }
 
 export interface FeedbackTableProps {

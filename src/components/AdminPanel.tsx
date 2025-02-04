@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types/database";
 
-type TableNames = keyof Database['public']['Tables'];
+const ALLOWED_TABLES = ['challenges', 'journeys', 'user_progress', 'profiles', 'user_roles'] as const;
+type AllowedTable = typeof ALLOWED_TABLES[number];
 
 export function AdminPanel() {
-  const [selectedTable, setSelectedTable] = useState<TableNames>('challenges');
+  const [selectedTable, setSelectedTable] = useState<AllowedTable>('challenges');
   const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
@@ -30,14 +31,12 @@ export function AdminPanel() {
       <div>
         <select
           value={selectedTable}
-          onChange={(e) => setSelectedTable(e.target.value as TableNames)}
+          onChange={(e) => setSelectedTable(e.target.value as AllowedTable)}
           className="border p-2 rounded"
         >
-          <option value="challenges">Challenges</option>
-          <option value="journeys">Journeys</option>
-          <option value="user_progress">User Progress</option>
-          <option value="profiles">Profiles</option>
-          <option value="user_roles">User Roles</option>
+          {ALLOWED_TABLES.map(table => (
+            <option key={table} value={table}>{table}</option>
+          ))}
         </select>
       </div>
 

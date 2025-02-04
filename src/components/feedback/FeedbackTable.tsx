@@ -20,8 +20,8 @@ export default function FeedbackTable({ data, isLoading }: FeedbackTableProps) {
         <tbody className="bg-white divide-y divide-gray-200">
           {data.map((item) => (
             <tr key={item.id}>
-              <td className="px-6 py-4 whitespace-nowrap">{item.user.display_name || 'Anonymous'}</td>
-              <td className="px-6 py-4 whitespace-nowrap">{item.challenges.title}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{item.user?.display_name || 'Anonymous'}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{item.challenges?.title || 'Unknown Challenge'}</td>
               <td className="px-6 py-4 whitespace-nowrap">{item.rating}/5</td>
               <td className="px-6 py-4">{item.feedback_text || '-'}</td>
               <td className="px-6 py-4 whitespace-nowrap">
