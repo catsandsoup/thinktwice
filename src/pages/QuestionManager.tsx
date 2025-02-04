@@ -8,7 +8,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { useCallback } from "react";
 
 export default function QuestionManager() {
-  const fetchFeedback = useCallback(async (): Promise<FeedbackWithDetails[]> => {
+  const fetchFeedback = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
     
     // Check if user is admin
@@ -32,14 +32,13 @@ export default function QuestionManager() {
         challenges:challenge_id (
           title
         ),
-        user_id,
-        user:user_id (
+        profiles:user_id (
           display_name
         )
-      `)
-      .returns<FeedbackWithDetails>();
+      `);
 
     if (error) throw error;
+    if (!data) return [];
     
     // Transform the data to match FeedbackWithDetails type
     const transformedData: FeedbackWithDetails[] = data.map(item => ({
@@ -49,7 +48,7 @@ export default function QuestionManager() {
       created_at: item.created_at,
       challenges: item.challenges,
       profiles: {
-        display_name: item.user?.display_name || 'Anonymous'
+        display_name: item.profiles?.display_name || 'Anonymous'
       }
     }));
     
