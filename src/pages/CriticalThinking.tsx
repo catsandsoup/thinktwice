@@ -79,6 +79,8 @@ export default function CriticalThinking() {
     );
   }
 
+  const currentChallengeData = challenges[currentChallenge];
+
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       <QuizHeader 
@@ -90,14 +92,15 @@ export default function CriticalThinking() {
 
       <AnimatePresence mode="wait">
         <motion.div
-          key={challenges[currentChallenge].id}
+          key={currentChallengeData.id}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
         >
           <Challenge
-            {...challenges[currentChallenge]}
+            {...currentChallengeData}
+            xpReward={currentChallengeData.xp_reward}
             onComplete={handleComplete}
           />
         </motion.div>

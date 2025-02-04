@@ -9,7 +9,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function OnlineVerification() {
   const [currentChallenge, setCurrentChallenge] = useState(0);
-  const [seenChallenges, setSeenChallenges] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
 
   const { data: challenges = [], isLoading } = useQuery({
@@ -80,6 +79,8 @@ export default function OnlineVerification() {
     );
   }
 
+  const currentChallengeData = challenges[currentChallenge];
+  
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       <QuizHeader 
@@ -91,14 +92,15 @@ export default function OnlineVerification() {
 
       <AnimatePresence mode="wait">
         <motion.div
-          key={challenges[currentChallenge].id}
+          key={currentChallengeData.id}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
         >
           <Challenge
-            {...challenges[currentChallenge]}
+            {...currentChallengeData}
+            xpReward={currentChallengeData.xp_reward}
             onComplete={handleComplete}
           />
         </motion.div>
