@@ -22,13 +22,26 @@ export default function QuestionManager() {
             challenges:challenge_id (
               title
             ),
-            user:user_id (
+            profiles:user_id (
               display_name
             )
           `);
 
         if (error) throw error;
-        setFeedback(data as FeedbackWithDetails[]);
+        
+        // Transform the data to match our FeedbackWithDetails type
+        const transformedData: FeedbackWithDetails[] = (data || []).map(item => ({
+          id: item.id,
+          rating: item.rating,
+          feedback_text: item.feedback_text,
+          created_at: item.created_at,
+          challenges: item.challenges,
+          user: {
+            display_name: item.profiles?.display_name
+          }
+        }));
+
+        setFeedback(transformedData);
       } catch (error) {
         console.error('Error fetching feedback:', error);
       } finally {
