@@ -7,7 +7,7 @@ export interface FeedbackWithDetails {
     title: string;
   };
   user: {
-    display_name: string;
+    display_name: string | null;
   };
 }
 

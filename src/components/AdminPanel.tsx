@@ -36,6 +36,8 @@ export function AdminPanel() {
           <option value="challenges">Challenges</option>
           <option value="journeys">Journeys</option>
           <option value="user_progress">User Progress</option>
+          <option value="profiles">Profiles</option>
+          <option value="user_roles">User Roles</option>
         </select>
       </div>
 

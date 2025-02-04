@@ -1,40 +1,36 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FeedbackWithDetails } from "@/types/feedback";
-import { memo } from "react";
+import type { FeedbackTableProps } from "@/types/feedback";
 
-type FeedbackTableProps = {
-  feedback: FeedbackWithDetails[];
-};
+export default function FeedbackTable({ data, isLoading }: FeedbackTableProps) {
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-const FeedbackTable = memo(({ feedback }: FeedbackTableProps) => {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Challenge</TableHead>
-          <TableHead>User</TableHead>
-          <TableHead>Rating</TableHead>
-          <TableHead>Feedback</TableHead>
-          <TableHead>Date</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {feedback?.map((item) => (
-          <TableRow key={item.id}>
-            <TableCell>{item.challenges?.title}</TableCell>
-            <TableCell>{item.user?.display_name}</TableCell>
-            <TableCell>{item.rating} ⭐</TableCell>
-            <TableCell>{item.feedback_text}</TableCell>
-            <TableCell>
-              {item.created_at ? new Date(item.created_at).toLocaleDateString() : 'N/A'}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Challenge</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Feedback</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {data.map((item) => (
+            <tr key={item.id}>
+              <td className="px-6 py-4 whitespace-nowrap">{item.user.display_name || 'Anonymous'}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{item.challenges.title}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{item.rating}/5</td>
+              <td className="px-6 py-4">{item.feedback_text || '-'}</td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {new Date(item.created_at).toLocaleDateString()}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
-});
-
-FeedbackTable.displayName = 'FeedbackTable';
-
-export default FeedbackTable;
+}
