@@ -1,12 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Brain, Search, MessageSquare, GitBranch, LogOut, Settings } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ExpandableTabs } from "@/components/ui/expandable-tabs";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { NavigationTabs } from "@/components/index/NavigationTabs";
+import { ScenarioCard } from "@/components/index/ScenarioCard";
+import { UserProgress } from "@/components/index/UserProgress";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -55,7 +54,6 @@ const Index = () => {
         return;
       }
 
-      // First try to update existing journey
       const { data: existingJourney, error: updateError } = await supabase
         .from('user_journeys')
         .update({ last_activity: new Date().toISOString() })
@@ -64,7 +62,6 @@ const Index = () => {
         .select()
         .single();
 
-      // If no existing journey was updated, create a new one
       if (!existingJourney) {
         const { error: insertError } = await supabase
           .from('user_journeys')
@@ -81,7 +78,6 @@ const Index = () => {
         }
       }
 
-      // Navigate based on scenario
       const scenario = scenarios?.find(s => s.id === scenarioId);
       switch(scenario?.title) {
         case "I saw something online and wasn't sure if it was true":
@@ -118,30 +114,11 @@ const Index = () => {
     }
   };
 
-  const navigationTabs = [
-    { title: "Settings", icon: Settings },
-    { title: "Sign Out", icon: LogOut },
-  ];
-
-  const getScenarioIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'search': return Search;
-      case 'message-square': return MessageSquare;
-      case 'git-branch': return GitBranch;
-      case 'brain':
-      default: return Brain;
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="container p-6">
         <div className="flex justify-center mb-4">
-          <ExpandableTabs 
-            tabs={navigationTabs} 
-            onChange={handleNavigation}
-            className="border-gray-200 dark:border-gray-800"
-          />
+          <NavigationTabs onNavigation={handleNavigation} />
         </div>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -160,62 +137,17 @@ const Index = () => {
 
       <main className="container p-6 max-w-4xl mx-auto">
         <div className="grid gap-6 md:grid-cols-2">
-          {scenarios?.map((scenario, index) => {
-            const Icon = getScenarioIcon(scenario.icon_name);
-            return (
-              <motion.div
-                key={scenario.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card 
-                  className="p-6 h-full hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-primary"
-                  onClick={() => handleScenarioSelect(scenario.id)}
-                >
-                  <div className="flex flex-col h-full">
-                    <div className="rounded-full bg-primary/10 p-3 w-12 h-12 flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <h2 className="text-xl font-semibold mb-2 text-left">
-                      {scenario.title}
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-400 text-left">
-                      {scenario.description}
-                    </p>
-                    <Button 
-                      variant="ghost" 
-                      className="mt-4 self-start"
-                    >
-                      Start Journey →
-                    </Button>
-                  </div>
-                </Card>
-              </motion.div>
-            );
-          })}
+          {scenarios?.map((scenario, index) => (
+            <ScenarioCard
+              key={scenario.id}
+              scenario={scenario}
+              index={index}
+              onSelect={handleScenarioSelect}
+            />
+          ))}
         </div>
 
-        {userProgress && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-12 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
-          >
-            <h2 className="text-2xl font-semibold mb-4">Your Learning Journey</h2>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="p-4 bg-primary/10 rounded-lg">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Insights Gained</p>
-                <p className="text-2xl font-bold">{userProgress.total_challenges_completed}</p>
-              </div>
-              <div className="p-4 bg-primary/10 rounded-lg">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Days Active</p>
-                <p className="text-2xl font-bold">{userProgress.streak_count}</p>
-              </div>
-            </div>
-          </motion.div>
-        )}
+        <UserProgress progress={userProgress} />
       </main>
     </div>
   );
