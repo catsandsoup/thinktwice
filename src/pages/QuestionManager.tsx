@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import FeedbackTable from "@/components/feedback/FeedbackTable";
 import type { FeedbackWithDetails } from "@/types/feedback";
@@ -13,31 +12,21 @@ export default function QuestionManager() {
       setIsLoading(true);
       try {
         const { data, error } = await supabase
-          .from('challenge_feedback')
-          .select(`
-            id,
-            rating,
-            feedback_text,
-            created_at,
-            challenges:challenge_id (
-              title
-            ),
-            profiles:user_id (
-              display_name
-            )
-          `);
+          .from('feedback_with_user')
+          .select('*');
 
         if (error) throw error;
         
-        // Transform the data to match our FeedbackWithDetails type
         const transformedData: FeedbackWithDetails[] = (data || []).map(item => ({
           id: item.id,
           rating: item.rating,
           feedback_text: item.feedback_text,
           created_at: item.created_at,
-          challenges: item.challenges,
+          challenges: {
+            title: item.challenge_title
+          },
           user: {
-            display_name: item.profiles?.display_name
+            display_name: item.user_display_name
           }
         }));
 
