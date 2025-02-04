@@ -54,18 +54,32 @@ const Index = () => {
         return;
       }
 
-      // Use upsert with ON CONFLICT DO UPDATE
-      const { data: journey, error: upsertError } = await supabase
+      // First try to find existing journey
+      const { data: existingJourney, error: journeyError } = await supabase
+        .from('user_journeys')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('scenario_id', scenarioId)
+        .maybeSingle();
+
+      if (journeyError) {
+        console.error('Error checking existing journey:', journeyError);
+        toast.error("Failed to check journey status");
+        return;
+      }
+
+      // Update or insert the journey
+      const { error: upsertError } = await supabase
         .from('user_journeys')
         .upsert(
           {
             user_id: user.id,
             scenario_id: scenarioId,
-            last_activity: new Date().toISOString()
+            last_activity: new Date().toISOString(),
+            ...(existingJourney ? {} : { started_at: new Date().toISOString() })
           },
           {
-            onConflict: 'user_id,scenario_id',
-            returning: 'minimal'
+            onConflict: 'user_id,scenario_id'
           }
         );
 
@@ -116,17 +130,6 @@ const Index = () => {
     );
   }
 
-  const getScenarioIcon = (title: string) => {
-    switch (title) {
-      case "Beginner's Journey":
-        return <Book className="h-6 w-6" />;
-      case "Thinking Tools":
-        return <Brain className="h-6 w-6" />;
-      default:
-        return <Lightbulb className="h-6 w-6" />;
-    }
-  };
-
   return (
     <div className="flex min-h-screen flex-col">
       <MainNav />
@@ -166,6 +169,17 @@ const Index = () => {
       </main>
     </div>
   );
+};
+
+const getScenarioIcon = (title: string) => {
+  switch (title) {
+    case "Beginner's Journey":
+      return <Book className="h-6 w-6" />;
+    case "Thinking Tools":
+      return <Brain className="h-6 w-6" />;
+    default:
+      return <Lightbulb className="h-6 w-6" />;
+  }
 };
 
 export default Index;
