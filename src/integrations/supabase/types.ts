@@ -276,6 +276,30 @@ export type Database = {
         }
         Relationships: []
       }
+      learning_scenarios: {
+        Row: {
+          created_at: string | null
+          description: string
+          icon_name: string | null
+          id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          icon_name?: string | null
+          id?: string
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          icon_name?: string | null
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       matching_challenges: {
         Row: {
           challenge_id: string | null
@@ -494,6 +518,38 @@ export type Database = {
             columns: ["badge_id"]
             isOneToOne: false
             referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_journeys: {
+        Row: {
+          id: string
+          last_activity: string | null
+          scenario_id: string
+          started_at: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          last_activity?: string | null
+          scenario_id: string
+          started_at?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          last_activity?: string | null
+          scenario_id?: string
+          started_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_journeys_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "learning_scenarios"
             referencedColumns: ["id"]
           },
         ]

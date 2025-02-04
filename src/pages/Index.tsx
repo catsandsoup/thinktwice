@@ -1,37 +1,93 @@
-import { LearningPath } from "@/components/LearningPath";
-import { UserAchievements } from "@/components/UserAchievements";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { Settings, LogOut } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { Brain, Search, MessageSquare, GitBranch, LogOut, Settings } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { ExpandableTabs } from "@/components/ui/expandable-tabs";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { awardPathBadge } from "@/utils/pathBadges";
 
 const Index = () => {
   const navigate = useNavigate();
 
-  const handlePathClick = async (path: string) => {
-    switch (path) {
-      case "Beginner":
-        navigate('/beginners-journey');
-        await awardPathBadge("Beginner's Path");
-        break;
-      case "Argument":
-        navigate('/argument-analysis');
-        await awardPathBadge("Argument Master");
-        break;
-      case "Tools":
-        navigate('/thinking-tools');
-        await awardPathBadge("Tool Expert");
-        break;
-      case "Bridge":
-        navigate('/bridge-builder');
-        await awardPathBadge("Bridge Builder");
-        break;
-      default:
-        toast.info(`The ${path} path will be available in the next update.`, {
-          description: "Coming Soon!"
+  const { data: scenarios } = useQuery({
+    queryKey: ['learning-scenarios'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('learning_scenarios')
+        .select('*')
+        .order('created_at', { ascending: true });
+      
+      if (error) {
+        toast.error("Failed to load scenarios");
+        throw error;
+      }
+      return data;
+    },
+  });
+
+  const { data: userProgress } = useQuery({
+    queryKey: ['user-progress'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase
+        .from('user_achievements')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching progress:', error);
+        return null;
+      }
+      return data;
+    },
+  });
+
+  const handleScenarioSelect = async (scenarioId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Please log in to continue");
+        return;
+      }
+
+      const { error } = await supabase
+        .from('user_journeys')
+        .insert({
+          user_id: user.id,
+          scenario_id: scenarioId
         });
+
+      if (error && error.code !== '23505') { // Ignore unique violation
+        toast.error("Failed to start journey");
+        return;
+      }
+
+      // Navigate based on scenario
+      const scenario = scenarios?.find(s => s.id === scenarioId);
+      switch(scenario?.title) {
+        case "I saw something online and wasn't sure if it was true":
+          navigate('/beginners-journey');
+          break;
+        case "I had an argument and felt stuck":
+          navigate('/argument-analysis');
+          break;
+        case "I need to make an important decision":
+          navigate('/thinking-tools');
+          break;
+        case "I'm curious about thinking better":
+          navigate('/bridge-builder');
+          break;
+        default:
+          navigate('/beginners-journey');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Something went wrong");
     }
   };
 
@@ -53,8 +109,18 @@ const Index = () => {
     { title: "Sign Out", icon: LogOut },
   ];
 
+  const getScenarioIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'search': return Search;
+      case 'message-square': return MessageSquare;
+      case 'git-branch': return GitBranch;
+      case 'brain':
+      default: return Brain;
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="container p-6">
         <div className="flex justify-center mb-4">
           <ExpandableTabs 
@@ -63,56 +129,79 @@ const Index = () => {
             className="border-gray-200 dark:border-gray-800"
           />
         </div>
-        <div className="text-center">
-          <h1 className="text-4xl font-bold tracking-tight">Think Twice</h1>
-          <p className="text-xl text-gray-600">
-            Master the art of clear, logical thinking
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center space-y-4"
+        >
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            What brought you here today?
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Choose a scenario that matches your interest, and we'll guide you through a personalized learning journey.
           </p>
-        </div>
+        </motion.div>
       </header>
 
-      <main className="container p-6 max-w-6xl mx-auto space-y-8">
-        <UserAchievements />
-        <div className="grid md:grid-cols-2 gap-8">
-          <LearningPath
-            title="Everyday Detective"
-            description="Spot clues that help you make better choices"
-            level="beginner"
-            onClick={() => handlePathClick("Beginner")}
-            mission="Learn to analyze social media posts and identify reliable information from questionable claims"
-            actionText="Start Your Investigation"
-            labels={["Social Media Analysis", "Fact Checking", "Source Evaluation"]}
-          />
-          <LearningPath
-            title="Argument Analysis"
-            description="Master the art of evaluating claims and spotting logical fallacies"
-            level="intermediate"
-            onClick={() => handlePathClick("Argument")}
-            mission="Learn to identify logical fallacies and strengthen your reasoning skills"
-            actionText="Begin Analysis"
-            labels={["Logical Fallacies", "Claim Evaluation", "Reasoning Skills"]}
-          />
-          <LearningPath
-            title="Bridge Builder"
-            description="Balance emotional and logical thinking while building understanding"
-            level="intermediate"
-            onClick={() => handlePathClick("Bridge")}
-            mission="Learn to identify emotional triggers and convert them into logical arguments"
-            actionText="Start Building Bridges"
-            labels={["Emotional Intelligence", "Logical Analysis", "Conflict Resolution"]}
-            customColor="#FFDEE2"
-            customIcon="handshake"
-          />
-          <LearningPath
-            title="Thinking Tools"
-            description="Master different analytical methods including 5 Whys and Socratic questioning"
-            level="advanced"
-            onClick={() => handlePathClick("Tools")}
-            mission="Learn and practice systematic approaches to problem-solving"
-            actionText="Start Practice"
-            labels={["Systematic Analysis", "Lateral Thinking", "Creative Problem-Solving"]}
-          />
+      <main className="container p-6 max-w-4xl mx-auto">
+        <div className="grid gap-6 md:grid-cols-2">
+          {scenarios?.map((scenario, index) => {
+            const Icon = getScenarioIcon(scenario.icon_name);
+            return (
+              <motion.div
+                key={scenario.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card 
+                  className="p-6 h-full hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-primary"
+                  onClick={() => handleScenarioSelect(scenario.id)}
+                >
+                  <div className="flex flex-col h-full">
+                    <div className="rounded-full bg-primary/10 p-3 w-12 h-12 flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <h2 className="text-xl font-semibold mb-2 text-left">
+                      {scenario.title}
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400 text-left">
+                      {scenario.description}
+                    </p>
+                    <Button 
+                      variant="ghost" 
+                      className="mt-4 self-start"
+                    >
+                      Start Journey →
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
+
+        {userProgress && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-12 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
+          >
+            <h2 className="text-2xl font-semibold mb-4">Your Learning Journey</h2>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="p-4 bg-primary/10 rounded-lg">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Insights Gained</p>
+                <p className="text-2xl font-bold">{userProgress.total_challenges_completed}</p>
+              </div>
+              <div className="p-4 bg-primary/10 rounded-lg">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Days Active</p>
+                <p className="text-2xl font-bold">{userProgress.streak_count}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </main>
     </div>
   );
