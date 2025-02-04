@@ -1,79 +1,65 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card } from "@/components/ui/card";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { FeedbackWithDetails } from "@/types/feedback";
-import FeedbackTable from "@/components/feedback/FeedbackTable";
-import ErrorBoundary from "@/components/ErrorBoundary";
-import { useCallback } from "react";
+import { FeedbackTable } from "@/components/feedback/FeedbackTable";
+import type { FeedbackWithDetails } from "@/types/feedback";
 
 export default function QuestionManager() {
-  const fetchFeedback = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    // Check if user is admin
-    const { data: roles } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user?.id)
-      .single();
+  const [isLoading, setIsLoading] = useState(true);
+  const [feedback, setFeedback] = useState<FeedbackWithDetails[]>([]);
 
-    if (roles?.role !== 'admin') {
-      throw new Error('Unauthorized');
-    }
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      const { data, error } = await supabase
+        .from('feedback_with_user')
+        .select(`
+          id,
+          rating,
+          feedback_text,
+          created_at,
+          challenges:challenge_id (
+            title
+          ),
+          user:user_id (
+            display_name
+          )
+        `);
 
-    const { data, error } = await supabase
-      .from('challenge_feedback')
-      .select(`
-        id,
-        rating,
-        feedback_text,
-        created_at,
-        challenges:challenge_id (
-          title
-        ),
-        user:user_id (
-          display_name
-        )
-      `);
+      if (error) {
+        console.error('Error fetching feedback:', error);
+        return;
+      }
 
-    if (error) throw error;
-    if (!data) return [];
-    
-    return data as FeedbackWithDetails[];
+      if (data) {
+        setFeedback(data as FeedbackWithDetails[]);
+      }
+
+      setIsLoading(false);
+    };
+
+    fetchFeedback();
   }, []);
 
-  const { data: feedback, error, isLoading } = useQuery({
-    queryKey: ['feedback'],
-    queryFn: fetchFeedback,
-  });
-
   if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
     return (
-      <Alert variant="destructive">
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>
-          {error instanceof Error ? error.message : 'An unexpected error occurred'}
-        </AlertDescription>
-      </Alert>
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     );
   }
 
   return (
-    <ErrorBoundary>
-      <div className="container py-8 space-y-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Question Feedback</h1>
+    <div className="container py-6">
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Question Manager</h2>
+          <p className="text-muted-foreground">
+            Review and manage feedback from users.
+          </p>
         </div>
 
-        <Card className="p-6">
-          <FeedbackTable feedback={feedback || []} />
-        </Card>
+        <FeedbackTable data={feedback} isLoading={isLoading} />
       </div>
-    </ErrorBoundary>
+    </div>
   );
 }
