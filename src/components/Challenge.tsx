@@ -81,7 +81,10 @@ export const Challenge = memo(function Challenge(props: ChallengeProps) {
         {renderChallenge()}
       </ChallengeCard>
       
-      <MetacognitivePrompt context={context} />
+      <MetacognitivePrompt 
+        context={context} 
+        challengeId={props.id}
+      />
     </motion.div>
   );
 });
