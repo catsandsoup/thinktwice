@@ -81,19 +81,19 @@ const Index = () => {
       const scenario = scenarios?.find(s => s.id === scenarioId);
       switch(scenario?.title) {
         case "I saw something online and wasn't sure if it was true":
-          navigate('/beginners-journey');
+          navigate('/online-verification');
           break;
         case "I had an argument and felt stuck":
           navigate('/argument-analysis');
           break;
         case "I need to make an important decision":
-          navigate('/thinking-tools');
+          navigate('/decision-tools');
           break;
         case "I'm curious about thinking better":
-          navigate('/bridge-builder');
+          navigate('/critical-thinking');
           break;
         default:
-          navigate('/beginners-journey');
+          navigate('/online-verification');
       }
     } catch (error) {
       console.error('Error:', error);
