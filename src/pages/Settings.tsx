@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, CreditCard, Bell, User, Shield } from "lucide-react";
+import { Loader2, CreditCard, Bell, User, Shield, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Profile } from "@/types/settings";
 import { validateProfileTheme } from "@/utils/profileUtils";
+import { Button } from "@/components/ui/button";
 import {
   Tabs,
   TabsContent,
@@ -130,11 +131,22 @@ export default function SettingsPage() {
   return (
     <div className="container max-w-4xl py-6">
       <div className="space-y-4">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
-          <p className="text-muted-foreground">
-            Manage your account settings and preferences.
-          </p>
+        <div className="flex items-center justify-between">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+            className="mr-2"
+          >
+            <ArrowLeft className="h-5 w-5" />
+            <span className="sr-only">Go back</span>
+          </Button>
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+            <p className="text-muted-foreground">
+              Manage your account settings and preferences.
+            </p>
+          </div>
         </div>
 
         <Tabs defaultValue="profile" className="space-y-4">
