@@ -19,7 +19,11 @@ export default function Auth() {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          console.error("Session check error:", sessionError);
+          return;
+        }
         if (session) {
           navigate("/");
         }
@@ -30,10 +34,14 @@ export default function Auth() {
     
     checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session);
       if (event === 'SIGNED_IN') {
-        navigate("/");
+        // Ensure the session is properly set before navigating
+        const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+        if (currentSession && !sessionError) {
+          navigate("/");
+        }
       } else if (event === 'SIGNED_OUT') {
         navigate("/login");
       }
@@ -75,7 +83,7 @@ export default function Auth() {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin + '/auth/callback',
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
           },
         });
 
@@ -96,11 +104,16 @@ export default function Auth() {
 
         if (signInError) throw signInError;
         
-        toast.success("Successfully signed in!", {
-          duration: 3000,
-        });
-        
-        navigate("/");
+        // Only navigate if we have a valid session
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        if (currentSession) {
+          toast.success("Successfully signed in!", {
+            duration: 3000,
+          });
+          navigate("/");
+        } else {
+          throw new Error("Failed to establish session");
+        }
       }
     } catch (error: any) {
       console.error("Auth error:", error);
