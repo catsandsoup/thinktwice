@@ -30,7 +30,7 @@ import {
 import { toast } from "sonner";
 
 export function AdminPanel() {
-  const { data: users } = useQuery({
+  const { data: users, refetch } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
       const { data: userRoles, error: rolesError } = await supabase
@@ -55,15 +55,40 @@ export function AdminPanel() {
 
   const handleDeleteAccount = async (userId: string) => {
     try {
-      const { error } = await supabase
-        .from('user_roles')
-        .delete()
-        .eq('user_id', userId);
+      // Delete from all related tables first
+      const tables = [
+        'user_roles',
+        'user_progress',
+        'user_achievements',
+        'user_badges',
+        'completed_challenges',
+        'challenge_feedback',
+        'question_feedback',
+        'profiles'
+      ];
+
+      for (const table of tables) {
+        const { error } = await supabase
+          .from(table)
+          .delete()
+          .eq('user_id', userId);
+        
+        if (error) {
+          console.error(`Error deleting from ${table}:`, error);
+          throw new Error(`Failed to delete user data from ${table}`);
+        }
+      }
+
+      // Delete the user from Supabase Auth
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(userId);
       
-      if (error) throw error;
+      if (deleteError) throw deleteError;
+
       toast.success("Account deleted successfully");
+      refetch(); // Refresh the users list
     } catch (error) {
-      toast.error("Failed to delete account");
+      console.error('Delete account error:', error);
+      toast.error("Failed to delete account. Please try again.");
     }
   };
 
