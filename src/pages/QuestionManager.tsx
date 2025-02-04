@@ -40,19 +40,7 @@ export default function QuestionManager() {
     if (error) throw error;
     if (!data) return [];
     
-    // Transform the data to match FeedbackWithDetails type
-    const transformedData: FeedbackWithDetails[] = data.map(item => ({
-      id: item.id,
-      rating: item.rating,
-      feedback_text: item.feedback_text,
-      created_at: item.created_at,
-      challenges: item.challenges,
-      user: {
-        display_name: item.user?.display_name || 'Anonymous'
-      }
-    }));
-    
-    return transformedData;
+    return data as FeedbackWithDetails[];
   }, []);
 
   const { data: feedback, error, isLoading } = useQuery({

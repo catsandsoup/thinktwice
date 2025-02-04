@@ -22,7 +22,7 @@ const FeedbackTable = memo(({ feedback }: FeedbackTableProps) => {
         {feedback?.map((item) => (
           <TableRow key={item.id}>
             <TableCell>{item.challenges?.title}</TableCell>
-            <TableCell>{item.profiles?.display_name}</TableCell>
+            <TableCell>{item.user?.display_name}</TableCell>
             <TableCell>{item.rating} ⭐</TableCell>
             <TableCell>{item.feedback_text}</TableCell>
             <TableCell>
