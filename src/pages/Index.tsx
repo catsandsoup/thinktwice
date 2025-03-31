@@ -9,6 +9,7 @@ import { ScenarioCard } from "@/components/index/ScenarioCard";
 import { UserProgress } from "@/components/index/UserProgress";
 import { useScenarios, useUserProgress } from "@/context/DataContext";
 import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
 const Index = () => {
