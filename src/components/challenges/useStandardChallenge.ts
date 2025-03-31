@@ -24,6 +24,7 @@ export function useStandardChallenge(
 
   const correctOptions = options.filter(opt => opt.isCorrect);
   const isMultipleChoice = correctOptions.length > 1;
+  const hasSelection = selected.length > 0;
 
   const handleSelect = (optionId: string) => {
     if (isSubmitted) return;
@@ -99,6 +100,7 @@ export function useStandardChallenge(
     showFeedback,
     correctOptions,
     isMultipleChoice,
+    hasSelection,
     handleSelect,
     handleSubmit,
     handleRetry,

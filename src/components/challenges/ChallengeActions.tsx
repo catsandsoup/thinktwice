@@ -1,5 +1,6 @@
 
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type ChallengeActionsProps = {
   isSubmitted: boolean;
@@ -7,6 +8,7 @@ type ChallengeActionsProps = {
   showNextQuestion: boolean;
   wrongAttempts: number;
   showAnswer: boolean;
+  hasSelection: boolean; // New prop to check if an answer is selected
   onRetry: () => void;
   onSubmit: () => void;
   onToggleShowAnswer: () => void;
@@ -18,10 +20,20 @@ export function ChallengeActions({
   showNextQuestion,
   wrongAttempts,
   showAnswer,
+  hasSelection,
   onRetry,
   onSubmit,
   onToggleShowAnswer
 }: ChallengeActionsProps) {
+  const handleSubmit = () => {
+    // Check if an answer is selected before allowing submission
+    if (!hasSelection && !showNextQuestion) {
+      toast.error("Please select an answer before submitting");
+      return;
+    }
+    onSubmit();
+  };
+
   return (
     <div className="flex gap-2">
       {isSubmitted && !isCorrect ? (
@@ -34,7 +46,7 @@ export function ChallengeActions({
         </Button>
       ) : (
         <Button
-          onClick={onSubmit}
+          onClick={handleSubmit}
           className="flex-1"
           aria-label={showNextQuestion ? "Proceed to next question" : "Submit your answer"}
         >

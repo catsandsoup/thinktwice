@@ -21,6 +21,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
     showNextQuestion,
     correctOptions,
     isMultipleChoice,
+    hasSelection,
     handleSelect,
     handleSubmit,
     handleRetry,
@@ -50,6 +51,7 @@ export function StandardChallenge(props: StandardChallengeProps) {
         showNextQuestion={showNextQuestion}
         wrongAttempts={wrongAttempts}
         showAnswer={showAnswer}
+        hasSelection={hasSelection}
         onRetry={handleRetry}
         onSubmit={handleSubmit}
         onToggleShowAnswer={toggleShowAnswer}
