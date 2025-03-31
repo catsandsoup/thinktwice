@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,9 +14,10 @@ interface ScenarioCardProps {
   };
   index: number;
   onSelect: (scenarioId: string) => void;
+  isLoading?: boolean; // Added isLoading prop as optional
 }
 
-export function ScenarioCard({ scenario, index, onSelect }: ScenarioCardProps) {
+export function ScenarioCard({ scenario, index, onSelect, isLoading = false }: ScenarioCardProps) {
   const getScenarioIcon = (iconName: string): LucideIcon => {
     switch (iconName) {
       case 'search': return Search;
@@ -51,8 +53,9 @@ export function ScenarioCard({ scenario, index, onSelect }: ScenarioCardProps) {
           <Button 
             variant="ghost" 
             className="mt-4 self-start"
+            disabled={isLoading} // Disable button when loading
           >
-            Start Journey →
+            {isLoading ? "Loading..." : "Start Journey →"}
           </Button>
         </div>
       </Card>
