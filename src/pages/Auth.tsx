@@ -1,10 +1,11 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { validateAuthInput } from "@/utils/authValidation";
 import { AuthForm } from "@/components/auth/AuthForm";
+import { handleApiError } from "@/utils/errorHandlers";
 
 export default function Auth() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,18 @@ export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { signIn, signUp } = useAuth();
+  const location = useLocation();
+  const { user, signIn, signUp } = useAuth();
+
+  // Get redirect path from location state or default to "/"
+  const from = location.state?.from?.pathname || "/";
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (user) {
+      navigate(from, { replace: true });
+    }
+  }, [user, navigate, from]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +38,7 @@ export default function Auth() {
     }
     
     setLoading(true);
-    console.log("Attempting authentication...");
+    console.log(`Attempting ${isSignUp ? 'sign up' : 'sign in'}...`);
 
     try {
       if (isSignUp) {
@@ -49,8 +61,23 @@ export default function Auth() {
       }
     } catch (error: any) {
       console.error("Auth error:", error);
-      setError(error.message);
-      toast.error(error.message);
+      
+      // Enhanced error handling based on common auth errors
+      const errorCode = error.code || '';
+      let errorMessage = error.message;
+      
+      if (errorCode.includes('auth/user-not-found') || errorCode.includes('auth/invalid-login-credentials')) {
+        errorMessage = "Invalid email or password. Please try again.";
+      } else if (errorCode.includes('auth/email-already-in-use')) {
+        errorMessage = "This email is already registered. Try signing in instead.";
+      } else if (errorCode.includes('auth/weak-password')) {
+        errorMessage = "Please choose a stronger password.";
+      } else if (errorCode.includes('auth/too-many-requests')) {
+        errorMessage = "Too many failed login attempts. Please try again later.";
+      }
+      
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

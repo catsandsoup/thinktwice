@@ -1,6 +1,6 @@
 
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,19 +11,35 @@ import { useScenarios, useUserProgress } from "@/context/DataContext";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { handleSupabaseError } from "@/utils/errorHandlers";
 
 const Index = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { data: scenarios, isLoading: scenariosLoading, error: scenariosError } = useScenarios();
+  const { data: scenarios, isLoading: scenariosLoading, error: scenariosError, refetch: refetchScenarios } = useScenarios();
   const { data: userProgress, isLoading: progressLoading } = useUserProgress();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Retry loading scenarios if there was an error
+  useEffect(() => {
+    if (scenariosError) {
+      const timer = setTimeout(() => {
+        refetchScenarios();
+      }, 5000); // Retry after 5 seconds
+      
+      return () => clearTimeout(timer);
+    }
+  }, [scenariosError, refetchScenarios]);
 
   const handleScenarioSelect = async (scenarioId: string) => {
     try {
       if (!user) {
         toast.error("Please log in to continue");
+        navigate("/login");
         return;
       }
+
+      setIsSubmitting(true);
 
       const { data: existingJourney, error: updateError } = await supabase
         .from('user_journeys')
@@ -32,6 +48,11 @@ const Index = () => {
         .eq('scenario_id', scenarioId)
         .select()
         .single();
+
+      if (updateError && updateError.code !== 'PGRST116') {
+        // Handle error but don't throw so we can continue with the insert attempt
+        console.error('Error updating journey:', updateError);
+      }
 
       if (!existingJourney) {
         const { error: insertError } = await supabase
@@ -43,8 +64,7 @@ const Index = () => {
           });
 
         if (insertError) {
-          console.error('Error creating journey:', insertError);
-          toast.error("Failed to start journey");
+          handleSupabaseError(insertError, "Failed to start journey");
           return;
         }
       }
@@ -69,6 +89,8 @@ const Index = () => {
     } catch (error) {
       console.error('Error:', error);
       toast.error("Something went wrong");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -102,7 +124,14 @@ const Index = () => {
             We encountered a problem loading your learning scenarios. Please try refreshing the page.
           </p>
           <Button 
+            onClick={() => refetchScenarios()} 
+            className="w-full mb-2"
+          >
+            Try Again
+          </Button>
+          <Button 
             onClick={() => window.location.reload()} 
+            variant="outline"
             className="w-full"
           >
             Refresh Page
@@ -143,6 +172,7 @@ const Index = () => {
                   scenario={scenario}
                   index={index}
                   onSelect={handleScenarioSelect}
+                  isLoading={isSubmitting}
                 />
               ))}
             </div>
