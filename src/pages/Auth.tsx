@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Auth() {
   const [email, setEmail] = useState("");
@@ -15,42 +16,7 @@ export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) {
-          console.error("Session check error:", sessionError);
-          return;
-        }
-        if (session) {
-          navigate("/");
-        }
-      } catch (error) {
-        console.error("Session check error:", error);
-      }
-    };
-    
-    checkUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session);
-      if (event === 'SIGNED_IN') {
-        // Ensure the session is properly set before navigating
-        const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
-        if (currentSession && !sessionError) {
-          navigate("/");
-        }
-      } else if (event === 'SIGNED_OUT') {
-        navigate("/login");
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [navigate]);
+  const { signIn, signUp } = useAuth();
 
   const validateInput = () => {
     if (!email || !password) {
@@ -79,15 +45,7 @@ export default function Auth() {
 
     try {
       if (isSignUp) {
-        const { data, error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
-          },
-        });
-
-        console.log("Sign up response:", { data, error: signUpError });
+        const { error: signUpError } = await signUp(email, password);
 
         if (signUpError) throw signUpError;
         
@@ -95,25 +53,14 @@ export default function Auth() {
           duration: 5000,
         });
       } else {
-        const { data, error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        console.log("Sign in response:", { data, error: signInError });
+        const { error: signInError } = await signIn(email, password);
 
         if (signInError) throw signInError;
         
-        // Only navigate if we have a valid session
-        const { data: { session: currentSession } } = await supabase.auth.getSession();
-        if (currentSession) {
-          toast.success("Successfully signed in!", {
-            duration: 3000,
-          });
-          navigate("/");
-        } else {
-          throw new Error("Failed to establish session");
-        }
+        toast.success("Successfully signed in!", {
+          duration: 3000,
+        });
+        // Navigate happens automatically through auth state change
       }
     } catch (error: any) {
       console.error("Auth error:", error);

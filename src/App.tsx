@@ -1,5 +1,5 @@
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import Index from "@/pages/Index";
@@ -11,85 +11,138 @@ import NotFound from "@/pages/NotFound";
 import QuestionManager from "@/pages/QuestionManager";
 import Settings from "@/pages/Settings";
 import Auth from "@/pages/Auth";
-import { useEffect, useState } from "react";
-import { supabase } from "./integrations/supabase/client";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { DataProvider } from "./context/DataContext";
+import { Suspense, lazy } from "react";
 
-// Initialize the query client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      retry: 1,
-    },
-  },
-});
+// Protected route component
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, isLoading } = useAuth();
 
-function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    // Check initial auth state
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session);
-    });
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-    });
+  return <>{children}</>;
+}
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+function AppRoutes() {
+  const { user, isLoading } = useAuth();
 
   // Show loading state while checking auth
-  if (isAuthenticated === null) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Toaster />
-        <Sonner />
-        <Routes>
-          <Route
-            path="/"
-            element={isAuthenticated ? <Index /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/login"
-            element={!isAuthenticated ? <Auth /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/argument-analysis"
-            element={isAuthenticated ? <ArgumentAnalysis /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/beginners-journey"
-            element={isAuthenticated ? <BeginnersJourney /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/thinking-tools"
-            element={isAuthenticated ? <ThinkingTools /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/bridge-builder"
-            element={isAuthenticated ? <BridgeBuilder /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/question-manager"
-            element={isAuthenticated ? <QuestionManager /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/settings"
-            element={isAuthenticated ? <Settings /> : <Navigate to="/login" />}
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
-    </QueryClientProvider>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          user ? (
+            <ErrorBoundary>
+              <Index />
+            </ErrorBoundary>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/login"
+        element={!user ? <Auth /> : <Navigate to="/" />}
+      />
+      <Route
+        path="/argument-analysis"
+        element={
+          <ProtectedRoute>
+            <ErrorBoundary>
+              <ArgumentAnalysis />
+            </ErrorBoundary>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/beginners-journey"
+        element={
+          <ProtectedRoute>
+            <ErrorBoundary>
+              <BeginnersJourney />
+            </ErrorBoundary>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/thinking-tools"
+        element={
+          <ProtectedRoute>
+            <ErrorBoundary>
+              <ThinkingTools />
+            </ErrorBoundary>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/bridge-builder"
+        element={
+          <ProtectedRoute>
+            <ErrorBoundary>
+              <BridgeBuilder />
+            </ErrorBoundary>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/question-manager"
+        element={
+          <ProtectedRoute>
+            <ErrorBoundary>
+              <QuestionManager />
+            </ErrorBoundary>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <ErrorBoundary>
+              <Settings />
+            </ErrorBoundary>
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <AuthProvider>
+        <DataProvider>
+          <Router>
+            <Toaster />
+            <Sonner />
+            <AppRoutes />
+          </Router>
+        </DataProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
